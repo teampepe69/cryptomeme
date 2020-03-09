@@ -4,3 +4,14 @@
 # cryptomeme
 
 Hello pepe
+
+# Pre-requisites
+
+(TODO)
+
+# Installation
+
+Download the project via `git clone https://github.com/teampepe69/cryptomeme.git`
+Install the necessary dependencies via `npm install`
+
+(TODO)

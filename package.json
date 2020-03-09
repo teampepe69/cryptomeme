@@ -2,9 +2,6 @@
   "name": "cryptomeme",
   "version": "1.0.0",
   "description": "social media platform for memes",
-  "directories": {
-    "test": "test"
-  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

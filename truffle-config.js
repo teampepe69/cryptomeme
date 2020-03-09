@@ -8,5 +8,6 @@ module.exports = {
     develop: {
       port: 8545
     }
-  }
+  },
+  plugins: ["solidity-coverage"]
 };

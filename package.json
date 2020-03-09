@@ -6,6 +6,7 @@
     "test": "test"
   },
   "scripts": {
+    "coverage": "./node_modules/.bin/solidity-coverage",
     "test": "echo \"Error: no test specified\" && exit 0"
   },
   "repository": {
@@ -22,7 +23,9 @@
   ],
   "dependencies": {
     "ganache-cli": "^6.9.1",
-    "truffle": "^5.1.16"
+    "@openzeppelin/contracts": "^2.5.0",
+    "truffle": "^5.1.16",
+    "solidity-coverage": "^0.7.2"
   },
   "author": "IS4302 - Teampepe69",
   "license": "ISC",

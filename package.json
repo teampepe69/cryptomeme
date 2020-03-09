@@ -1,0 +1,33 @@
+{
+  "name": "cryptomeme",
+  "version": "1.0.0",
+  "description": "social media platform for memes",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/teampepe69/cryptomeme.git"
+  },
+  "keywords": [
+    "smart",
+    "contract",
+    "memes",
+    "social",
+    "media",
+    "pepe"
+  ],
+  "dependencies": {
+    "ganache-cli": "^6.9.1",
+    "truffle": "^5.1.16"
+  },
+  "author": "IS4302 - Teampepe69",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/teampepe69/cryptomeme/issues"
+  },
+  "homepage": "https://github.com/teampepe69/cryptomeme#readme"
+}

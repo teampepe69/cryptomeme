@@ -11,6 +11,7 @@ contract Meme is ERC721 {
     enum memeStates {approved, rejected, pending}
 
     struct Meme {
+        uint256 memeId;
         uint256 memeLikes;
         string memePath;
         memeStates memeState;
@@ -28,7 +29,12 @@ contract Meme is ERC721 {
         public
         returns (uint256)
     {
-        Meme memory _meme = Meme(0, _pathToMeme, memeStates.pending);
+        Meme memory _meme = Meme(
+            numberOfMemes,
+            0,
+            _pathToMeme,
+            memeStates.pending
+        );
         uint256 _memeId = memes.push(_meme).sub(1);
         _mint(_memeOwner, _memeId);
         numberOfMemes = numberOfMemes.add(1);

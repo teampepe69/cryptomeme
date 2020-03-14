@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import SimpleStorageContract from "./contracts/SimpleStorage.json";
 import Meme from "./contracts/Meme.json";
+import MemeketPlace from "./contracts/MemeketPlace.json";
 import getWeb3 from "./getWeb3";
 
 class App extends Component {
@@ -15,9 +16,11 @@ class App extends Component {
 
       // Get the Contract instances.
       const networkId = await web3.eth.net.getId();
+      console.log(networkId);
 
       // Get Meme instance and all the Memes
-      const deployedMemeNetworkData = Meme.networks[networkId];
+      const deployedMemeNetworkData = await Meme.networks[networkId];
+
       if (deployedMemeNetworkData) {
         const memeNetwork = new web3.eth.Contract(
           Meme.abi,
@@ -33,6 +36,16 @@ class App extends Component {
             memes: [...this.state.memes, meme]
           });
         }
+      }
+
+      //Get Memeketplace instance
+      const deployedMemeketPlaceNetworkData = MemeketPlace.networks[networkId];
+      if (deployedMemeketPlaceNetworkData) {
+        const memeketPlaceNetwork = new web3.eth.Contract(
+          MemeketPlace.abi,
+          deployedMemeketPlaceNetworkData.address
+        );
+        this.setState({ memeketPlaceNetwork });
       }
 
       // Set web3, accounts, and contract to the state, and then proceed with an
@@ -62,15 +75,24 @@ class App extends Component {
     this.state.memeNetwork.methods.createMeme(this.state.account, memePath);
   }
 
+  likeMeme(memeId) {
+    this.state.memeketPlaceNetwork.methods
+      .likeMeme(memeId)
+      .send({ from: this.state.account });
+  }
+
   constructor(props) {
     super(props);
     this.state = {
       account: "",
+      memeketPlaceNetwork: null,
       memeNetwork: null,
+      memeCount: 0,
       memes: [],
       loading: false
     };
     this.createMeme = this.createMeme.bind(this);
+    this.likeMeme = this.likeMeme.bind(this);
   }
 
   render() {
@@ -81,6 +103,31 @@ class App extends Component {
           className="col-lg-12 ml-auto mr-auto"
           style={{ maxWidth: "500px" }}
         >
+          <form
+            onSubmit={event => {
+              event.preventDefault();
+              const account = this.state.account.value;
+              const memePath = this.createMeme.value;
+              this.createMeme(memePath);
+            }}
+          >
+            <div className="form-group mr-sm2">
+              <input
+                id="postContent"
+                type="text"
+                ref={input => {
+                  this.memePath = input;
+                }}
+                className="form-control"
+                placeholder="What's on your mind?"
+                required
+              />
+            </div>
+            <button type="submit" className="btn btn-primary btn-block">
+              Share
+            </button>
+          </form>
+          &nbsp;
           {this.state.memes.map((meme, key) => {
             return (
               <div className="card mb-4" key={key}>
@@ -90,10 +137,16 @@ class App extends Component {
                   </li>
                   <li key={key} className="list-group-item py-2">
                     <small className="float-left mt-1 text-muted">
-                      Likes:{meme.numLikes.toString()}
+                      Likes:{meme.memeLikes.toString()}
                     </small>
-                    <button className="btn btn-link btn-sm float-right pt-0">
-                      Approve Meme
+                    <button
+                      className="btn btn-link btn-sm float-right pt-0"
+                      name={meme.memeId}
+                      onClick={event => {
+                        this.likeMeme(event.target.name);
+                      }}
+                    >
+                      Like Meme
                     </button>
                   </li>
                 </ul>

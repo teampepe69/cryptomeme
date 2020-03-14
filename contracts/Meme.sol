@@ -6,17 +6,17 @@ contract Meme is ERC721 {
 
     address contractOwner = msg.sender;
 
-    uint256 numberOfMemes = 0;
+    uint256 public numberOfMemes = 0;
 
     enum memeStates {approved, rejected, pending}
 
     struct Meme {
-        uint256 numLikes;
+        uint256 memeLikes;
         string memePath;
         memeStates memeState;
     }
 
-    Meme[] memes;
+    Meme[] public memes;
 
     event MemeCreated(uint256 memeId, string memePath);
     event MemeLiked(uint256 memeId, uint256 memeLikes);
@@ -28,11 +28,7 @@ contract Meme is ERC721 {
         public
         returns (uint256)
     {
-        Meme memory _meme = Meme(
-            numberOfMemes,
-            _pathToMeme,
-            memeStates.pending
-        );
+        Meme memory _meme = Meme(0, _pathToMeme, memeStates.pending);
         uint256 _memeId = memes.push(_meme).sub(1);
         _mint(_memeOwner, _memeId);
         numberOfMemes = numberOfMemes.add(1);
@@ -41,7 +37,7 @@ contract Meme is ERC721 {
     }
 
     function getMemeLikes(uint256 _memeId) public view returns (uint256) {
-        return memes[_memeId].numLikes;
+        return memes[_memeId].memeLikes;
     }
 
     function getMemeState(uint256 _memeId) public view returns (memeStates) {
@@ -53,7 +49,7 @@ contract Meme is ERC721 {
     }
 
     function setMemeLikes(uint256 _memeId, uint256 _memeLikes) public {
-        memes[_memeId].numLikes = _memeLikes;
+        memes[_memeId].memeLikes = _memeLikes;
         emit MemeLiked(_memeId, _memeLikes);
     }
 

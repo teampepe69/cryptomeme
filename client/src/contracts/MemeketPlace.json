@@ -1,0 +1,781 @@
+{
+  "contractName": "MemeketPlace",
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "contract Meme",
+          "name": "_memeContract",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_memeOwner",
+          "type": "address"
+        },
+        {
+          "internalType": "string",
+          "name": "_pathToMeme",
+          "type": "string"
+        }
+      ],
+      "name": "uploadMeme",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "metadata": "{\"compiler\":{\"version\":\"0.5.16+commit.9c3226ce\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"contract Meme\",\"name\":\"_memeContract\",\"type\":\"address\"}],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"constant\":false,\"inputs\":[{\"internalType\":\"address\",\"name\":\"_memeOwner\",\"type\":\"address\"},{\"internalType\":\"string\",\"name\":\"_pathToMeme\",\"type\":\"string\"}],\"name\":\"uploadMeme\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"methods\":{}},\"userdoc\":{\"methods\":{}}},\"settings\":{\"compilationTarget\":{\"/C/Users/quentinkhoo/Documents/Year 4/Sem 2/IS4302/cryptomeme/contracts/Memeketplace.sol\":\"MemeketPlace\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"/C/Users/quentinkhoo/Documents/Year 4/Sem 2/IS4302/cryptomeme/contracts/Meme.sol\":{\"keccak256\":\"0x73f083db1b8148f0b69513c3eb9df0a8710877078c2901993476212deb25da86\",\"urls\":[\"bzz-raw://594a4ca9c1c0d948741bb22b5cb60e1b65ec5ddbc6cfa378dd04273bc9ac5407\",\"dweb:/ipfs/QmNry7WtfM8cvDQjjgBitXTrPSRPouP7n6boVeB4Jfvmy8\"]},\"/C/Users/quentinkhoo/Documents/Year 4/Sem 2/IS4302/cryptomeme/contracts/Memeketplace.sol\":{\"keccak256\":\"0xabe0259afab1c0de671e95d209d7c6c268a3c8ac1f2a2c9ecf172c3828e3453e\",\"urls\":[\"bzz-raw://718ec5e00c8c7dd46feeec195f0034083fbeb5de41cfc8b86cafccea637aba1a\",\"dweb:/ipfs/QmYknnDRBT3WqyqYCLurcUTQkD2CSGTn9fBPnWr1B9V9gX\"]},\"/C/Users/quentinkhoo/Documents/Year 4/Sem 2/IS4302/cryptomeme/node_modules/@openzeppelin/contracts/GSN/Context.sol\":{\"keccak256\":\"0x90a3995645af7562d84b9d69363ffa5ae7217714ab61e951bf7bc450f40e4061\",\"urls\":[\"bzz-raw://216ef9d6b614db4eb46970b4e84903f2534a45572dd30a79f0041f1a5830f436\",\"dweb:/ipfs/QmNPrJ4MWKUAWzKXpUqeyKRUfosaoANZAqXgvepdrCwZAG\"]},\"/C/Users/quentinkhoo/Documents/Year 4/Sem 2/IS4302/cryptomeme/node_modules/@openzeppelin/contracts/drafts/Counters.sol\":{\"keccak256\":\"0x5be8533c5950173dc2b77b75108fae6e6c5449aedadde3385ba457394aad2384\",\"urls\":[\"bzz-raw://d429fb04f5b31d909dc759d0f88e28055b80b4dd43e5def4dffc947fa0609229\",\"dweb:/ipfs/QmaY9idX5CwLLtjjTQAdiiaDSrncgafkatUZXTbbajpz8b\"]},\"/C/Users/quentinkhoo/Documents/Year 4/Sem 2/IS4302/cryptomeme/node_modules/@openzeppelin/contracts/introspection/ERC165.sol\":{\"keccak256\":\"0x01aedbf24e121a744262e04c7815b2a4c8ce604dee4829c5cff00943a594ccf3\",\"urls\":[\"bzz-raw://999ab32a6498d8ad8db61d47c3774aae2ff919acceebe2aeb50879bef62642c3\",\"dweb:/ipfs/QmephAYF5hoymu9qCFK6mURM2kZJCxU4ntUb4KTf1miVPT\"]},\"/C/Users/quentinkhoo/Documents/Year 4/Sem 2/IS4302/cryptomeme/node_modules/@openzeppelin/contracts/introspection/IERC165.sol\":{\"keccak256\":\"0xe0ed10f53955c35eecb02724538650a155aa940be3f0a54cd3bde6c6b0c6e48c\",\"urls\":[\"bzz-raw://7dcfda88e3225987245908c3296f3559752647036804325ebfaa9fd1545161c3\",\"dweb:/ipfs/QmXxx5rHfLL57zdgyyyG9MMv4XGN7bpVSc2MuDcaCgto6u\"]},\"/C/Users/quentinkhoo/Documents/Year 4/Sem 2/IS4302/cryptomeme/node_modules/@openzeppelin/contracts/math/SafeMath.sol\":{\"keccak256\":\"0x640b6dee7a4b830bdfd52b5031a07fc2b12209f5b2e29e5d364a7d37f69d8076\",\"urls\":[\"bzz-raw://31113152e1ddb78fe7a4197f247591ca894e93f916867beb708d8e747b6cc74f\",\"dweb:/ipfs/QmbZaJyXdpsYGykVhHH9qpVGQg9DGCxE2QufbCUy3daTgq\"]},\"/C/Users/quentinkhoo/Documents/Year 4/Sem 2/IS4302/cryptomeme/node_modules/@openzeppelin/contracts/token/ERC721/ERC721.sol\":{\"keccak256\":\"0x1a1c02bc2487c763ad240f6b6440ec9dcb84870879aea3ed2a6b9cd300b637c7\",\"urls\":[\"bzz-raw://e6351696020fecf1c1b09437a2961cbdc3e1579238a9573b8577b58af463eeb6\",\"dweb:/ipfs/QmTg7UxUcuENko38JL2Pb2aqXkWgqW1xPDbJwmfo3RVrrV\"]},\"/C/Users/quentinkhoo/Documents/Year 4/Sem 2/IS4302/cryptomeme/node_modules/@openzeppelin/contracts/token/ERC721/IERC721.sol\":{\"keccak256\":\"0x680c11bc8173eef7d5db843baaf64ce499476de2c172f6aea631dbee54bcd2e6\",\"urls\":[\"bzz-raw://0f314963ab26fb65c6f364d57900f0f1aa8f6aeb4396e327e5e5c646815f060e\",\"dweb:/ipfs/Qmf6eSUtRUF4YDxGyhQq7TVDYzuHcYEvk9Us3RVy5iZQVH\"]},\"/C/Users/quentinkhoo/Documents/Year 4/Sem 2/IS4302/cryptomeme/node_modules/@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol\":{\"keccak256\":\"0x042048c375daca04b31e31c91bbae912b84b5eb818c4e31b2deb530fd2305342\",\"urls\":[\"bzz-raw://d877a87c5e29b9ffca3e334378058c051a4e012fd3635039681003a9376baf1f\",\"dweb:/ipfs/QmR45snf93cFXtB71TZcmoGy9DbcMha8CqgkDKaLvhjXZK\"]},\"/C/Users/quentinkhoo/Documents/Year 4/Sem 2/IS4302/cryptomeme/node_modules/@openzeppelin/contracts/utils/Address.sol\":{\"keccak256\":\"0x1a8e5072509c5ea7365eb1d48030b9be865140c8fb779968da0a459a0e174a11\",\"urls\":[\"bzz-raw://03335b7b07c7c8c8d613cfdd8ec39a0b5ec133ee510bf2fe6cc5a496767bef4b\",\"dweb:/ipfs/Qmebp4nzPja645c9yXSdJkGq96oU3am3LUnG2K3R7XxyKf\"]}},\"version\":1}",
+  "bytecode": "0x608060405234801561001057600080fd5b506040516103213803806103218339818101604052602081101561003357600080fd5b8101908080519060200190929190505050806000806101000a81548173ffffffffffffffffffffffffffffffffffffffff021916908373ffffffffffffffffffffffffffffffffffffffff1602179055505061028d806100946000396000f3fe608060405234801561001057600080fd5b506004361061002b5760003560e01c8063542ad4fa14610030575b600080fd5b6101096004803603604081101561004657600080fd5b81019080803573ffffffffffffffffffffffffffffffffffffffff1690602001909291908035906020019064010000000081111561008357600080fd5b82018360208201111561009557600080fd5b803590602001918460018302840111640100000000831117156100b757600080fd5b91908080601f016020809104026020016040519081016040528093929190818152602001838380828437600081840152601f19601f82011690508083019250505050505050919291929050505061010b565b005b6000809054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff1663ed9a3a3f83836040518363ffffffff1660e01b8152600401808373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200180602001828103825283818151815260200191508051906020019080838360005b838110156101cb5780820151818401526020810190506101b0565b50505050905090810190601f1680156101f85780820380516001836020036101000a031916815260200191505b509350505050602060405180830381600087803b15801561021857600080fd5b505af115801561022c573d6000803e3d6000fd5b505050506040513d602081101561024257600080fd5b810190808051906020019092919050505050505056fea265627a7a7231582013e14de45f34e50fd3da8f7b4f9f55e79bdd701b9272dbba235a19d0d593d09564736f6c63430005100032",
+  "deployedBytecode": "0x608060405234801561001057600080fd5b506004361061002b5760003560e01c8063542ad4fa14610030575b600080fd5b6101096004803603604081101561004657600080fd5b81019080803573ffffffffffffffffffffffffffffffffffffffff1690602001909291908035906020019064010000000081111561008357600080fd5b82018360208201111561009557600080fd5b803590602001918460018302840111640100000000831117156100b757600080fd5b91908080601f016020809104026020016040519081016040528093929190818152602001838380828437600081840152601f19601f82011690508083019250505050505050919291929050505061010b565b005b6000809054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff1663ed9a3a3f83836040518363ffffffff1660e01b8152600401808373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200180602001828103825283818151815260200191508051906020019080838360005b838110156101cb5780820151818401526020810190506101b0565b50505050905090810190601f1680156101f85780820380516001836020036101000a031916815260200191505b509350505050602060405180830381600087803b15801561021857600080fd5b505af115801561022c573d6000803e3d6000fd5b505050506040513d602081101561024257600080fd5b810190808051906020019092919050505050505056fea265627a7a7231582013e14de45f34e50fd3da8f7b4f9f55e79bdd701b9272dbba235a19d0d593d09564736f6c63430005100032",
+  "sourceMap": "49:291:1:-;;;102:86;8:9:-1;5:2;;;30:1;27;20:12;5:2;102:86:1;;;;;;;;;;;;;;;13:2:-1;8:3;5:11;2:2;;;29:1;26;19:12;2:2;102:86:1;;;;;;;;;;;;;;;;167:13;152:12;;:28;;;;;;;;;;;;;;;;;;102:86;49:291;;;;;;",
+  "deployedSourceMap": "49:291:1:-;;;;8:9:-1;5:2;;;30:1;27;20:12;5:2;49:291:1;;;;;;;;;;;;;;;;;;;196:141;;;;;;13:2:-1;8:3;5:11;2:2;;;29:1;26;19:12;2:2;196:141:1;;;;;;;;;;;;;;;;;;;;;21:11:-1;8;5:28;2:2;;;46:1;43;36:12;2:2;196:141:1;;35:9:-1;28:4;12:14;8:25;5:40;2:2;;;58:1;55;48:12;2:2;196:141:1;;;;;;100:9:-1;95:1;81:12;77:20;67:8;63:35;60:50;39:11;25:12;22:29;11:107;8:2;;;131:1;128;121:12;8:2;196:141:1;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;30:3:-1;22:6;14;1:33;99:1;93:3;85:6;81:16;74:27;137:4;133:9;126:4;121:3;117:14;113:30;106:37;;169:3;161:6;157:16;147:26;;196:141:1;;;;;;;;;;;;;;;:::i;:::-;;;281:12;;;;;;;;;;;:23;;;305:10;317:11;281:48;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;23:1:-1;8:100;33:3;30:1;27:10;8:100;;;99:1;94:3;90:11;84:18;80:1;75:3;71:11;64:39;52:2;49:1;45:10;40:15;;8:100;;;12:14;281:48:1;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;8:9:-1;5:2;;;30:1;27;20:12;5:2;281:48:1;;;;8:9:-1;5:2;;;45:16;42:1;39;24:38;77:16;74:1;67:27;5:2;281:48:1;;;;;;;13:2:-1;8:3;5:11;2:2;;;29:1;26;19:12;2:2;281:48:1;;;;;;;;;;;;;;;;;196:141;;:::o",
+  "source": "pragma solidity ^0.5.0;\r\nimport \"./Meme.sol\";\r\n\r\ncontract MemeketPlace {\r\n    Meme memeContract;\r\n    constructor(Meme _memeContract) public {\r\n        memeContract = _memeContract;\r\n    }\r\n\r\n    function uploadMeme(address _memeOwner, string memory _pathToMeme) public {\r\n        memeContract.createMeme(_memeOwner, _pathToMeme);\r\n    }\r\n}\r\n",
+  "sourcePath": "C:\\Users\\quentinkhoo\\Documents\\Year 4\\Sem 2\\IS4302\\cryptomeme\\contracts\\Memeketplace.sol",
+  "ast": {
+    "absolutePath": "/C/Users/quentinkhoo/Documents/Year 4/Sem 2/IS4302/cryptomeme/contracts/Memeketplace.sol",
+    "exportedSymbols": {
+      "MemeketPlace": [
+        249
+      ]
+    },
+    "id": 250,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 220,
+        "literals": [
+          "solidity",
+          "^",
+          "0.5",
+          ".0"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "0:23:1"
+      },
+      {
+        "absolutePath": "/C/Users/quentinkhoo/Documents/Year 4/Sem 2/IS4302/cryptomeme/contracts/Meme.sol",
+        "file": "./Meme.sol",
+        "id": 221,
+        "nodeType": "ImportDirective",
+        "scope": 250,
+        "sourceUnit": 219,
+        "src": "25:20:1",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "baseContracts": [],
+        "contractDependencies": [],
+        "contractKind": "contract",
+        "documentation": null,
+        "fullyImplemented": true,
+        "id": 249,
+        "linearizedBaseContracts": [
+          249
+        ],
+        "name": "MemeketPlace",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "constant": false,
+            "id": 223,
+            "name": "memeContract",
+            "nodeType": "VariableDeclaration",
+            "scope": 249,
+            "src": "78:17:1",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_contract$_Meme_$218",
+              "typeString": "contract Meme"
+            },
+            "typeName": {
+              "contractScope": null,
+              "id": 222,
+              "name": "Meme",
+              "nodeType": "UserDefinedTypeName",
+              "referencedDeclaration": 218,
+              "src": "78:4:1",
+              "typeDescriptions": {
+                "typeIdentifier": "t_contract$_Meme_$218",
+                "typeString": "contract Meme"
+              }
+            },
+            "value": null,
+            "visibility": "internal"
+          },
+          {
+            "body": {
+              "id": 232,
+              "nodeType": "Block",
+              "src": "141:47:1",
+              "statements": [
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "id": 230,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftHandSide": {
+                      "argumentTypes": null,
+                      "id": 228,
+                      "name": "memeContract",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 223,
+                      "src": "152:12:1",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_contract$_Meme_$218",
+                        "typeString": "contract Meme"
+                      }
+                    },
+                    "nodeType": "Assignment",
+                    "operator": "=",
+                    "rightHandSide": {
+                      "argumentTypes": null,
+                      "id": 229,
+                      "name": "_memeContract",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 225,
+                      "src": "167:13:1",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_contract$_Meme_$218",
+                        "typeString": "contract Meme"
+                      }
+                    },
+                    "src": "152:28:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_contract$_Meme_$218",
+                      "typeString": "contract Meme"
+                    }
+                  },
+                  "id": 231,
+                  "nodeType": "ExpressionStatement",
+                  "src": "152:28:1"
+                }
+              ]
+            },
+            "documentation": null,
+            "id": 233,
+            "implemented": true,
+            "kind": "constructor",
+            "modifiers": [],
+            "name": "",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 226,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 225,
+                  "name": "_memeContract",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 233,
+                  "src": "114:18:1",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_contract$_Meme_$218",
+                    "typeString": "contract Meme"
+                  },
+                  "typeName": {
+                    "contractScope": null,
+                    "id": 224,
+                    "name": "Meme",
+                    "nodeType": "UserDefinedTypeName",
+                    "referencedDeclaration": 218,
+                    "src": "114:4:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_contract$_Meme_$218",
+                      "typeString": "contract Meme"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "113:20:1"
+            },
+            "returnParameters": {
+              "id": 227,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "141:0:1"
+            },
+            "scope": 249,
+            "src": "102:86:1",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "public"
+          },
+          {
+            "body": {
+              "id": 247,
+              "nodeType": "Block",
+              "src": "270:67:1",
+              "statements": [
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "arguments": [
+                      {
+                        "argumentTypes": null,
+                        "id": 243,
+                        "name": "_memeOwner",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 235,
+                        "src": "305:10:1",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_address",
+                          "typeString": "address"
+                        }
+                      },
+                      {
+                        "argumentTypes": null,
+                        "id": 244,
+                        "name": "_pathToMeme",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 237,
+                        "src": "317:11:1",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_string_memory_ptr",
+                          "typeString": "string memory"
+                        }
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_address",
+                          "typeString": "address"
+                        },
+                        {
+                          "typeIdentifier": "t_string_memory_ptr",
+                          "typeString": "string memory"
+                        }
+                      ],
+                      "expression": {
+                        "argumentTypes": null,
+                        "id": 240,
+                        "name": "memeContract",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 223,
+                        "src": "281:12:1",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_contract$_Meme_$218",
+                          "typeString": "contract Meme"
+                        }
+                      },
+                      "id": 242,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "memberName": "createMeme",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": 102,
+                      "src": "281:23:1",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_external_nonpayable$_t_address_$_t_string_memory_ptr_$returns$_t_uint256_$",
+                        "typeString": "function (address,string memory) external returns (uint256)"
+                      }
+                    },
+                    "id": 245,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "281:48:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "id": 246,
+                  "nodeType": "ExpressionStatement",
+                  "src": "281:48:1"
+                }
+              ]
+            },
+            "documentation": null,
+            "id": 248,
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [],
+            "name": "uploadMeme",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 238,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 235,
+                  "name": "_memeOwner",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 248,
+                  "src": "216:18:1",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 234,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "216:7:1",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 237,
+                  "name": "_pathToMeme",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 248,
+                  "src": "236:25:1",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 236,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "236:6:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "215:47:1"
+            },
+            "returnParameters": {
+              "id": 239,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "270:0:1"
+            },
+            "scope": 249,
+            "src": "196:141:1",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "public"
+          }
+        ],
+        "scope": 250,
+        "src": "49:291:1"
+      }
+    ],
+    "src": "0:342:1"
+  },
+  "legacyAST": {
+    "absolutePath": "/C/Users/quentinkhoo/Documents/Year 4/Sem 2/IS4302/cryptomeme/contracts/Memeketplace.sol",
+    "exportedSymbols": {
+      "MemeketPlace": [
+        249
+      ]
+    },
+    "id": 250,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 220,
+        "literals": [
+          "solidity",
+          "^",
+          "0.5",
+          ".0"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "0:23:1"
+      },
+      {
+        "absolutePath": "/C/Users/quentinkhoo/Documents/Year 4/Sem 2/IS4302/cryptomeme/contracts/Meme.sol",
+        "file": "./Meme.sol",
+        "id": 221,
+        "nodeType": "ImportDirective",
+        "scope": 250,
+        "sourceUnit": 219,
+        "src": "25:20:1",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "baseContracts": [],
+        "contractDependencies": [],
+        "contractKind": "contract",
+        "documentation": null,
+        "fullyImplemented": true,
+        "id": 249,
+        "linearizedBaseContracts": [
+          249
+        ],
+        "name": "MemeketPlace",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "constant": false,
+            "id": 223,
+            "name": "memeContract",
+            "nodeType": "VariableDeclaration",
+            "scope": 249,
+            "src": "78:17:1",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_contract$_Meme_$218",
+              "typeString": "contract Meme"
+            },
+            "typeName": {
+              "contractScope": null,
+              "id": 222,
+              "name": "Meme",
+              "nodeType": "UserDefinedTypeName",
+              "referencedDeclaration": 218,
+              "src": "78:4:1",
+              "typeDescriptions": {
+                "typeIdentifier": "t_contract$_Meme_$218",
+                "typeString": "contract Meme"
+              }
+            },
+            "value": null,
+            "visibility": "internal"
+          },
+          {
+            "body": {
+              "id": 232,
+              "nodeType": "Block",
+              "src": "141:47:1",
+              "statements": [
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "id": 230,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftHandSide": {
+                      "argumentTypes": null,
+                      "id": 228,
+                      "name": "memeContract",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 223,
+                      "src": "152:12:1",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_contract$_Meme_$218",
+                        "typeString": "contract Meme"
+                      }
+                    },
+                    "nodeType": "Assignment",
+                    "operator": "=",
+                    "rightHandSide": {
+                      "argumentTypes": null,
+                      "id": 229,
+                      "name": "_memeContract",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 225,
+                      "src": "167:13:1",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_contract$_Meme_$218",
+                        "typeString": "contract Meme"
+                      }
+                    },
+                    "src": "152:28:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_contract$_Meme_$218",
+                      "typeString": "contract Meme"
+                    }
+                  },
+                  "id": 231,
+                  "nodeType": "ExpressionStatement",
+                  "src": "152:28:1"
+                }
+              ]
+            },
+            "documentation": null,
+            "id": 233,
+            "implemented": true,
+            "kind": "constructor",
+            "modifiers": [],
+            "name": "",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 226,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 225,
+                  "name": "_memeContract",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 233,
+                  "src": "114:18:1",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_contract$_Meme_$218",
+                    "typeString": "contract Meme"
+                  },
+                  "typeName": {
+                    "contractScope": null,
+                    "id": 224,
+                    "name": "Meme",
+                    "nodeType": "UserDefinedTypeName",
+                    "referencedDeclaration": 218,
+                    "src": "114:4:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_contract$_Meme_$218",
+                      "typeString": "contract Meme"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "113:20:1"
+            },
+            "returnParameters": {
+              "id": 227,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "141:0:1"
+            },
+            "scope": 249,
+            "src": "102:86:1",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "public"
+          },
+          {
+            "body": {
+              "id": 247,
+              "nodeType": "Block",
+              "src": "270:67:1",
+              "statements": [
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "arguments": [
+                      {
+                        "argumentTypes": null,
+                        "id": 243,
+                        "name": "_memeOwner",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 235,
+                        "src": "305:10:1",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_address",
+                          "typeString": "address"
+                        }
+                      },
+                      {
+                        "argumentTypes": null,
+                        "id": 244,
+                        "name": "_pathToMeme",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 237,
+                        "src": "317:11:1",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_string_memory_ptr",
+                          "typeString": "string memory"
+                        }
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_address",
+                          "typeString": "address"
+                        },
+                        {
+                          "typeIdentifier": "t_string_memory_ptr",
+                          "typeString": "string memory"
+                        }
+                      ],
+                      "expression": {
+                        "argumentTypes": null,
+                        "id": 240,
+                        "name": "memeContract",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 223,
+                        "src": "281:12:1",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_contract$_Meme_$218",
+                          "typeString": "contract Meme"
+                        }
+                      },
+                      "id": 242,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "memberName": "createMeme",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": 102,
+                      "src": "281:23:1",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_external_nonpayable$_t_address_$_t_string_memory_ptr_$returns$_t_uint256_$",
+                        "typeString": "function (address,string memory) external returns (uint256)"
+                      }
+                    },
+                    "id": 245,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "281:48:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "id": 246,
+                  "nodeType": "ExpressionStatement",
+                  "src": "281:48:1"
+                }
+              ]
+            },
+            "documentation": null,
+            "id": 248,
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [],
+            "name": "uploadMeme",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 238,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 235,
+                  "name": "_memeOwner",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 248,
+                  "src": "216:18:1",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 234,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "216:7:1",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 237,
+                  "name": "_pathToMeme",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 248,
+                  "src": "236:25:1",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 236,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "236:6:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "215:47:1"
+            },
+            "returnParameters": {
+              "id": 239,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "270:0:1"
+            },
+            "scope": 249,
+            "src": "196:141:1",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "public"
+          }
+        ],
+        "scope": 250,
+        "src": "49:291:1"
+      }
+    ],
+    "src": "0:342:1"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.5.16+commit.9c3226ce.Emscripten.clang"
+  },
+  "networks": {},
+  "schemaVersion": "3.0.23",
+  "updatedAt": "2020-03-14T09:21:37.578Z",
+  "devdoc": {
+    "methods": {}
+  },
+  "userdoc": {
+    "methods": {}
+  }
+}

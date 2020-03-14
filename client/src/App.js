@@ -71,9 +71,9 @@ class App extends Component {
   //this.setState({ storageValue: response });
   //};
 
-  createMeme(memePath) {
+  createMeme(memePath, memeTitle, memeDescription) {
     this.state.memeNetwork.methods
-      .createMeme(this.state.account, memePath)
+      .createMeme(this.state.account, memePath, memeTitle, memeDescription)
       .send({ from: this.state.account });
   }
 
@@ -110,7 +110,9 @@ class App extends Component {
               onSubmit={event => {
                 event.preventDefault();
                 const path = this.memePath.value;
-                this.createMeme(path);
+                const title = this.memeTitle.value;
+                const description = this.memeDescription.value;
+                this.createMeme(path, title, description);
               }}
             >
               <div className="form-group mr-sm2">
@@ -121,7 +123,31 @@ class App extends Component {
                     this.memePath = input;
                   }}
                   className="form-control"
-                  placeholder="What's on your mind?"
+                  placeholder="Meme Path"
+                  required
+                />
+              </div>
+              <div className="form-group mr-sm2">
+                <input
+                  id="memeTitle"
+                  type="text"
+                  ref={input => {
+                    this.memeTitle = input;
+                  }}
+                  className="form-control"
+                  placeholder="Meme Title"
+                  required
+                />
+              </div>
+              <div className="form-group mr-sm2">
+                <input
+                  id="memeDescription"
+                  type="text"
+                  ref={input => {
+                    this.memeDescription = input;
+                  }}
+                  className="form-control"
+                  placeholder="Meme Description"
                   required
                 />
               </div>

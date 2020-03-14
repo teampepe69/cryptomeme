@@ -72,7 +72,9 @@ class App extends Component {
   //};
 
   createMeme(memePath) {
-    this.state.memeNetwork.methods.createMeme(this.state.account, memePath);
+    this.state.memeNetwork.methods
+      .createMeme(this.state.account, memePath)
+      .send({ from: this.state.account });
   }
 
   likeMeme(memeId) {
@@ -103,56 +105,57 @@ class App extends Component {
           className="col-lg-12 ml-auto mr-auto"
           style={{ maxWidth: "500px" }}
         >
-          <form
-            onSubmit={event => {
-              event.preventDefault();
-              const account = this.state.account.value;
-              const memePath = this.createMeme.value;
-              this.createMeme(memePath);
-            }}
-          >
-            <div className="form-group mr-sm2">
-              <input
-                id="postContent"
-                type="text"
-                ref={input => {
-                  this.memePath = input;
-                }}
-                className="form-control"
-                placeholder="What's on your mind?"
-                required
-              />
-            </div>
-            <button type="submit" className="btn btn-primary btn-block">
-              Share
-            </button>
-          </form>
-          &nbsp;
-          {this.state.memes.map((meme, key) => {
-            return (
-              <div className="card mb-4" key={key}>
-                <ul id="memeList" className="list-group list-group-flush">
-                  <li className="list-group-item">
-                    <p>{meme.memePath}</p>
-                  </li>
-                  <li key={key} className="list-group-item py-2">
-                    <small className="float-left mt-1 text-muted">
-                      Likes:{meme.memeLikes.toString()}
-                    </small>
-                    <button
-                      className="btn btn-link btn-sm float-right pt-0"
-                      name={meme.memeId}
-                      onClick={event => {
-                        this.likeMeme(event.target.name);
-                      }}
-                    >
-                      Like Meme
-                    </button>
-                  </li>
-                </ul>
+          <div className="content mr-auto ml-auto">
+            <form
+              onSubmit={event => {
+                event.preventDefault();
+                const path = this.memePath.value;
+                this.createMeme(path);
+              }}
+            >
+              <div className="form-group mr-sm2">
+                <input
+                  id="memePath"
+                  type="text"
+                  ref={input => {
+                    this.memePath = input;
+                  }}
+                  className="form-control"
+                  placeholder="What's on your mind?"
+                  required
+                />
               </div>
-            );
-          })}
+              <button type="submit" className="btn btn-primary btn-block">
+                Share
+              </button>
+            </form>
+            &nbsp;
+            {this.state.memes.map((meme, key) => {
+              return (
+                <div className="card mb-4" key={key}>
+                  <ul id="memeList" className="list-group list-group-flush">
+                    <li className="list-group-item">
+                      <p>{meme.memePath}</p>
+                    </li>
+                    <li key={key} className="list-group-item py-2">
+                      <small className="float-left mt-1 text-muted">
+                        Likes:{meme.memeLikes.toString()}
+                      </small>
+                      <button
+                        className="btn btn-link btn-sm float-right pt-0"
+                        name={meme.memeId}
+                        onClick={event => {
+                          this.likeMeme(event.target.name);
+                        }}
+                      >
+                        Like Meme
+                      </button>
+                    </li>
+                  </ul>
+                </div>
+              );
+            })}
+          </div>
         </main>
       </div>
     );

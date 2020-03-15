@@ -5,10 +5,11 @@ const LandingPage = (props) => {
       classes,
     } = props;
     return (
-      <div className={classes.root}>
+      <div>
+        <h1>Hi</h1>
       </div>
     );
   };
   
   
-  export default LandingPage;
+export default LandingPage;

@@ -1,15 +1,17 @@
 pragma solidity ^0.5.0;
+import "../node_modules/@openzeppelin/contracts/math/SafeMath.sol";
 
 contract User {
+    using SafeMath for uint256;
     address admin = msg.sender;
 
-    enum userState {unregistered, registered}
-    enum userRole {viewer, contentCreator, moderator}
+    enum userStates {unregistered, registered}
+    enum userRoles {viewer, contentCreator, moderator, admin}
 
     struct user {
         address eWalletAd;
-        userState state;
-        userRole role;
+        userStates state;
+        userRoles role;
     }
 
     mapping(address => user) registered_Users;
@@ -35,7 +37,7 @@ contract User {
 
     modifier registeredUsersOnly() {
         require(
-            registered_Users[msg.sender].state == userState.registered,
+            registered_Users[msg.sender].state == userStates.registered,
             "Restricted to registered users only"
         );
         _;
@@ -57,8 +59,8 @@ contract User {
     function createUser(address userAd, address eWallet) public adminOnly {
         user memory newUser = user(
             eWallet,
-            userState.registered,
-            userRole.viewer
+            userStates.registered,
+            userRoles.viewer
         );
         registered_Users[userAd] = newUser;
     }
@@ -71,26 +73,26 @@ contract User {
     }
 
     function deactivateUser(address userAd) public adminOnly {
-        registered_Users[userAd].state = userState.unregistered;
+        registered_Users[userAd].state = userStates.unregistered;
     }
 
     function registerModerator(address userAd) public adminOnly {
-        registered_Users[userAd].role = userRole.moderator;
+        registered_Users[userAd].role = userRoles.moderator;
     }
 
     function removeModerator(address userAd) public adminOnly {
-        registered_Users[userAd].role = userRole.contentCreator;
+        registered_Users[userAd].role = userRoles.contentCreator;
     }
 
     function registerContentCreator(address userAd) public adminOnly {
-        registered_Users[userAd].role = userRole.contentCreator;
+        registered_Users[userAd].role = userRoles.contentCreator;
     }
 
     function getUserRole(address userAd) public view returns (string memory) {
         return getRoleKeyByValue(registered_Users[userAd].role);
     }
 
-    function getRoleKeyByValue(userRole r)
+    function getRoleKeyByValue(userRoles r)
         internal
         pure
         returns (string memory)
@@ -99,16 +101,16 @@ contract User {
         require(uint8(r) <= 3);
 
         // Loop through possible options
-        if (userRole.viewer == r) return "viewer";
-        if (userRole.contentCreator == r) return "contentCreator";
-        if (userRole.moderator == r) return "moderator";
+        if (userRoles.viewer == r) return "viewer";
+        if (userRoles.contentCreator == r) return "contentCreator";
+        if (userRoles.moderator == r) return "moderator";
     }
 
     function getUserStatus(address userAd) public view returns (string memory) {
         return getStatusKeyByValue(registered_Users[userAd].state);
     }
 
-    function getStatusKeyByValue(userState s)
+    function getStatusKeyByValue(userStates s)
         internal
         pure
         returns (string memory)
@@ -117,8 +119,8 @@ contract User {
         require(uint8(s) <= 2);
 
         // Loop through possible options
-        if (userState.unregistered == s) return "unregistered";
-        if (userState.registered == s) return "registered";
+        if (userStates.unregistered == s) return "unregistered";
+        if (userStates.registered == s) return "registered";
     }
 
     function followUser(address userAd)

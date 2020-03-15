@@ -10,8 +10,18 @@ contract MemeketPlace {
         memeContract = _memeContract;
     }
 
-    function uploadMeme(address _memeOwner, string memory _pathToMeme) public {
-        memeContract.createMeme(_memeOwner, _pathToMeme);
+    function uploadMeme(
+        address _memeOwner,
+        string memory _memePath,
+        string memory _memeTitle,
+        string memory _memeDescription
+    ) public {
+        memeContract.createMeme(
+            _memeOwner,
+            _memePath,
+            _memeTitle,
+            _memeDescription
+        );
     }
 
     function likeMeme(uint256 _memeId) public {

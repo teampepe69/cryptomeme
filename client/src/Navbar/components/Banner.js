@@ -1,8 +1,9 @@
 import * as React from "react";
+import { makeStyles } from '@material-ui/core/styles';
 
-const Banner = props => {
-  const { classes } = props;
-  return <div className={classes.root}></div>;
-};
+function Banner(){
+
+}
+
 
 export default Banner;

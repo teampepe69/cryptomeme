@@ -2,29 +2,12 @@ pragma solidity ^0.5.0;
 import "../node_modules/@openzeppelin/contracts/math/SafeMath.sol";
 
 contract User {
-    using SafeMath for uint256;
-    address admin = msg.sender;
-
-    enum userStates {unregistered, registered}
-    enum userRoles {viewer, contentCreator, moderator, admin}
-
-    struct user {
-        address eWalletAd;
-        userStates state;
-        userRoles role;
-    }
-
-    mapping(address => user) registered_Users;
-
-    mapping(address => mapping(address => bool)) likes;
-    mapping(address => address[]) following;
-    mapping(address => mapping(address => bool)) alreadyFollowing;
-
+    /*
     modifier adminOnly() {
         require(msg.sender == admin, "Restricted to admin only");
         _;
     }
-
+    
     // modifier contentCreatorOnly () {
     //     require(registered_Users[traceUser[msg.owner]].role == userRole.contentCreator, "Restricted to Content Creators only");
     //     _;
@@ -35,6 +18,7 @@ contract User {
     //     _;
     // }
 
+    
     modifier registeredUsersOnly() {
         require(
             registered_Users[msg.sender].state == userStates.registered,
@@ -55,39 +39,111 @@ contract User {
         );
         _;
     }
+    */
+    using SafeMath for uint256;
+    address admin = msg.sender;
 
-    function createUser(address userAd, address eWallet) public adminOnly {
-        user memory newUser = user(
-            eWallet,
-            userStates.registered,
-            userRoles.viewer
+    enum userStates {pending, active, deactivated, moderator, admin}
+
+    uint256 public numberOfUsers = 0;
+
+    struct User {
+        uint256 userId;
+        string username;
+        string passwordHash;
+        address userWallet;
+        string displayPicturePath;
+        userStates state;
+    }
+
+    User[] public users;
+
+    event UserCreated(
+        uint256 userId,
+        string username,
+        address userWallet,
+        string displayPicturePath
+    );
+
+    event UsernameChanged(uint256 userId, string username);
+    event UserPasswordChanged(uint256 userId, string passwordHash);
+    event UserWalletChanged(uint256 userId, address userWallet);
+    event UserDisplayPictureChanged(uint256 userId, string displayPicturePath);
+    event UserActivated(uint256 userId);
+    event UserDeactivated(uint256 userId);
+    event UserModeratored(uint256 userId);
+    event UserBecameAdmin(uint256 userId);
+
+    function createUser(
+        string memory _username,
+        string memory _passwordHash,
+        address _userWallet,
+        string memory _displayPicturePath
+    ) public {
+        User memory newUser = User(
+            numberOfUsers,
+            _username,
+            _passwordHash,
+            _userWallet,
+            _displayPicturePath,
+            userStates.pending
         );
-        registered_Users[userAd] = newUser;
+        users.push(newUser);
+        emit UserCreated(
+            numberOfUsers,
+            _username,
+            _userWallet,
+            _displayPicturePath
+        );
+        numberOfUsers = numberOfUsers.add(1);
     }
 
-    function editUserWallet(address userAd, address eWallet)
+    function setUsername(uint256 _userId, string memory _username) public {
+        users[_userId].username = _username;
+        emit UsernameChanged(_userId, _username);
+    }
+
+    function setUserPassword(uint256 _userId, string memory _passwordHash)
         public
-        specificUserOnly(userAd)
     {
-        registered_Users[userAd].eWalletAd = eWallet;
+        users[_userId].passwordHash = _passwordHash;
+        emit UserPasswordChanged(_userId, _passwordHash);
     }
 
-    function deactivateUser(address userAd) public adminOnly {
-        registered_Users[userAd].state = userStates.unregistered;
+    function setUserWallet(uint256 _userId, address _userWallet) public {
+        users[_userId].userWallet = _userWallet;
+        emit UserWalletChanged(_userId, _userWallet);
     }
 
-    function registerModerator(address userAd) public adminOnly {
-        registered_Users[userAd].role = userRoles.moderator;
+    function setDisplayPicturePath(
+        uint256 _userId,
+        string memory _displayPicturePath
+    ) public {
+        users[_userId].displayPicturePath = _displayPicturePath;
+        emit UserDisplayPictureChanged(_userId, _displayPicturePath);
     }
 
-    function removeModerator(address userAd) public adminOnly {
-        registered_Users[userAd].role = userRoles.contentCreator;
+    function setUserAsDeactivated(uint256 _userId) public {
+        users[_userId].state = userStates.deactivated;
+        emit UserDeactivated(_userId);
     }
 
-    function registerContentCreator(address userAd) public adminOnly {
-        registered_Users[userAd].role = userRoles.contentCreator;
+    function setUserAsActive(uint256 _userId) public {
+        users[_userId].state = userStates.active;
+        emit UserActivated(_userId);
     }
 
+    function setUserAsModerator(uint256 _userId) public {
+        users[_userId].state = userStates.moderator;
+        emit UserModeratored(_userId);
+    }
+
+    function setUserAsAdmin(uint256 _userId) public {
+        users[_userId].state = userStates.admin;
+        emit UserBecameAdmin(_userId);
+    }
+
+    /*
     function getUserRole(address userAd) public view returns (string memory) {
         return getRoleKeyByValue(registered_Users[userAd].role);
     }
@@ -105,6 +161,7 @@ contract User {
         if (userRoles.contentCreator == r) return "contentCreator";
         if (userRoles.moderator == r) return "moderator";
     }
+    
 
     function getUserStatus(address userAd) public view returns (string memory) {
         return getStatusKeyByValue(registered_Users[userAd].state);
@@ -139,4 +196,6 @@ contract User {
     {
         return following[userAd];
     }
+    */
+
 }

@@ -10,7 +10,7 @@ import {
   Link
 } from "react-router-dom";
 import LandingPage from './Landing/pages/LandingPage.js'
-import Feed from './Feed/pages/Feed.js'
+import Feed from './Landing/components/Feed.js'
 
 class App extends Component {
   constructor(props) {
@@ -39,16 +39,17 @@ class App extends Component {
       // Get the Contract instances.
       const networkId = await web3.eth.net.getId();
       // const networkId = localStorage.getItem("networkId")
-
+      console.log(networkId)
 
       // Get Meme instance and all the Memes
-      const deployedMemeNetworkData = Meme.networks[networkId];
-   
+      console.log(Meme.networks )
+      const deployedMemeNetworkData = await Meme.networks[networkId];
+
       if (deployedMemeNetworkData) {
         const memeNetwork = new web3.eth.Contract(
           Meme.abi,
           deployedMemeNetworkData.address
-        );
+        )
         this.setState({ memeNetwork: memeNetwork });
      
         const numberOfMemes = await memeNetwork.methods.numberOfMemes().call();

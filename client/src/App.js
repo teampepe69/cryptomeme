@@ -7,10 +7,12 @@ import {
   BrowserRouter as Router,
   Switch,
   Route,
-  Link
+  Link,
+  NavLink
 } from "react-router-dom";
 import LandingPage from './Landing/pages/LandingPage.js'
 import Feed from './Landing/components/Feed.js'
+import Navbar from './Navbar/pages/Navbar.js'
 
 class App extends Component {
   constructor(props) {
@@ -25,7 +27,7 @@ class App extends Component {
     };
   }
 
-  componentDidMount = async () => {
+  async componentDidMount() {
 
     try {
       console.log("Called")
@@ -42,18 +44,20 @@ class App extends Component {
       console.log(networkId)
 
       // Get Meme instance and all the Memes
-      console.log(Meme.networks )
-      const deployedMemeNetworkData = await Meme.networks[networkId];
-
+      console.log(Meme.networks)
+      const deployedMemeNetworkData = Meme.networks[networkId];
+      console.log(deployedMemeNetworkData)
+      
       if (deployedMemeNetworkData) {
         const memeNetwork = new web3.eth.Contract(
           Meme.abi,
           deployedMemeNetworkData.address
         )
-        this.setState({ memeNetwork: memeNetwork });
-     
+        // this.setState({ memeNetwork: memeNetwork });
+        this.setState({ memeNetwork: memeNetwork})
+
         const numberOfMemes = await memeNetwork.methods.numberOfMemes().call();
-  
+
         //Load Memes
         for (var i = 0; i < numberOfMemes; i++) {
           console.log(this.state.memes)
@@ -74,6 +78,8 @@ class App extends Component {
         this.setState({ memeketPlaceNetwork: memeketPlaceNetwork });
       }
 
+      console.log(this.state.memeNetwork)
+
       // Set web3, accounts, and contract to the state, and then proceed with an
       // example of interacting with the contract's methods.
       //this.setState({ web3, accounts, contract: instance }, this.runExample);
@@ -86,24 +92,25 @@ class App extends Component {
     }
   };
 
-  componentWillUnmount(){
+  componentWillUnmount() {
     console.log("unmounting...")
   }
 
 
   render() {
-    console.log(this.state.memes,"check")
+    
     return (
       <Router>
-        <Route exact path="/" component={LandingPage} />
-        <Link to="/feed"> Feed </Link>
-
-        <Switch>
-          <Route path="/feed" render={props => (<Feed {...props} account={this.state.account}
-            memeNetwork={this.state.memeNetwork} memes={this.state.memes}
-            memeketPlaceNetwork={this.state.memeketPlaceNetwork} />)}
-          />
-        </Switch>
+        {/* <Navbar> */}
+          {/* <Route exact path="/" component={LandingPage} /> */}
+          {/* <Link to="/feed"> Feed </Link> */}
+          {/* <Switch> */}
+            <Route exact path="/" render={ (props) => <LandingPage {...props} account={this.state.account}
+              memeNetwork={this.state.memeNetwork} memes={this.state.memes}
+              memeketPlaceNetwork={this.state.memeketPlaceNetwork} />}
+            />
+          {/* </Switch> */}
+        {/* </Navbar> */}
       </Router>
     )
   }

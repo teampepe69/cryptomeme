@@ -266,7 +266,7 @@ class Feed extends Component {
                         color="textSecondary"
                         component="p"
                       >
-                        {meme.memePath}
+                        {meme.memeDescription}
                       </Typography>
                     </CardContent>
                   </CardActionArea>

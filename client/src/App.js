@@ -100,21 +100,22 @@ class App extends Component {
   render() {
     
     return (
-      <Router>
-        {/* <Navbar> */}
-          {/* <Route exact path="/" component={LandingPage} /> */}
-          {/* <Link to="/feed"> Feed </Link> */}
-          {/* <Switch> */}
+      <div style={{backgroundColor:'#9acdbaff', height: '100vh'}}>
+        <Router>
+          <Navbar />
+            {/* <Route exact path="/" component={LandingPage} /> */}
+            {/* <Link to="/feed"> Feed </Link> */}
+            {/* <Switch> */}
             <Route exact path="/" render={ (props) => <LandingPage {...props} account={this.state.account}
               memeNetwork={this.state.memeNetwork} memes={this.state.memes}
               memeketPlaceNetwork={this.state.memeketPlaceNetwork} />}
             />
-          {/* </Switch> */}
-        {/* </Navbar> */}
-      </Router>
+            {/* </Switch> */}
+          {/* </Navbar> */}
+        </Router>
+    </div>
     )
   }
-
 }
 
 export default App;

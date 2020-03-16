@@ -5,8 +5,7 @@ const Login = (props) => {
       classes,
     } = props;
     return (
-      <div className={classes.root}>
-      </div>
+        <p style={{color:'#434343'}}>Log In</p>
     );
   };
   

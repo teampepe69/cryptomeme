@@ -253,7 +253,7 @@ class Feed extends Component {
                   <CardActionArea>
                     <CardMedia
                       // className={classes.media}
-                      image={"https://ipfs.io/ipfs/" + meme.memePath}
+                      image={`https://ipfs.io/ipfs/${meme.memePath}`}
                       title="Pepe"
                       style={{ height: "140px" }}
                     />

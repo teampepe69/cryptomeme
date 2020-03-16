@@ -10,9 +10,9 @@ import {
   Link,
   NavLink
 } from "react-router-dom";
-import LandingPage from './Landing/pages/LandingPage.js'
-import Feed from './Landing/components/Feed.js'
-import Navbar from './Navbar/pages/Navbar.js'
+import LandingPage from "./Landing/pages/LandingPage.js";
+import Feed from "./Landing/components/Feed.js";
+import Navbar from "./Navbar/pages/Navbar.js";
 
 class App extends Component {
   // constructor(props) {
@@ -47,7 +47,7 @@ class App extends Component {
   //     console.log(Meme.networks)
   //     const deployedMemeNetworkData = Meme.networks[networkId];
   //     console.log(deployedMemeNetworkData)
-      
+
   //     if (deployedMemeNetworkData) {
   //       const memeNetwork = new web3.eth.Contract(
   //         Meme.abi,
@@ -96,25 +96,22 @@ class App extends Component {
   //   console.log("unmounting...")
   // }
 
-
   render() {
-    
     return (
       <Router>
         {/* <Navbar> */}
-          <Route exact path="/" component={LandingPage} />
-          {/* <Link to="/feed"> Feed </Link> */}
-          {/* <Switch> */}
-            {/* <Route exact path="/" render={ (props) => <LandingPage {...props} account={this.state.account}
+        <Route exact path="/" component={LandingPage} />
+        {/* <Link to="/feed"> Feed </Link> */}
+        {/* <Switch> */}
+        {/* <Route exact path="/" render={ (props) => <LandingPage {...props} account={this.state.account}
               memeNetwork={this.state.memeNetwork} memes={this.state.memes}
               memeketPlaceNetwork={this.state.memeketPlaceNetwork} />}
             /> */}
-          {/* </Switch> */}
+        {/* </Switch> */}
         {/* </Navbar> */}
       </Router>
-    )
+    );
   }
-
 }
 
 export default App;

@@ -72,7 +72,7 @@ class Feed extends Component {
     const memeNetwork = this.props.memeNetwork;
     const acc = this.props.account;
     let arr = this.state.memes;
-    memePath = "https://ipfs.io/ipfs/" + memePath;
+    memePath = memePath;
     this.props.memeNetwork.methods
       .createMeme(this.props.account, memePath, memeTitle, memeDescription)
       .send({

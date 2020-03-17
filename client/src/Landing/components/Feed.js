@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { makeStyles } from '@material-ui/core/styles';
+import { withStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
 import CardActions from '@material-ui/core/CardActions';
@@ -7,13 +7,36 @@ import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
-import logo from '../../really_pepe.png'
-const useStyles = makeStyles({
+import logo from '../../img/goodjob_pepe.png'
+import Divider from '@material-ui/core/Divider';
+
+
+const styles = theme => ({
   root: {
-    maxWidth: 345,
+    width: '100%',
+    // maxWidth: '80%',
+    marginTop: '3%',
+    display: 'flex',
+    padding: theme.spacing(2),
+    borderRadius: 16,
   },
   media: {
-    height: 140,
+    width: 150,
+    height: 200,
+    minWidth: '25%',
+    maxWidth: '25%',
+    
+    boxShadow: '0 2px 8px 0 #c1c9d7, 0 -2px 8px 0 #cce1e9',
+    flexShrink: '0',
+    borderRadius: '12px',
+    // backgroundColor: '#eeeeee'
+  },
+  content: {
+    padding: theme.spacing(0, 0, 0, 6),
+    width: '100%'
+  },
+  divider: {
+    margin: theme.spacing(2, 0),
   },
 });
 
@@ -146,19 +169,19 @@ class Feed extends Component {
       .then(result => {
         console.log(result)
         this.props.memeNetwork.methods.memes(memeId).call()
-        .then(result => {
-          console.log(result)
-          console.log(arr[memeId])
-          arr[memeId] = result;
-          this.setState({
-            memes: arr
-          }, ()=> {console.log(this.state.memes)})
-        })
+          .then(result => {
+            console.log(result)
+            console.log(arr[memeId])
+            arr[memeId] = result;
+            this.setState({
+              memes: arr
+            }, () => { console.log(this.state.memes) })
+          })
       });
   }
 
   render() {
-    // const classes = useStyles();
+    const { classes } = this.props;
     console.log("update", this.state.memes)
     return (
       <div className="Feed">
@@ -222,62 +245,51 @@ class Feed extends Component {
                 {this.state.memes.map((meme, key) => {
               return (
                 /*------------- MEME CARDS ---------------------------*/
-                <Card key={key}>
-                  <CardActionArea>
-                    <CardMedia
-                      // className={classes.media}
-                      image={logo}
-                      title="Pepe"
-                      style={{height: '140px'}}
-                     
-                    />
-                    <CardContent>
-                      <Typography gutterBottom variant="h5" component="h2">
-                        {meme.memeTitle}
-                      </Typography>
-                      <Typography variant="body2" color="textSecondary" component="p">
-                        {meme.memePath}
-                      </Typography>
-                    </CardContent>
-                  </CardActionArea>
-                  <CardActions>
-                    <Typography variant="body2" color="textSecondary" component="p">
-                      Likes:{meme.memeLikes.toString()}
+                <Card key={key} className={classes.root} >
+
+                  {/* <CardActionArea> */}
+
+                  <CardMedia
+                    className={classes.media}
+                    image={logo}
+                    title="Pepe"
+
+                  />
+
+                  <CardContent className={classes.content}>
+                    <Typography gutterBottom variant="h5" component="h2">
+                      {meme.memeTitle}
                     </Typography>
-                    <Button size="small" color="primary">
-                      Share
-                    </Button>
-                    <Button size="small" color="primary"
+                    <Typography variant="body1" color="textSecondary" component="p">
+                      {meme.memePath}
+                    </Typography>
+                    <Typography variant="body2" color="textSecondary" component="p" style={{textAlign:'justify'}}>
+                      {meme.memeDescription}
+                    </Typography>
+                    <Divider className={classes.divider} light />
 
-                      onClick={(e) => {
-                        this.likeMeme(meme.memeId);
-                      }}>
-                      Like Meme
-                    </Button>
-                  </CardActions>
-                </Card>
+                    <div style={{display: 'flex', flexDirection:'row'}}>
+                      <Typography variant="button" color="primary" component="p" style={{padding: '4px 5px'}}>
+                        LIKES:{meme.memeLikes.toString()}
+                      </Typography>
+                      <Button size="small" color="primary">
+                        Share
+                        </Button>
+                      <Button size="small" color="primary"
 
-                /* <div className="card mb-4" key={key}>
-                  <ul id="memeList" className="list-group list-group-flush">
-                    <li className="list-group-item">
-                      <p>{meme.memePath}</p>
-                    </li>
-                    <li key={key} className="list-group-item py-2">
-                      <small className="float-left mt-1 text-muted">
-                        Likes:{meme.memeLikes.toString()}
-                      </small>
-                      <button
-                        className="btn btn-link btn-sm float-right pt-0"
-                        name={meme.memeId}
-                        onClick={event => {
-                          this.likeMeme(event.target.name);
-                        }}
-                      >
+                        onClick={(e) => {
+                          this.likeMeme(meme.memeId);
+                        }}>
                         Like Meme
-                          </button>
-                    </li>
-                  </ul>
-                </div> */
+                        </Button>
+                    </div>
+                  </CardContent>
+
+
+                  {/* </CardActionArea> */}
+
+
+                </Card>
               );
             })}
           </div>
@@ -287,4 +299,4 @@ class Feed extends Component {
   }
 }
 
-export default Feed;
+export default withStyles(styles, { withTheme: true })(Feed);

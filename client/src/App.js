@@ -47,7 +47,7 @@ class App extends Component {
   //     console.log(Meme.networks)
   //     const deployedMemeNetworkData = Meme.networks[networkId];
   //     console.log(deployedMemeNetworkData)
-      
+
   //     if (deployedMemeNetworkData) {
   //       const memeNetwork = new web3.eth.Contract(
   //         Meme.abi,
@@ -98,18 +98,22 @@ class App extends Component {
 
 
   render() {
-    
+
     return (
-      <div style={{backgroundColor:'#9acdbaff', height: '100vh'}}>
+      <div style={{ backgroundColor: '#9acdbaff',height: '100%',minHeight:'100vh' }}>
+
         <Router>
           <Navbar />
-            {/* <Route exact path="/" component={LandingPage} /> */}
-            {/* <Link to="/feed"> Feed </Link> */}
-            {/* <Switch> */}
+          {/* <Route exact path="/" component={LandingPage} /> */}
+          {/* <Link to="/feed"> Feed </Link> */}
+          {/* <Switch> */}
+          <div style={{ paddingTop: '100px', paddingLeft: '200px', height:'100%' }}>
             <Route exact path="/" component={LandingPage} />
-            {/* </Switch> */}
+          </div>
+          {/* </Switch> */}
           {/* </Navbar> */}
         </Router>
+      </div>
     )
   }
 }

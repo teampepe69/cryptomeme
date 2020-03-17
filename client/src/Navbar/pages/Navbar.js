@@ -6,9 +6,10 @@ import Typography from '@material-ui/core/Typography';
 import { Link } from 'react-router-dom';
 import { withStyles } from '@material-ui/core/styles';
 import {
-  CardMedia, CardHeader, Card, AppBar,
-  Divider, Popover, MenuItem, IconButton, Toolbar, Badge,
+  CardMedia, List, Card, AppBar, ListItemAvatar,
+  ListItem, Toolbar, Badge, Avatar, ListItemText
 } from '@material-ui/core';
+import tempDP from "../../img/sadpepe.png";
 
 const styles = theme => ({
   appBar: {
@@ -27,7 +28,10 @@ const styles = theme => ({
   title: {
     color: '#434343',
     paddingTop: 10,
-  }
+  },
+  profileName: {
+    color: '#434343',
+  }, 
 });
 
 class Navbar extends React.Component {
@@ -62,6 +66,16 @@ class Navbar extends React.Component {
             )}
             {!loggedIn && (
               <Register />
+            )}
+            {loggedIn && (
+              <List className={classes.list} component={Link} to="/profile" >
+                <ListItem button>
+                  <ListItemAvatar>
+                    <Avatar src={tempDP} />
+                  </ListItemAvatar>
+                  <ListItemText primary="teampepe69" className={classes.profileName} />
+                </ListItem>
+              </List>
             )}
             {loggedIn && (
               <Logout />

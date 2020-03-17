@@ -47,7 +47,7 @@ contract User {
 
     uint256 public numberOfUsers = 0;
 
-    struct User {
+    struct user {
         uint256 userId;
         string username;
         string passwordHash;
@@ -56,7 +56,7 @@ contract User {
         userStates state;
     }
 
-    User[] public users;
+    user[] public users;
 
     event UserCreated(
         uint256 userId,
@@ -80,7 +80,7 @@ contract User {
         address _userWallet,
         string memory _displayPicturePath
     ) public {
-        User memory newUser = User(
+        user memory newUser = user(
             numberOfUsers,
             _username,
             _passwordHash,

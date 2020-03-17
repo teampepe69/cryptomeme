@@ -1,7 +1,6 @@
 import * as React from 'react';
 import Login from '../components/Login.js'
 import Register from '../components/Register.js'
-import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import { Link } from 'react-router-dom';
 import { withStyles } from '@material-ui/core/styles';

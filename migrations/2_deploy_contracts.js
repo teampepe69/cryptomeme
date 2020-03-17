@@ -7,5 +7,5 @@ module.exports = async function(deployer) {
   await deployer.deploy(User);
   await deployer.deploy(SimpleStorage);
   await deployer.deploy(Meme);
-  await deployer.deploy(MemeketPlace, Meme.address);
+  await deployer.deploy(MemeketPlace, Meme.address, User.address);
 };

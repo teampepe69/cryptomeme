@@ -18,7 +18,7 @@ class App extends Component {
   render() {
     
     return (
-      <div style={{backgroundColor:'#9acdbaff', height: '100vh'}}>
+      <div style={{backgroundColor:'#9acdbaff', height: '100%', minHeight: '100vh'}}>
         <Router>
           <Navbar />
             <div style={{paddingTop: '100px'}} >

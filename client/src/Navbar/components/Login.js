@@ -66,7 +66,7 @@ const Login = (props) => {
                 component="img"
                 className={classes.media}
                 image={require('../../img/loginpepe.png')}
-                title="Join Pepe"
+                title="Welcome Pepe"
                 style={{ float:'left', maxWidth:'30%',height:'auto'}}
               />
             </div>

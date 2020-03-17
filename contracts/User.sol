@@ -98,6 +98,42 @@ contract User {
         numberOfUsers = numberOfUsers.add(1);
     }
 
+    function getUsername(uint256 _userId) public view returns (string memory){
+        return users[_userId].username;
+    }
+
+    function getUserPassword(uint256 _userId) public view returns (string memory){
+        return users[_userId].passwordHash;
+    }
+
+    function getUserWallet(uint256 _userId) public view returns (address){
+        return users[_userId].userWallet;
+    }
+
+    function getUserDisplayPicturePath(uint256 _userId) public view returns (string memory){
+        return users[_userId].displayPicturePath;
+    }
+
+    function getUserState(uint256 _userId) public view returns (string memory) {
+        return getStatusKeyByValue(users[_userId].state);
+    }
+
+    function getStatusKeyByValue(userStates s)
+        internal
+        pure
+        returns (string memory)
+    {
+        // Error handling for input
+        require(uint8(s) <= 5);
+
+        // Loop through possible options
+        if (userStates.admin == s) return "admin";
+        if (userStates.deactivated == s) return "deactivated";
+        if (userStates.pending == s) return "pending";
+        if (userStates.active == s) return "active";
+        if (userStates.moderator == s) return "moderator";
+    }
+
     function setUsername(uint256 _userId, string memory _username) public {
         users[_userId].username = _username;
         emit UsernameChanged(_userId, _username);

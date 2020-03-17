@@ -11,6 +11,7 @@ import {
   NavLink
 } from "react-router-dom";
 import LandingPage from './Landing/pages/LandingPage.js'
+import ProfilePage from './Profile/pages/Profile.js'
 import Subbar from './Landing/pages/Subbar.js'
 import Navbar from './Navbar/pages/Navbar.js'
 
@@ -22,11 +23,12 @@ class App extends Component {
         <Router>
           <Navbar />
             <div style={{paddingTop: '100px'}} >
-              <div style={{paddingLeft: '20px'}}>
+              <div style={{paddingLeft: '20px', width:'20%', float:'left'}}>
                 <Subbar />
               </div>
               <div style={{paddingLeft: '200px'}}>
                 <Route exact path="/" component={LandingPage} />
+                <Route exact path="/profile" component={ProfilePage} />
               </div>
               
             </div>

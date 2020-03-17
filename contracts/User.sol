@@ -70,7 +70,7 @@ contract User {
     );
 
     event NameChanged(uint256 userId, string name);
-    event UserEmailchanged(uint256 userId, string email);
+    event UserEmailChanged(uint256 userId, string email);
     event UsernameChanged(uint256 userId, string username);
     event UserPasswordChanged(uint256 userId, string passwordHash);
     event UserWalletChanged(uint256 userId, address userWallet);
@@ -102,7 +102,7 @@ contract User {
         emit UserCreated(
             numberOfUsers,
             _name,
-            _email
+            _email,
             _username,
             _userWallet,
             _displayPicturePath

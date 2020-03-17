@@ -1,71 +1,85 @@
-import * as React from 'react';
-import Login from '../components/Login.js'
-import Register from '../components/Register.js'
-import Logout from '../components/Logout.js'
-import Typography from '@material-ui/core/Typography';
-import { Link } from 'react-router-dom';
-import { withStyles } from '@material-ui/core/styles';
+import * as React from "react";
+import Login from "../components/Login.js";
+import Register from "../components/Register.js";
+import Logout from "../components/Logout.js";
+import Typography from "@material-ui/core/Typography";
+import { Link } from "react-router-dom";
+import { withStyles } from "@material-ui/core/styles";
 import {
-  CardMedia, CardHeader, Card, AppBar,
-  Divider, Popover, MenuItem, IconButton, Toolbar, Badge,
-} from '@material-ui/core';
+  CardMedia,
+  CardHeader,
+  Card,
+  AppBar,
+  Divider,
+  Popover,
+  MenuItem,
+  IconButton,
+  Toolbar,
+  Badge
+} from "@material-ui/core";
 
 const styles = theme => ({
   appBar: {
-    position: 'absolute',
+    position: "absolute",
     height: 70,
-    backgroundColor: '#ffffffff',
+    backgroundColor: "#ffffffff"
   },
   grow: {
-    flexGrow: 1,
+    flexGrow: 1
   },
   card: {
-    backgroundColor: 'transparent',
+    backgroundColor: "transparent",
     width: 100,
-    paddingTop: 4,
+    paddingTop: 4
   },
   title: {
-    color: '#434343',
-    paddingTop: 10,
+    color: "#434343",
+    paddingTop: 10
   }
 });
 
 class Navbar extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-  componentDidMount() {
-  }
   render() {
     const { classes } = this.props;
-    const loggedIn = true
+    const loggedIn = false;
+
     // props should include whether logged in or not and log in details
     return (
       <div>
         <AppBar position="static" className={classes.appBar}>
           <Toolbar>
-            <Card elevation={0} className={classes.card} component={Link} to="/">
+            <Card
+              elevation={0}
+              className={classes.card}
+              component={Link}
+              to="/"
+            >
               <CardMedia
                 component="img"
                 className={classes.media}
-                image={require('../../img/HappyPepe.png')}
+                image={require("../../img/HappyPepe.png")}
                 title="Logo"
-                style={{maxWidth:'70%',height:'auto'}}
+                style={{ maxWidth: "70%", height: "auto" }}
               />
             </Card>
-            <Typography variant="h6" className={classes.title} component={Link} to="/">
-                Cryptomeme
-              </Typography>
+            <Typography
+              variant="h6"
+              className={classes.title}
+              component={Link}
+              to="/"
+            >
+              Cryptomeme
+            </Typography>
             <div className={classes.grow} />
+            {!loggedIn && <Login />}
             {!loggedIn && (
-              <Login />
+              <Register
+                memeketPlaceNetwork={this.props.memeketPlaceNetwork}
+                userNetwork={this.props.userNetwork}
+                account={this.props.account}
+              />
             )}
-            {!loggedIn && (
-              <Register />
-            )}
-            {loggedIn && (
-              <Logout />
-            )}
+            {loggedIn && <Logout />}
           </Toolbar>
         </AppBar>
       </div>

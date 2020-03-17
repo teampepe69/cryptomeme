@@ -13,7 +13,7 @@ import {
 const styles = theme => ({
   appBar: {
     position: 'absolute',
-    height: 80,
+    height: 70,
     backgroundColor: '#ffffffff',
   },
   grow: {

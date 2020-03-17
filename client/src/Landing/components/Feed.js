@@ -1,30 +1,31 @@
 import React, { Component } from "react";
-import { makeStyles } from '@material-ui/core/styles';
-import Card from '@material-ui/core/Card';
-import CardActionArea from '@material-ui/core/CardActionArea';
-import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
-import CardMedia from '@material-ui/core/CardMedia';
-import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
-import logo from '../../really_pepe.png'
+import { makeStyles } from "@material-ui/core/styles";
+import Card from "@material-ui/core/Card";
+import CardActionArea from "@material-ui/core/CardActionArea";
+import CardActions from "@material-ui/core/CardActions";
+import CardContent from "@material-ui/core/CardContent";
+import CardMedia from "@material-ui/core/CardMedia";
+import Button from "@material-ui/core/Button";
+import Typography from "@material-ui/core/Typography";
+import logo from "../../really_pepe.png";
+import ipfs from "../../ipfs";
+
 const useStyles = makeStyles({
   root: {
-    maxWidth: 345,
+    maxWidth: 345
   },
   media: {
-    height: 140,
-  },
+    height: 140
+  }
 });
 
-
 class Feed extends Component {
-
   constructor(props) {
     super(props);
-    console.log(this.props.memes)
+    console.log(this.props.memes);
 
     this.state = {
+      buffer: null,
       memes: this.props.memes,
       loading: false
     };
@@ -32,22 +33,27 @@ class Feed extends Component {
     this.createMeme = this.createMeme.bind(this);
     this.likeMeme = this.likeMeme.bind(this);
     this.reloadMeme = this.reloadMeme.bind(this);
-    console.log(this.state.memes)
+    this.captureFile = this.captureFile.bind(this);
+    console.log(this.state.memes);
   }
 
   componentDidUpdate(prevProps, prevState) {
     if (prevState.memes !== this.props.memes) {
       this.setState({
         memes: this.props.memes
-      })
+      });
     }
   }
   componentDidMount() {
-    let arr = this.props.memes
-    this.setState({
-      memes: arr
-    }, () => { console.log(this.state.memes) })
-
+    let arr = this.props.memes;
+    this.setState(
+      {
+        memes: arr
+      },
+      () => {
+        console.log(this.state.memes);
+      }
+    );
   }
 
   //Todo: Remove
@@ -62,19 +68,20 @@ class Feed extends Component {
   //};
 
   createMeme(memePath, memeTitle, memeDescription) {
-    console.log(this.props.account)
-    const memeNetwork = this.props.memeNetwork
-    const acc = this.props.account
-    let arr = this.state.memes
+    console.log(this.props.account);
+    const memeNetwork = this.props.memeNetwork;
+    const acc = this.props.account;
+    let arr = this.state.memes;
+    memePath = "https://ipfs.io/ipfs/" + memePath;
     this.props.memeNetwork.methods
       .createMeme(this.props.account, memePath, memeTitle, memeDescription)
       .send({
-        from: this.props.account,
+        from: this.props.account
         // gas: 100000
       })
-      .then((result) => {
-        console.log(result)
-        this.reloadMeme()
+      .then(result => {
+        console.log(result);
+        this.reloadMeme();
         // memeNetwork.methods.numberOfMemes().call({
         //   from: acc
         // })
@@ -94,72 +101,89 @@ class Feed extends Component {
         //           console.log(this.state.memes)
         //         })
 
-
         //       })
         //     }
 
-
         //   })
-
-      })
-
+      });
   }
 
   reloadMeme() {
-    const memeNetwork = this.props.memeNetwork
-    const acc = this.props.account
-    let arr = this.state.memes
+    const memeNetwork = this.props.memeNetwork;
+    const acc = this.props.account;
+    let arr = this.state.memes;
 
-    memeNetwork.methods.numberOfMemes().call({
-      from: acc
-    })
-      .then((result) => {
-        const numberOfMemes = result;
-        console.log(numberOfMemes)
-        for (var i = 0; i < numberOfMemes; i++) {
-
-          memeNetwork.methods.memes(i).call({
-            from: acc
-          }).then((result) => {
-            console.log(result)
-            arr = arr.concat(result)
-            this.setState({
-              memes: arr
-            }, () => {
-              console.log(this.state.memes)
-            })
-          })
-        }
-
+    memeNetwork.methods
+      .numberOfMemes()
+      .call({
+        from: acc
       })
+      .then(result => {
+        const numberOfMemes = result;
+        console.log(numberOfMemes);
+        for (var i = 0; i < numberOfMemes; i++) {
+          memeNetwork.methods
+            .memes(i)
+            .call({
+              from: acc
+            })
+            .then(result => {
+              console.log(result);
+              arr = arr.concat(result);
+              this.setState(
+                {
+                  memes: arr
+                },
+                () => {
+                  console.log(this.state.memes);
+                }
+              );
+            });
+        }
+      });
   }
 
-
-
-
   likeMeme(memeId) {
-    let arr = this.state.memes
-    console.log(memeId)
+    let arr = this.state.memes;
+    console.log(memeId);
     this.props.memeketPlaceNetwork.methods
       .likeMeme(memeId)
       .send({ from: this.props.account })
       .then(result => {
-        console.log(result)
-        this.props.memeNetwork.methods.memes(memeId).call()
-        .then(result => {
-          console.log(result)
-          console.log(arr[memeId])
-          arr[memeId] = result;
-          this.setState({
-            memes: arr
-          }, ()=> {console.log(this.state.memes)})
-        })
+        console.log(result);
+        this.props.memeNetwork.methods
+          .memes(memeId)
+          .call()
+          .then(result => {
+            console.log(result);
+            console.log(arr[memeId]);
+            arr[memeId] = result;
+            this.setState(
+              {
+                memes: arr
+              },
+              () => {
+                console.log(this.state.memes);
+              }
+            );
+          });
       });
+  }
+
+  captureFile(event) {
+    event.preventDefault();
+    const file = event.target.files[0];
+    const reader = new window.FileReader();
+    reader.readAsArrayBuffer(file);
+    reader.onloadend = () => {
+      this.setState({ buffer: Buffer(reader.result) });
+      console.log("buffer", this.state.buffer);
+    };
   }
 
   render() {
     // const classes = useStyles();
-    console.log("update", this.state.memes)
+    console.log("update", this.state.memes);
     return (
       <div className="Feed">
         <main
@@ -171,20 +195,23 @@ class Feed extends Component {
             <form
               onSubmit={event => {
                 event.preventDefault();
-                const path = this.memePath.value;
-                const title = this.memeTitle.value;
-                const description = this.memeDescription.value;
-                this.createMeme(path, title, description);
-
+                ipfs.files.add(this.state.buffer, (error, result) => {
+                  if (error) {
+                    console.error(error);
+                    return;
+                  }
+                  const path = result[0].hash;
+                  const title = this.memeTitle.value;
+                  const description = this.memeDescription.value;
+                  this.createMeme(path, title, description);
+                });
               }}
             >
               <div className="form-group mr-sm2">
                 <input
                   id="memePath"
-                  type="text"
-                  ref={input => {
-                    this.memePath = input;
-                  }}
+                  type="file"
+                  onChange={this.captureFile}
                   className="form-control"
                   placeholder="Meme Path"
                   required
@@ -216,42 +243,51 @@ class Feed extends Component {
               </div>
               <button type="submit" className="btn btn-primary btn-block">
                 Share
-                  </button>
+              </button>
             </form>
             &nbsp;
-                {this.state.memes.map((meme, key) => {
+            {this.state.memes.map((meme, key) => {
               return (
                 /*------------- MEME CARDS ---------------------------*/
                 <Card key={key}>
                   <CardActionArea>
                     <CardMedia
                       // className={classes.media}
-                      image={logo}
+                      image={`https://ipfs.io/ipfs/${meme.memePath}`}
                       title="Pepe"
-                      style={{height: '140px'}}
-                     
+                      style={{ height: "140px" }}
                     />
                     <CardContent>
                       <Typography gutterBottom variant="h5" component="h2">
                         {meme.memeTitle}
                       </Typography>
-                      <Typography variant="body2" color="textSecondary" component="p">
-                        {meme.memePath}
+                      <Typography
+                        variant="body2"
+                        color="textSecondary"
+                        component="p"
+                      >
+                        {meme.memeDescription}
                       </Typography>
                     </CardContent>
                   </CardActionArea>
                   <CardActions>
-                    <Typography variant="body2" color="textSecondary" component="p">
+                    <Typography
+                      variant="body2"
+                      color="textSecondary"
+                      component="p"
+                    >
                       Likes:{meme.memeLikes.toString()}
                     </Typography>
                     <Button size="small" color="primary">
                       Share
                     </Button>
-                    <Button size="small" color="primary"
-
-                      onClick={(e) => {
+                    <Button
+                      size="small"
+                      color="primary"
+                      onClick={e => {
                         this.likeMeme(meme.memeId);
-                      }}>
+                      }}
+                    >
                       Like Meme
                     </Button>
                   </CardActions>

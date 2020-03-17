@@ -1,12 +1,11 @@
 import React, { Component } from "react";
-import Feed from '../components/Feed.js'
+import Feed from "../components/Feed.js";
 import SimpleStorageContract from "../../contracts/SimpleStorage.json";
 import Meme from "../../contracts/Meme.json";
 import MemeketPlace from "../../contracts/MemeketPlace.json";
 import getWeb3 from "../../getWeb3";
 
 class LandingPage extends Component {
-
   // constructor(props) {
   //   super(props);
   //   console.log(this.props.memeNetwork)
@@ -37,40 +36,39 @@ class LandingPage extends Component {
   }
 
   async componentDidMount() {
-
     try {
-      console.log("Called")
+      console.log("Called");
       // Get network provider and web3 instance.
       const web3 = await getWeb3();
 
       // Use web3 to get the user's accounts.
       const accounts = await web3.eth.getAccounts();
       this.setState({ account: accounts[0] });
-      console.log(accounts[0])
+      console.log(accounts[0]);
 
       // Get the Contract instances.
       const networkId = await web3.eth.net.getId();
       // const networkId = localStorage.getItem("networkId")
-      console.log(networkId)
+      console.log(networkId);
 
       // Get Meme instance and all the Memes
-      console.log(Meme.networks)
+      console.log(Meme.networks);
       const deployedMemeNetworkData = Meme.networks[networkId];
-      console.log(deployedMemeNetworkData)
-      
+      console.log(deployedMemeNetworkData);
+
       if (deployedMemeNetworkData) {
         const memeNetwork = new web3.eth.Contract(
           Meme.abi,
           deployedMemeNetworkData.address
-        )
+        );
         // this.setState({ memeNetwork: memeNetwork });
-        this.setState({ memeNetwork: memeNetwork})
-        
+        this.setState({ memeNetwork: memeNetwork });
+
         const numberOfMemes = await memeNetwork.methods.numberOfMemes().call();
-        console.log(numberOfMemes)
+        console.log(numberOfMemes);
         //Load Memes
         for (var i = 0; i < numberOfMemes; i++) {
-          console.log(this.state.memes)
+          console.log(this.state.memes);
           const meme = await memeNetwork.methods.memes(i).call();
           this.setState({
             memes: [...this.state.memes, meme]
@@ -88,7 +86,7 @@ class LandingPage extends Component {
         this.setState({ memeketPlaceNetwork: memeketPlaceNetwork });
       }
 
-      console.log(this.state.memeNetwork)
+      console.log(this.state.memeNetwork);
 
       // Set web3, accounts, and contract to the state, and then proceed with an
       // example of interacting with the contract's methods.
@@ -100,27 +98,25 @@ class LandingPage extends Component {
       );
       console.error(error);
     }
-  };
+  }
 
   componentWillUnmount() {
-    console.log("unmounting...")
+    console.log("unmounting...");
   }
-
 
   render() {
-    console.log(this.state.memes)
+    console.log(this.state.memes);
     return (
-    
-            <div>
-            <Feed account={this.state.account}
-              memeNetwork={this.state.memeNetwork} memes={this.state.memes}
-              memeketPlaceNetwork={this.state.memeketPlaceNetwork} />
-          </div>
-    )
+      <div>
+        <Feed
+          account={this.state.account}
+          memeNetwork={this.state.memeNetwork}
+          memes={this.state.memes}
+          memeketPlaceNetwork={this.state.memeketPlaceNetwork}
+        />
+      </div>
+    );
   }
-
 }
-
-
 
 export default LandingPage;

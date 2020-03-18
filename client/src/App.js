@@ -17,9 +17,14 @@ import Navbar from './Navbar/pages/Navbar.js'
 
 class App extends Component {
   render() {
-    
     return (
-      <div style={{backgroundColor:'#9acdbaff', height: '100%', minHeight: '100vh'}}>
+      <div
+        style={{
+          backgroundColor: "#9acdbaff",
+          height: "100%",
+          minHeight: "100vh"
+        }}
+      >
         <Router>
           <Navbar />
             <div style={{paddingTop: '100px'}} >
@@ -32,9 +37,13 @@ class App extends Component {
               </div>
               
             </div>
+            <div style={{ paddingLeft: "200px" }}>
+              <Route exact path="/" component={LandingPage} />
+            </div>
+          </div>
         </Router>
       </div>
-    )
+    );
   }
 }
 

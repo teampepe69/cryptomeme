@@ -60,6 +60,12 @@ const Register = props => {
       .createUser(name, email, usr, password, wallet, displayPic)
       .send({
         from: props.account
+      })
+      .then(result => {
+        handleClose();
+        alert(
+          "Registration successful! Need to modify this to make it nicer lmao"
+        );
       });
   }
   return (

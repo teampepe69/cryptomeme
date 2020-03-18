@@ -5,8 +5,7 @@ const Subbar = (props) => {
       classes,
     } = props;
     return (
-      <div className={classes.root}>
-      </div>
+      <p style={{color:'#434343'}}>Subbar Stuff</p>
     );
   };
   

@@ -22,10 +22,11 @@
     "pepe"
   ],
   "dependencies": {
-    "ganache-cli": "^6.9.1",
     "@openzeppelin/contracts": "^2.5.0",
-    "truffle": "^5.1.16",
-    "solidity-coverage": "^0.7.2"
+    "ganache-cli": "^6.9.1",
+    "react-router-dom": "^5.1.2",
+    "solidity-coverage": "^0.7.2",
+    "truffle": "^5.1.16"
   },
   "author": "IS4302 - Teampepe69",
   "license": "ISC",

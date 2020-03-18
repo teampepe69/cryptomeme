@@ -56,17 +56,6 @@ class Feed extends Component {
     );
   }
 
-  //Todo: Remove
-  //runExample = async () => {
-  //const { accounts, contract } = this.state;
-  // Stores a given value, 5 by default.
-  //await contract.methods.set(5).send({ from: accounts[0] });
-  // Get the value from the contract to prove it worked.
-  //const response = await contract.methods.get().call();
-  // Update state with the result.
-  //this.setState({ storageValue: response });
-  //};
-
   createMeme(memePath, memeTitle, memeDescription) {
     console.log(this.props.account);
     const memeNetwork = this.props.memeNetwork;
@@ -80,7 +69,6 @@ class Feed extends Component {
         // gas: 100000
       })
       .then(result => {
-        console.log(result);
         this.reloadMeme();
         // memeNetwork.methods.numberOfMemes().call({
         //   from: acc
@@ -120,7 +108,6 @@ class Feed extends Component {
       })
       .then(result => {
         const numberOfMemes = result;
-        console.log(numberOfMemes);
         for (var i = 0; i < numberOfMemes; i++) {
           memeNetwork.methods
             .memes(i)
@@ -128,7 +115,6 @@ class Feed extends Component {
               from: acc
             })
             .then(result => {
-              console.log(result);
               arr = arr.concat(result);
               this.setState(
                 {

@@ -7,16 +7,17 @@ import { Link } from "react-router-dom";
 import { withStyles } from "@material-ui/core/styles";
 import {
   CardMedia,
-  CardHeader,
+  List,
   Card,
   AppBar,
-  Divider,
-  Popover,
-  MenuItem,
-  IconButton,
+  ListItemAvatar,
+  ListItem,
   Toolbar,
-  Badge
+  Badge,
+  Avatar,
+  ListItemText
 } from "@material-ui/core";
+import tempDP from "../../img/sadpepe.png";
 
 const styles = theme => ({
   appBar: {
@@ -35,6 +36,9 @@ const styles = theme => ({
   title: {
     color: "#434343",
     paddingTop: 10
+  },
+  profileName: {
+    color: "#434343"
   }
 });
 
@@ -78,6 +82,19 @@ class Navbar extends React.Component {
                 userNetwork={this.props.userNetwork}
                 account={this.props.account}
               />
+            )}
+            {loggedIn && (
+              <List className={classes.list} component={Link} to="/profile">
+                <ListItem button>
+                  <ListItemAvatar>
+                    <Avatar src={tempDP} />
+                  </ListItemAvatar>
+                  <ListItemText
+                    primary="teampepe69"
+                    className={classes.profileName}
+                  />
+                </ListItem>
+              </List>
             )}
             {loggedIn && <Logout />}
           </Toolbar>

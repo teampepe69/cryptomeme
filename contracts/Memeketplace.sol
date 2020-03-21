@@ -36,12 +36,16 @@ contract MemeketPlace {
     }
 
     function createUser(
+        string memory _name,
+        string memory _email,
         string memory _username,
         string memory _passwordHash,
         address _userWallet,
         string memory _displayPicturePath
     ) public {
         userContract.createUser(
+            _name,
+            _email,
             _username,
             _passwordHash,
             _userWallet,

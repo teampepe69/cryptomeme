@@ -124,7 +124,6 @@ class Feed extends Component {
         // gas: 100000
       })
       .then(result => {
-        console.log(result);
         this.reloadMeme();
         this.handleClose();
       })

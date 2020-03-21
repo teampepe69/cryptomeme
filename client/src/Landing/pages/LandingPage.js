@@ -7,23 +7,6 @@ import getWeb3 from "../../getWeb3";
 import Container from '@material-ui/core/Container';
 
 class LandingPage extends Component {
-  // constructor(props) {
-  //   super(props);
-  //   console.log(this.props.memeNetwork)
-
-  // }
-
-  // render(){
-  //   console.log("Calling Landing Page")
-  //   return(
-  //     <div>
-  //     <Feed account={this.props.account}
-  //       memeNetwork={this.props.memeNetwork} memes={this.props.memes}
-  //       memeketPlaceNetwork={this.props.memeketPlaceNetwork} />
-  //   </div>
-  //   )
-  // }
-
   constructor(props) {
     super(props);
     this.state = {

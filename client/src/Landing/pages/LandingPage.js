@@ -4,6 +4,7 @@ import SimpleStorageContract from "../../contracts/SimpleStorage.json";
 import Meme from "../../contracts/Meme.json";
 import MemeketPlace from "../../contracts/MemeketPlace.json";
 import getWeb3 from "../../getWeb3";
+import Container from '@material-ui/core/Container';
 
 class LandingPage extends Component {
   // constructor(props) {
@@ -107,14 +108,14 @@ class LandingPage extends Component {
   render() {
     console.log(this.state.memes);
     return (
-      <div>
+      <Container maxWidth="lg">
         <Feed
           account={this.state.account}
           memeNetwork={this.state.memeNetwork}
           memes={this.state.memes}
           memeketPlaceNetwork={this.state.memeketPlaceNetwork}
         />
-      </div>
+      </Container>
     );
   }
 }

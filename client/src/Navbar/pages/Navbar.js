@@ -1,7 +1,7 @@
 import * as React from 'react';
 import Login from '../components/Login.js'
 import Register from '../components/Register.js'
-import { makeStyles } from '@material-ui/core/styles';
+import Logout from '../components/Logout.js'
 import Typography from '@material-ui/core/Typography';
 import { Link } from 'react-router-dom';
 import { withStyles } from '@material-ui/core/styles';
@@ -38,7 +38,7 @@ class Navbar extends React.Component {
   }
   render() {
     const { classes } = this.props;
-    const loggedIn = false
+    const loggedIn = true
     // props should include whether logged in or not and log in details
     return (
       <div>
@@ -62,6 +62,9 @@ class Navbar extends React.Component {
             )}
             {!loggedIn && (
               <Register />
+            )}
+            {loggedIn && (
+              <Logout />
             )}
           </Toolbar>
         </AppBar>

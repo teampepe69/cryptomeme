@@ -103,7 +103,7 @@ class Feed extends Component {
 
     this.createMeme = this.createMeme.bind(this);
     this.likeMeme = this.likeMeme.bind(this);
-    this.reloadMeme = this.reloadMeme.bind(this);
+    this.updateMeme = this.updateMeme.bind(this);
     this.captureFile = this.captureFile.bind(this);
     this.handleOpen = this.handleOpen.bind(this);
     this.handleClose = this.handleClose.bind(this);
@@ -115,41 +115,55 @@ class Feed extends Component {
 
 
 
-  getMeme() {
+  async getMeme() {
+    console.log("getmeme is called")
     const memeNetwork = this.props.memeNetwork;
     const acc = this.props.account;
+    let numberOfMemes = 0;
     let arr = this.state.memes;
     console.log(arr)
-    memeNetwork.methods
+    const result = await memeNetwork.methods
       .numberOfMemes()
       .call({
         from: acc
       })
-      .then(result => {
-        const numberOfMemes = result;
-        console.log(numberOfMemes);
-        console.log(arr.length)
-        for (var i = 0; i < numberOfMemes; i++) {
+    console.log(result)
+    for (var i = 0; i < result; i++) {
+      console.log("index: ", i)
+      const meme = await memeNetwork.methods.memes(i).call({ from: acc })
 
-          memeNetwork.methods.memes(i).call({ from: acc })
-            .then((result) => {
-              // console.log(result)
-              const meme = result
-              arr = arr.concat(meme)
-              this.setState({
-                memes: [...arr]
-              }, () => console.log(this.state.memes))
+      // console.log(result)
+      arr = arr.concat(meme)
+      this.setState({
+        memes: [...arr]
+      })
 
-              // this.setState({ memes: arr })
+      console.log(this.state.memes)
 
-            }, error => {
-              console.log(error)
-            });
+      // this.setState({ memes: arr })
+    }
 
-        }
-        console.log(arr)
+    // .then(result => {
+    //   for (var i = 0; i < result; i++) {
+    //     console.log("index: ", i)
+    //     memeNetwork.methods.memes(i).call({ from: acc })
+    //       .then((result) => {
+    //         // console.log(result)
+    //         const meme = result
+    //         arr = arr.concat(meme)
+    //         this.setState({
+    //           memes: [...arr]
+    //         })
 
-      }, error => { console.log(error) });
+    //         // this.setState({ memes: arr })
+
+    //       }, error => {
+    //         console.log(error)
+    //       });
+
+    //   }
+    // })
+
 
   }
 
@@ -161,30 +175,12 @@ class Feed extends Component {
       console.log(prevProps)
       console.log(this.props)
       if (this.props.memeNetwork !== null) {
-        if (this.state.memes.length == 0) {
-          this.getMeme()
-
-        }
-
-
+        this.getMeme()
       }
-
     }
   }
 
-  // componentDidUpdate(prevProps, prevState) {
-  //   console.log("passed")
-  //   if (prevState.memes !== this.props.memes) {
-  //     this.setState({
-  //       memes: this.props.memes
-  //     });
-  //   }
-  // }
 
-  componentDidMount() {
-    console.log(this.props.memeNetwork);
-
-  }
 
   createMeme(memePath, memeTitle, memeDescription) {
     console.log(this.props);
@@ -199,68 +195,79 @@ class Feed extends Component {
         from: acc
         // gas: 100000
       })
-      .then(result => {
-        this.reloadMeme();
+      .then(() => {
+        this.updateMeme();
         this.handleClose();
       })
   }
 
-  reloadMeme() {
+  async updateMeme() {
     const memeNetwork = this.props.memeNetwork;
     const acc = this.props.account;
     let arr = this.state.memes;
     console.log(arr)
-    memeNetwork.methods
-      .numberOfMemes()
-      .call({
-        from: acc
-      })
-      .then(result => {
-        const numberOfMemes = result;
-        console.log(numberOfMemes);
-        console.log(arr.length)
-        memeNetwork.methods
-          .memes(numberOfMemes - 1)
-          .call({
-            from: acc
-          }).then((result) => {
-            console.log(result)
-            arr = arr.concat(result)
-            console.log("updated arr", arr)
-            this.setState({ memes: arr }, () => console.log(this.state.memes))
-          }, error => {
-            console.log(error)
-          })
+    const numOfMemes = await memeNetwork.methods.numberOfMemes().call({from:acc})
+    const newMeme = await memeNetwork.methods.memes(numOfMemes -1).call({from:acc})
+    arr = arr.concat(newMeme)
+    this.setState({memes: arr})
+
+    // memeNetwork.methods
+    //   .numberOfMemes()
+    //   .call({
+    //     from: acc
+    //   })
+    //   .then(result => {
+    //     const numberOfMemes = result;
+    //     console.log(numberOfMemes);
+    //     console.log(arr.length)
+    //     memeNetwork.methods
+    //       .memes(numberOfMemes - 1)
+    //       .call({
+    //         from: acc
+    //       }).then((result) => {
+    //         console.log(result)
+    //         arr = arr.concat(result)
+    //         console.log("updated arr", arr)
+    //         this.setState({ memes: arr })
+    //       }, error => {
+    //         console.log(error)
+    //       })
 
 
-      });
+    //   });
   }
 
-  likeMeme(memeId) {
+  async likeMeme(memeId) {
     let arr = this.state.memes;
+    let acc = this.props.account
     console.log(memeId);
-    this.props.memeketPlaceNetwork.methods
-      .likeMeme(memeId)
-      .send({ from: this.props.account })
-      .then(result => {
-        console.log(result);
-        this.props.memeNetwork.methods
-          .memes(memeId)
-          .call()
-          .then(result => {
-            console.log(result);
-            console.log(arr[memeId]);
-            arr[memeId] = result;
-            this.setState(
-              {
-                memes: arr
-              },
-              () => {
-                console.log(this.state.memes);
-              }
-            );
-          }, error => console.log(error));
-      });
+    await this.props.memeketPlaceNetwork.methods.likeMeme(memeId).send({from: acc})
+    const updateMeme = await this.props.memeNetwork.methods.memes(memeId).call()
+    arr[memeId] = updateMeme
+    this.setState({memes: arr})
+
+    // this.props.memeketPlaceNetwork.methods
+    //   .likeMeme(memeId)
+    //   .send({ from: this.props.account })
+    //   .then(result => {
+    //     console.log(result);
+    //     this.props.memeNetwork.methods
+    //       .memes(memeId)
+    //       .call()
+    //       .then(result => {
+    //         console.log(result);
+    //         console.log(arr[memeId]);
+    //         arr[memeId] = result;
+    //         this.setState(
+    //           {
+    //             memes: arr
+    //           },
+    //           () => {
+    //             console.log(this.state.memes);
+    //           }
+    //         );
+    //       }, error => console.log(error));
+    //   });
   }
 
   captureFile(event) {

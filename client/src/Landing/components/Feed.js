@@ -24,6 +24,13 @@ const styles = theme => ({
     padding: theme.spacing(2),
     borderRadius: 16,
   },
+  empty_root: {
+    width: '100%',
+    marginTop: '3%',
+    display: 'flex',
+    padding: theme.spacing(2),
+    borderRadius: 16,
+  },
   media: {
     // width: 150,
     // height: 200,
@@ -33,6 +40,14 @@ const styles = theme => ({
     flexShrink: '0',
     borderRadius: '12px',
     // backgroundColor: '#eeeeee'
+  },
+  empty_media: {
+    minWidth: '30%',
+    maxWidth: '30%',
+    boxShadow: '0 2px 8px 0 #c1c9d7, 0 -2px 8px 0 #cce1e9',
+    flexShrink: '0',
+    borderRadius: '12px',
+    height: '250px'
   },
   content: {
     padding: theme.spacing(0, 0, 0, 6),
@@ -65,11 +80,10 @@ const styles = theme => ({
 class Feed extends Component {
   constructor(props) {
     super(props);
-    console.log(this.props.memes);
 
     this.state = {
       buffer: null,
-      memes: this.props.memes,
+      memes: [],
       loading: false,
       open: false,
       memeTitle: '',
@@ -77,6 +91,7 @@ class Feed extends Component {
     };
 
 
+    console.log(this.state.memes)
 
     this.createMeme = this.createMeme.bind(this);
     this.likeMeme = this.likeMeme.bind(this);
@@ -85,42 +100,107 @@ class Feed extends Component {
     this.handleOpen = this.handleOpen.bind(this);
     this.handleClose = this.handleClose.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-    console.log(this.state.memes);
+    this.getMeme = this.getMeme.bind(this);
+    // this.getMeme();
+
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    console.log("passed")
-    if (prevState.memes != this.state.memees) {
-      // this.reloadMeme
-    }
-    if (prevState.memes !== this.props.memes) {
-      this.setState({
-        memes: this.props.memes
+
+
+  getMeme() {
+    const memeNetwork = this.props.memeNetwork;
+    const acc = this.props.account;
+    let arr = this.state.memes;
+    console.log(arr)
+    memeNetwork.methods
+      .numberOfMemes()
+      .call({
+        from: acc
+      })
+      .then(result => {
+        const numberOfMemes = result;
+        console.log(numberOfMemes);
+        console.log(arr.length)
+        for (var i = 0; i < numberOfMemes; i++) {
+
+          memeNetwork.methods.memes(i).call({ from: acc })
+            .then((result) => {
+              const meme = result
+              arr = arr.concat(meme)
+              this.setState({ memes: arr }, () => console.log(this.state.memes))
+
+            }, error => {
+              console.log(error)
+            }
+            );
+
+        }
+
       });
+
+  }
+
+
+
+  componentDidUpdate(prevProps) {
+    if (prevProps !== this.props) {
+      console.log("Different")
+      console.log(prevProps)
+      console.log(this.props)
+      // this.setState({
+      //   memeNetwork: this.props.memeNetwork,
+      //   memeketPlaceNetwork: this.props.memeketPlaceNetwork
+      // }, () => {
+      //   if (this.state.memeNetwork !== null) {
+      //     this.getMeme()
+      //   }
+      //   else {
+      //     console.log(this.state.memeNetwork)
+      //   }
+      // })
+      if (this.props.memeNetwork !== null) {
+        this.getMeme()
+
+      }
+
     }
   }
+
+  // componentDidUpdate(prevProps, prevState) {
+  //   console.log("passed")
+  //   if (prevState.memes !== this.props.memes) {
+  //     this.setState({
+  //       memes: this.props.memes
+  //     });
+  //   }
+  // }
+
   componentDidMount() {
-    let arr = this.props.memes;
-    this.setState(
-      {
-        memes: arr
-      },
-      () => {
-        console.log(this.state.memes);
-      }
-    );
+    console.log(this.props.memeNetwork);
+
+    // let arr = this.props.memes;
+    // this.setState(
+    //   {
+    //     memes: arr
+    //   },
+    //   () => {
+    //     console.log(this.state.memes);
+    //   }
+    // );
+    // this.getMeme()
   }
 
   createMeme(memePath, memeTitle, memeDescription) {
     console.log(this.props);
     const memeNetwork = this.props.memeNetwork;
     const acc = this.props.account;
+    console.log(acc)
     let arr = this.state.memes;
     memePath = memePath;
     this.props.memeNetwork.methods
-      .createMeme(this.props.account, memePath, memeTitle, memeDescription)
+      .createMeme(acc, memePath, memeTitle, memeDescription)
       .send({
-        from: this.props.account
+        from: acc
         // gas: 100000
       })
       .then(result => {
@@ -147,16 +227,16 @@ class Feed extends Component {
           .memes(numberOfMemes - 1)
           .call({
             from: acc
-          }).then((result)=>{
+          }).then((result) => {
             console.log(result)
             arr = arr.concat(result)
             console.log("updated arr", arr)
-            this.setState({memes: arr}, ()=>console.log(this.state.memes))
+            this.setState({ memes: arr }, () => console.log(this.state.memes))
           }, error => {
             console.log(error)
           })
 
-       
+
       });
   }
 
@@ -183,7 +263,7 @@ class Feed extends Component {
                 console.log(this.state.memes);
               }
             );
-          }, error=> console.log(error));
+          }, error => console.log(error));
       });
   }
 
@@ -227,7 +307,7 @@ class Feed extends Component {
 
   render() {
     const { classes } = this.props;
-
+    // console.log(this.props.memeNetwork)
 
     return (
       <div className="Feed">
@@ -236,83 +316,84 @@ class Feed extends Component {
           className="col-lg-12 ml-auto mr-auto"
           style={{ maxWidth: "1000px" }}
         > */}
-          <div>
-            {/*-----------UPLOAD MEME MOAL----------------------------  */}
-            <Button
-              onClick={this.handleOpen}
-              variant="contained"
-              style={{ marginTop: '8px' }}
-              color="default" size="small"
-              startIcon={<CloudUploadIcon />}>
-              Create Meme
+        <div>
+          {/*-----------UPLOAD MEME MOAL----------------------------  */}
+          <Button
+            onClick={this.handleOpen}
+            variant="contained"
+            style={{ marginTop: '8px' }}
+            color="default" size="small"
+            startIcon={<CloudUploadIcon />}>
+            Create Meme
             </Button>
-            <Modal
-              aria-labelledby="simple-modal-title"
-              aria-describedby="simple-modal-description"
-              open={this.state.open}
-              onClose={this.handleClose}
-              className={classes.modal}
-            >
-              <Card className={classes.paper}>
-                <div>
-                  <h2 id="simple-modal-title" style={{ position: 'fixed' }}>Meme Time</h2>
-                  {/* <CardMedia
+          <Modal
+            aria-labelledby="simple-modal-title"
+            aria-describedby="simple-modal-description"
+            open={this.state.open}
+            onClose={this.handleClose}
+            className={classes.modal}
+          >
+            <Card className={classes.paper}>
+              <div>
+                <h2 id="simple-modal-title" style={{ position: 'fixed' }}>Meme Time</h2>
+                {/* <CardMedia
                     component="img"
                     className={classes.media}
                     image={require('../../img/really_pepe.png')}
                     title="Welcome Pepe"
                     style={{ float: 'left', maxWidth: '30%', height: 'auto' }}
                   /> */}
-                </div>
+              </div>
 
-                <div>
-                  <form onSubmit={this.handleSubmit} style={{ paddingTop: '50px' }}>
+              <div>
+                <form onSubmit={this.handleSubmit} style={{ paddingTop: '50px' }}>
 
-                    <TextField
-                      id="memePath"
-                      type="file"
-                      variant="outlined"
-                      style={{ width: '100%', paddingBottom: '10px' }}
-                      onChange={this.captureFile}
-                      required
-                    />
+                  <TextField
+                    id="memePath"
+                    type="file"
+                    variant="outlined"
+                    style={{ width: '100%', paddingBottom: '10px' }}
+                    onChange={this.captureFile}
+                    required
+                  />
 
-                    <TextField
-                      // id="memeTitle"
-                      label="memeTitle"
-                      variant="outlined"
-                      style={{ width: '100%', paddingBottom: '10px' }}
-                      // inputRef={input => {
-                      //   this.memeTitle = input;
-                      // }}
-                      value={this.state.memeTitle}
-                      onChange={e => { this.setState({ memeTitle: e.target.value }) }}
-                      required
-                    />
-                    <TextField
-                      // id="memeDescription"
-                      label="memeDescription"
-                      variant="outlined"
-                      style={{ width: '100%', paddingBottom: '10px' }}
-                      // inputRef={input => {
-                      //   this.memeDescription = input;
-                      // }}
-                      value={this.state.memeDescription}
-                      onChange={e => { this.setState({ memeDescription: e.target.value }) }}
-                      required
+                  <TextField
+                    // id="memeTitle"
+                    label="memeTitle"
+                    variant="outlined"
+                    style={{ width: '100%', paddingBottom: '10px' }}
+                    // inputRef={input => {
+                    //   this.memeTitle = input;
+                    // }}
+                    value={this.state.memeTitle}
+                    onChange={e => { this.setState({ memeTitle: e.target.value }) }}
+                    required
+                  />
+                  <TextField
+                    // id="memeDescription"
+                    label="memeDescription"
+                    variant="outlined"
+                    style={{ width: '100%', paddingBottom: '10px' }}
+                    // inputRef={input => {
+                    //   this.memeDescription = input;
+                    // }}
+                    value={this.state.memeDescription}
+                    onChange={e => { this.setState({ memeDescription: e.target.value }) }}
+                    required
 
-                    />
-                    <Button type="submit" className={classes.button} fullWidth>
-                      What is life anyway?
+                  />
+                  <Button type="submit" className={classes.button} fullWidth>
+                    What is life anyway?
                 </Button>
-                  </form>
-                </div>
-              </Card>
+                </form>
+              </div>
+            </Card>
 
-            </Modal>
+          </Modal>
 
 
-            {this.state.memes.map((meme, key) => {
+          {(this.state.memes && this.state.memes.length > 0) ?
+            this.state.memes.map((meme, key) => {
               return (
                 /*------------- MEME CARDS ---------------------------*/
                 <Card key={key} className={classes.root} >
@@ -361,8 +442,21 @@ class Feed extends Component {
 
                 </Card>
               );
-            })}
-          </div>
+            }) :
+            <Card className={classes.empty_root} >
+              <CardMedia
+
+                image={logo}
+                className={classes.empty_media}
+                title="Pepe"
+
+              />
+              <CardContent className={classes.content}>
+                <Typography variant='h6'>Pepega, no memes :(</Typography>
+
+              </CardContent>
+            </Card>}
+        </div>
         {/* </main> */}
       </div>
     );

@@ -46,6 +46,7 @@ class Navbar extends React.Component {
   render() {
     const { classes } = this.props;
     const loggedIn = false;
+    console.log(this.props.memeketPlaceNetwork)
 
     // props should include whether logged in or not and log in details
     return (

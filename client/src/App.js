@@ -94,8 +94,7 @@ class App extends Component {
           backgroundColor: "#9acdbaff",
           height: "100%",
           minHeight: "100vh"
-        }}
-      >
+        }}>
         <Router>
           <Route
             exact
@@ -115,7 +114,19 @@ class App extends Component {
               <Subbar />
             </div>
             <div style={{ paddingLeft: "200px" }}>
-              <Route exact path="/" component={LandingPage} />
+              <Route
+                exact
+                path="/"
+                render={routeProps => (
+                  <LandingPage
+                    {...routeProps}
+                    account={this.state.account}
+                    memeNetwork={this.state.memeNetwork}
+                    userNetwork={this.state.userNetwork}
+                    memeketPlaceNetwork={this.state.memeketPlaceNetwork}
+                  />
+                )}
+              />
               <Route exact path="/profile" component={ProfilePage} />
             </div>
           </div>

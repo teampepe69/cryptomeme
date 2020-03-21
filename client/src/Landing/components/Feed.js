@@ -14,6 +14,8 @@ import ipfs from "../../ipfs";
 import {
   Modal, TextField
 } from '@material-ui/core';
+import CircularProgress from '@material-ui/core/CircularProgress';
+
 
 const styles = theme => ({
   root: {
@@ -74,6 +76,12 @@ const styles = theme => ({
     "&:hover": {
       backgroundColor: "#6aa84fff"
     }
+  },
+  progress: {
+    display: 'flex',
+    '& > * + *': {
+      marginLeft: theme.spacing(2),
+    },
   }
 });
 
@@ -125,18 +133,23 @@ class Feed extends Component {
 
           memeNetwork.methods.memes(i).call({ from: acc })
             .then((result) => {
+              // console.log(result)
               const meme = result
               arr = arr.concat(meme)
-              this.setState({ memes: arr }, () => console.log(this.state.memes))
+              this.setState({
+                memes: [...arr]
+              }, () => console.log(this.state.memes))
+
+              // this.setState({ memes: arr })
 
             }, error => {
               console.log(error)
-            }
-            );
+            });
 
         }
+        console.log(arr)
 
-      });
+      }, error => { console.log(error) });
 
   }
 
@@ -147,19 +160,12 @@ class Feed extends Component {
       console.log("Different")
       console.log(prevProps)
       console.log(this.props)
-      // this.setState({
-      //   memeNetwork: this.props.memeNetwork,
-      //   memeketPlaceNetwork: this.props.memeketPlaceNetwork
-      // }, () => {
-      //   if (this.state.memeNetwork !== null) {
-      //     this.getMeme()
-      //   }
-      //   else {
-      //     console.log(this.state.memeNetwork)
-      //   }
-      // })
       if (this.props.memeNetwork !== null) {
-        this.getMeme()
+        if (this.state.memes.length == 0) {
+          this.getMeme()
+
+        }
+
 
       }
 
@@ -178,16 +184,6 @@ class Feed extends Component {
   componentDidMount() {
     console.log(this.props.memeNetwork);
 
-    // let arr = this.props.memes;
-    // this.setState(
-    //   {
-    //     memes: arr
-    //   },
-    //   () => {
-    //     console.log(this.state.memes);
-    //   }
-    // );
-    // this.getMeme()
   }
 
   createMeme(memePath, memeTitle, memeDescription) {
@@ -443,19 +439,11 @@ class Feed extends Component {
                 </Card>
               );
             }) :
-            <Card className={classes.empty_root} >
-              <CardMedia
+            <div>
+              <CircularProgress />
+            </div>
+          }
 
-                image={logo}
-                className={classes.empty_media}
-                title="Pepe"
-
-              />
-              <CardContent className={classes.content}>
-                <Typography variant='h6'>Pepega, no memes :(</Typography>
-
-              </CardContent>
-            </Card>}
         </div>
         {/* </main> */}
       </div>

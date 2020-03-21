@@ -5,9 +5,45 @@ import Meme from "../../contracts/Meme.json";
 import MemeketPlace from "../../contracts/MemeketPlace.json";
 import getWeb3 from "../../getWeb3";
 import Container from '@material-ui/core/Container';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import { withStyles } from '@material-ui/core/styles';
+
+
+const styles = theme => ({
+  root: {
+    display: 'flex',
+    '& > * + *': {
+      marginLeft: theme.spacing(2),
+    },
+  },
+});
 
 class LandingPage extends Component {
+  constructor(props) {
+    super(props);
 
+    this.state = {
+      account: this.props.account,
+      memeketPlaceNetwork: this.props.memeketPlaceNetwork,
+      memeNetwork: this.props.memeNetwork,
+    };
+    console.log(this.state.memes)
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps !== this.props) {
+      console.log("Different")
+      console.log(prevProps)
+      console.log(this.props)
+
+      this.setState({
+        account: this.props.account,
+        memeketPlaceNetwork: this.props.memeketPlaceNetwork,
+        memeNetwork: this.props.memeNetwork,
+      })
+
+    }
+  }
 
 
   // async componentDidMount() {
@@ -83,20 +119,22 @@ class LandingPage extends Component {
     const { classes } = this.props;
     console.log(this.props)
     console.log(this.props.memeketPlaceNetwork);
-  
+    console.log(this.state.memeketPlaceNetwork)
+
 
     return (
       <Container maxWidth="md">
-        <Feed
-          account={this.props.account}
-          memeNetwork={this.props.memeNetwork}
-         
-          memeketPlaceNetwork={this.props.memeketPlaceNetwork}
-        />
+      
+          <Feed
+            account={this.state.account}
+            memeNetwork={this.state.memeNetwork}
+            memeketPlaceNetwork={this.state.memeketPlaceNetwork}
+          /> 
+
       </Container>
     );
   }
 }
 
-export default LandingPage;
+export default withStyles(styles, { withTheme: true })(LandingPage);
 

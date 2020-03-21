@@ -21,8 +21,10 @@ class App extends Component {
     super(props);
     this.state = {
       testValue: 12345,
+      web3: null,
       account: "",
       memeketPlaceNetwork: null,
+      deployedMemeketPlaceNetworkData: null,
       memeNetwork: null,
       userNetwork: null
     };
@@ -33,11 +35,12 @@ class App extends Component {
       console.log("Called");
       // Get network provider and web3 instance.
       const web3 = await getWeb3();
+      this.setState({ web3: web3 });
 
       // Use web3 to get the user's accounts.
       const accounts = await web3.eth.getAccounts();
-      this.setState({ account: accounts[0] });
-      //this.setState({ account: "0x90F8bf6A479f320ead074411a4B0e7944Ea8c9C1" });
+      //this.setState({ account: accounts[0] });
+      this.setState({ account: "0x90F8bf6A479f320ead074411a4B0e7944Ea8c9C1" });
 
       // Get the Contract instances.
       const networkId = await web3.eth.net.getId();
@@ -73,6 +76,9 @@ class App extends Component {
           deployedMemeketPlaceNetworkData.address
         );
         this.setState({ memeketPlaceNetwork: memeketPlaceNetwork });
+        this.setState({
+          deployedMemeketPlaceNetworkData: deployedMemeketPlaceNetworkData
+        });
       }
 
       // Set web3, accounts, and contract to the state, and then proceed with an
@@ -103,7 +109,11 @@ class App extends Component {
             render={routeProps => (
               <Navbar
                 {...routeProps}
+                web3={this.state.web3}
                 account={this.state.account}
+                deployedMemeketPlaceNetworkData={
+                  this.state.deployedMemeketPlaceNetworkData
+                }
                 memeNetwork={this.state.memeNetwork}
                 userNetwork={this.state.userNetwork}
                 memeketPlaceNetwork={this.state.memeketPlaceNetwork}

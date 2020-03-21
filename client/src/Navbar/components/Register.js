@@ -1,13 +1,22 @@
 import * as React from "react";
+import User from "../../contracts/User.json";
 import {
   Button,
   Modal,
   Card,
   Input,
   TextField,
-  CardMedia
+  CardMedia,
+  Container
 } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
+
+const EthereumTx = require("ethereumjs-tx").Transaction;
+const privateKey = new Buffer(
+  "4f3edf983ac636a65a842ce7c78d9aa706d3b113bce9c46f30d7d21715b23b1d",
+  "hex"
+);
+const ownerAddress = "0x90F8bf6A479f320ead074411a4B0e7944Ea8c9C1";
 
 const styles = theme => ({
   modal: {
@@ -33,8 +42,9 @@ const styles = theme => ({
 
 const Register = props => {
   const { classes } = props;
-  console.log(props.userNetwork);
+  console.log(props.memeketPlaceNetwork);
   console.log(props.account);
+  console.log(props.deployedMemeketPlaceNetworkData);
   const [open, setOpen] = React.useState(false);
   const [name, setName] = React.useState("");
   const [email, setEmail] = React.useState("");
@@ -53,20 +63,70 @@ const Register = props => {
     setOpen(false);
   };
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault();
     console.log(email, password, name, usr, wallet, displayPic);
-    props.memeketPlaceNetwork.methods
+    let testMethod = props.memeketPlaceNetwork.methods
       .createUser(name, email, usr, password, wallet, displayPic)
-      .send({
-        from: props.account
-      })
-      .then(result => {
-        handleClose();
-        alert(
-          "Registration successful! Need to modify this to make it nicer lmao"
-        );
-      });
+      .encodeABI();
+    console.log(testMethod);
+
+    const noncePromise = props.web3.eth.getTransactionCount(ownerAddress);
+    const gasPricePromise = props.web3.eth.getGasPrice();
+    const [nonce, gasPrice] = await Promise.all([
+      noncePromise,
+      gasPricePromise
+    ]);
+    console.log(nonce);
+    console.log(gasPrice);
+
+    var rawTransaction = {
+      from: ownerAddress,
+      gasPrice: props.web3.utils.toHex(gasPrice),
+      gasLimit: props.web3.utils.toHex(21000),
+      nonce: props.web3.utils.toHex(nonce),
+      to: props.deployedMemeketPlaceNetworkData.address,
+      data: testMethod
+    };
+
+    var tx = new EthereumTx(rawTransaction);
+    tx.sign(privateKey);
+    var serializedTx = tx.serialize();
+    props.web3.eth.sendTransaction(
+      "0x" + serializedTx.toString("hex"),
+      function(error, hash) {
+        if (!error) console.log(hash);
+      }
+    );
+    // }
+    // const tx = new EthereumTx(testMethod);
+    // console.log(tx);
+    // tx.sign(privateKey);
+    // const serializedTx = tx.serialize();
+
+    // props.web3.eth.sendSignedTransaction(
+    //   "0x" + serializedTx.toString("hex"),
+    //   function(err, hash) {
+    //     if (!err) {
+    //       //this console.logs back information about the transaction
+    //       // including transaction Hash, block number, block Hash,gar used etc..
+    //       console.log("Txn Sent and hash is " + JSON.stringify(hash));
+    //     } else {
+    //       console.error(err);
+    //     }
+    //   }
+    // );
+    // props.memeketPlaceNetwork.methods
+    //   .createUser(name, email, usr, password, wallet, displayPic)
+    //   .send({
+    //     from: props.account
+    //   })
+    //   .then(result => {
+    //     handleClose();
+    //     alert(
+    //       "Registration successful! Need to modify this to make it nicer lmao"
+    //     );
+    //   });
   }
   return (
     <div>

@@ -79,6 +79,10 @@ class Navbar extends React.Component {
             {!loggedIn && <Login />}
             {!loggedIn && (
               <Register
+                web3={this.props.web3}
+                deployedMemeketPlaceNetworkData={
+                  this.props.deployedMemeketPlaceNetworkData
+                }
                 memeketPlaceNetwork={this.props.memeketPlaceNetwork}
                 userNetwork={this.props.userNetwork}
                 account={this.props.account}

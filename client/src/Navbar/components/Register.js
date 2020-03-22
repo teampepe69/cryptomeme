@@ -66,6 +66,7 @@ const Register = props => {
   async function handleSubmit(event) {
     event.preventDefault();
     console.log(email, password, name, usr, wallet, displayPic);
+    /*
     let testMethod = props.memeketPlaceNetwork.methods
       .createUser(name, email, usr, password, wallet, displayPic)
       .encodeABI();
@@ -97,7 +98,9 @@ const Register = props => {
       function(error, hash) {
         if (!error) console.log(hash);
       }
+      
     );
+    */
     // }
     // const tx = new EthereumTx(testMethod);
     // console.log(tx);
@@ -116,17 +119,17 @@ const Register = props => {
     //     }
     //   }
     // );
-    // props.memeketPlaceNetwork.methods
-    //   .createUser(name, email, usr, password, wallet, displayPic)
-    //   .send({
-    //     from: props.account
-    //   })
-    //   .then(result => {
-    //     handleClose();
-    //     alert(
-    //       "Registration successful! Need to modify this to make it nicer lmao"
-    //     );
-    //   });
+    props.memeketPlaceNetwork.methods
+      .createUser(name, email, usr, password, wallet, displayPic)
+      .send({
+        from: props.account
+      })
+      .then(result => {
+        handleClose();
+        alert(
+          "Registration successful! Need to modify this to make it nicer lmao"
+        );
+      });
   }
   return (
     <div>

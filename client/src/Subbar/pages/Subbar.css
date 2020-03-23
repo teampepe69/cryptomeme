@@ -1,0 +1,29 @@
+.subbar{
+    position: fixed;
+    width: 100%;
+    background :transparent;
+    height: 56px;
+    top: 50;
+    left:0;
+}
+
+.subabr_navigation {
+    display: flex;
+    height: 100%;
+    align-items: center;
+    padding: 0 1rem;
+}
+
+.subbar_navigation_items a {
+    color: white;
+    text-decoration: none;
+}
+
+.subbar_navigation_items a:hover,
+.subbar_navigation_items a:active {
+    color: #fa923f;
+}
+
+.spacer{
+    flex: 1;
+}

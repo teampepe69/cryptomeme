@@ -1,21 +1,21 @@
 import React, { Component } from "react";
 import { withStyles } from '@material-ui/core/styles';
-import Card from '@material-ui/core/Card';
-import CardActionArea from '@material-ui/core/CardActionArea';
-import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
-import CardMedia from '@material-ui/core/CardMedia';
-import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
-import logo from '../../img/goodjob_pepe.png'
-import CloudUploadIcon from '@material-ui/icons/CloudUpload';
-import Divider from '@material-ui/core/Divider';
-import ipfs from "../../ipfs";
 import {
-  Modal, TextField
+  Card, CardActionArea, CardActions,
+  CardContent, CardMedia, CardHeader
 } from '@material-ui/core';
-import CircularProgress from '@material-ui/core/CircularProgress';
-
+import {
+  Button, Box, Grid,
+  Typography, TextField, Modal,
+  Divider, CircularProgress, IconButton
+} from '@material-ui/core';
+import logo from '../../img/goodjob_pepe.png'
+import hurt from '../../img/sadpepe.png'
+import CloudUploadIcon from '@material-ui/icons/CloudUpload';
+import ThumbDownAltOutlinedIcon from '@material-ui/icons/ThumbDownAltOutlined';
+import ThumbUpAltOutlinedIcon from '@material-ui/icons/ThumbUpAltOutlined';
+import ipfs from "../../ipfs";
+import FlagIcon from '@material-ui/icons/Flag';
 
 const styles = theme => ({
   root: {
@@ -51,6 +51,7 @@ const styles = theme => ({
     borderRadius: '12px',
     height: '250px'
   },
+
   content: {
     padding: theme.spacing(0, 0, 0, 6),
     width: '100%'
@@ -77,6 +78,14 @@ const styles = theme => ({
       backgroundColor: "#6aa84fff"
     }
   },
+  flagButton: {
+    height: '50px',
+    backgroundColor: '#DC143C',
+    color: 'whitesmoke',
+    "&:hover": {
+      backgroundColor: "#DC143C"
+    }
+  },
   progress: {
     display: 'flex',
     '& > * + *': {
@@ -95,7 +104,9 @@ class Feed extends Component {
       loading: false,
       open: false,
       memeTitle: '',
-      memeDescription: ''
+      memeDescription: '',
+      hasFlagged: false,
+      openFlag: false,
     };
 
 
@@ -109,12 +120,26 @@ class Feed extends Component {
     this.handleClose = this.handleClose.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.getMeme = this.getMeme.bind(this);
-    // this.getMeme();
+    this.dislikeMeme = this.dislikeMeme.bind(this);
+    this.flagMeme = this.flagMeme.bind(this);
 
   }
 
 
+  //---When passing updated props over, calls getMeme----
+  componentDidUpdate(prevProps) {
+    if (prevProps !== this.props) {
+      console.log("Different")
+      console.log(prevProps)
+      console.log(this.props)
+      if (this.props.memeNetwork !== null) {
+        this.getMeme()
+      }
+    }
+  }
 
+
+  //------------FETCH ALL MEMES-------------------------
   async getMeme() {
     console.log("getmeme is called")
     const memeNetwork = this.props.memeNetwork;
@@ -139,137 +164,73 @@ class Feed extends Component {
       })
 
       console.log(this.state.memes)
-
-      // this.setState({ memes: arr })
     }
-
-    // .then(result => {
-    //   for (var i = 0; i < result; i++) {
-    //     console.log("index: ", i)
-    //     memeNetwork.methods.memes(i).call({ from: acc })
-    //       .then((result) => {
-    //         // console.log(result)
-    //         const meme = result
-    //         arr = arr.concat(meme)
-    //         this.setState({
-    //           memes: [...arr]
-    //         })
-
-    //         // this.setState({ memes: arr })
-
-    //       }, error => {
-    //         console.log(error)
-    //       });
-
-    //   }
-    // })
-
 
   }
 
-
-
-  componentDidUpdate(prevProps) {
-    if (prevProps !== this.props) {
-      console.log("Different")
-      console.log(prevProps)
-      console.log(this.props)
-      if (this.props.memeNetwork !== null) {
-        this.getMeme()
-      }
-    }
-  }
-
-
-
+  //----------------CREATE MEME-------------
   createMeme(memePath, memeTitle, memeDescription) {
     console.log(this.props);
     const memeNetwork = this.props.memeNetwork;
     const acc = this.props.account;
     console.log(acc)
     let arr = this.state.memes;
-    memePath = memePath;
     this.props.memeNetwork.methods
       .createMeme(acc, memePath, memeTitle, memeDescription)
       .send({
         from: acc
-        // gas: 100000
       })
       .then(() => {
         this.updateMeme();
-        this.handleClose();
+        this.handleClose("create");
       })
   }
 
+  //----------Update the meme feed when meme is created-------
+  //This is called by createMeme() function
   async updateMeme() {
     const memeNetwork = this.props.memeNetwork;
     const acc = this.props.account;
     let arr = this.state.memes;
     console.log(arr)
-    const numOfMemes = await memeNetwork.methods.numberOfMemes().call({from:acc})
-    const newMeme = await memeNetwork.methods.memes(numOfMemes -1).call({from:acc})
+    const numOfMemes = await memeNetwork.methods.numberOfMemes().call({ from: acc })
+    const newMeme = await memeNetwork.methods.memes(numOfMemes - 1).call({ from: acc })
     arr = arr.concat(newMeme)
-    this.setState({memes: arr})
-
-    // memeNetwork.methods
-    //   .numberOfMemes()
-    //   .call({
-    //     from: acc
-    //   })
-    //   .then(result => {
-    //     const numberOfMemes = result;
-    //     console.log(numberOfMemes);
-    //     console.log(arr.length)
-    //     memeNetwork.methods
-    //       .memes(numberOfMemes - 1)
-    //       .call({
-    //         from: acc
-    //       }).then((result) => {
-    //         console.log(result)
-    //         arr = arr.concat(result)
-    //         console.log("updated arr", arr)
-    //         this.setState({ memes: arr })
-    //       }, error => {
-    //         console.log(error)
-    //       })
-
-
-    //   });
+    this.setState({ memes: arr })
   }
 
+  //------------LIKE MEMES--------------
   async likeMeme(memeId) {
     let arr = this.state.memes;
     let acc = this.props.account
     console.log(memeId);
-    await this.props.memeketPlaceNetwork.methods.likeMeme(memeId).send({from: acc})
+    await this.props.memeketPlaceNetwork.methods.likeMeme(memeId).send({ from: acc })
     const updateMeme = await this.props.memeNetwork.methods.memes(memeId).call()
     arr[memeId] = updateMeme
-    this.setState({memes: arr})
-
-    // this.props.memeketPlaceNetwork.methods
-    //   .likeMeme(memeId)
-    //   .send({ from: this.props.account })
-    //   .then(result => {
-    //     console.log(result);
-    //     this.props.memeNetwork.methods
-    //       .memes(memeId)
-    //       .call()
-    //       .then(result => {
-    //         console.log(result);
-    //         console.log(arr[memeId]);
-    //         arr[memeId] = result;
-    //         this.setState(
-    //           {
-    //             memes: arr
-    //           },
-    //           () => {
-    //             console.log(this.state.memes);
-    //           }
-    //         );
-    //       }, error => console.log(error));
-    //   });
+    this.setState({ memes: arr })
   }
 
+  //------------DISLIKE MEMES--------------
+  async dislikeMeme(memeId) {
+    let arr = this.state.memes;
+    let acc = this.props.account
+    console.log(memeId)
+    await this.props.memeketPlaceNetwork.methods.dislikeMeme(memeId).send({ from: acc })
+    const updateMeme = await this.props.memeNetwork.methods.memes(memeId).call()
+    arr[memeId] = updateMeme
+    this.setState({ memes: arr })
+  }
+
+  //------------FLAG MEMES--------------
+  async flagMeme(memeId) {
+    let arr = this.state.memes;
+    let acc = this.props.account
+    console.log(memeId)
+    await this.props.memeketPlaceNetwork.methods.flagMeme(memeId).send({ from: acc })
+    this.handleClose("flag");
+  }
+
+  //------------UPLOAD FILE--------------
   captureFile(event) {
     event.preventDefault();
     const file = event.target.files[0];
@@ -281,6 +242,7 @@ class Feed extends Component {
     };
   }
 
+  //------------SUBMIT FORM-------------------
   handleSubmit = (event) => {
     event.preventDefault();
     console.log(this.state.memeTitle)
@@ -293,36 +255,42 @@ class Feed extends Component {
       const path = result[0].hash;
       const title = this.state.memeTitle;
       const description = this.state.memeDescription;
-      // const title = this.state.memeTitle;
-      // const description = this.state.memeDescription;
       this.createMeme(path, title, description);
     });
 
   }
 
-  handleOpen = () => {
-    this.setState({ open: true })
+  handleOpen = (type) => {
+    console.log(type)
+    if (type == "create") {
+      this.setState({ open: true })
+    }
+    else {
+      this.setState({ openFlag: true })
+    }
   }
 
-  handleClose = () => {
-    this.setState({ open: false })
+  handleClose = (type) => {
+    console.log(type)
+    if (type === "create") {
+      this.setState({ open: false })
+    }
+    else {
+      this.setState({ openFlag: false })
+    }
   }
 
   render() {
     const { classes } = this.props;
-    // console.log(this.props.memeNetwork)
+
 
     return (
       <div className="Feed">
-        {/* <main
-          role="main"
-          className="col-lg-12 ml-auto mr-auto"
-          style={{ maxWidth: "1000px" }}
-        > */}
+
         <div>
           {/*-----------UPLOAD MEME MOAL----------------------------  */}
           <Button
-            onClick={this.handleOpen}
+            onClick={() => this.handleOpen("create")}
             variant="contained"
             style={{ marginTop: '8px' }}
             color="default" size="small"
@@ -333,19 +301,12 @@ class Feed extends Component {
             aria-labelledby="simple-modal-title"
             aria-describedby="simple-modal-description"
             open={this.state.open}
-            onClose={this.handleClose}
+            onClose={() => this.handleClose("create")}
             className={classes.modal}
           >
             <Card className={classes.paper}>
               <div>
                 <h2 id="simple-modal-title" style={{ position: 'fixed' }}>Meme Time</h2>
-                {/* <CardMedia
-                    component="img"
-                    className={classes.media}
-                    image={require('../../img/really_pepe.png')}
-                    title="Welcome Pepe"
-                    style={{ float: 'left', maxWidth: '30%', height: 'auto' }}
-                  /> */}
               </div>
 
               <div>
@@ -401,14 +362,12 @@ class Feed extends Component {
                 /*------------- MEME CARDS ---------------------------*/
                 <Card key={key} className={classes.root} >
 
-                  {/* <CardActionArea> */}
 
                   <CardMedia
                     className={classes.media}
                     image={`https://ipfs.io/ipfs/${meme.memePath}`}
                     // image={logo}
                     title="Pepe"
-
                   />
 
                   <CardContent className={classes.content}>
@@ -423,24 +382,114 @@ class Feed extends Component {
                     </Typography>
                     <Divider className={classes.divider} light />
 
-                    <div style={{ display: 'flex', flexDirection: 'row' }}>
-                      <Typography variant="button" color="primary" component="p" style={{ padding: '4px 5px' }}>
-                        LIKES:{meme.memeLikes.toString()}
-                      </Typography>
-                      <Button size="small" color="primary">
-                        Share
-                        </Button>
-                      <Button size="small" color="primary"
-                        onClick={(e) => {
-                          this.likeMeme(meme.memeId);
-                        }}>
-                        Like Meme
-                        </Button>
-                    </div>
+                    <Grid container >
+                      <Grid container item xs={8}>
+
+                        <Grid container item xs={2}>
+                          <IconButton
+                            style={{ minWidth: '10px' }}
+                            // startIcon={<ThumbUpAltOutlinedIcon />}
+                            size="small"
+                            color="primary"
+                            onClick={(e) => {
+                              this.likeMeme(meme.memeId);
+                            }}>
+                            <ThumbUpAltOutlinedIcon />
+                          </IconButton>
+                          <Typography variant="button" color="primary" component="p" style={{ padding: '4px 5px' }}>
+                            {meme.memeLikes.toString()}
+                          </Typography>
+                        </Grid>
+                        <Grid container item xs={2}>
+                          <IconButton
+                            style={{ minWidth: '10px' }}
+                            // startIcon={<ThumbDownAltOutlinedIcon />}
+                            size="small"
+                            color="primary"
+                            onClick={(e) => {
+                              this.dislikeMeme(meme.memeId);
+                            }}>
+                            <ThumbDownAltOutlinedIcon />
+                          </IconButton>
+
+                          <Typography variant="button" color="primary" component="p" style={{ padding: '4px 5px' }}>
+                            {meme.memeDislikes.toString()}
+                          </Typography>
+                        </Grid>
+                      </Grid>
+
+                      <Grid container item xs={4} justify="flex-end">
+                        <IconButton
+                          style={{ minWidth: '12px' }}
+                          size="small"
+                          onClick={() => this.handleOpen("flag")}
+                        >
+                          <FlagIcon color="secondary" />
+
+                        </IconButton>
+                        <Modal
+                          aria-labelledby="simple-modal-title"
+                          aria-describedby="simple-modal-description"
+                          open={this.state.openFlag}
+                          onClose={() => this.handleClose("flag")}
+                          className={classes.modal}
+                        >
+                          <Card className={classes.paper}>
+
+
+                            <div style={{ padding: '10px 5px 20px 5px' }}>
+                              <Typography variant="h4" align="center" style={{ fontWeight: 'bold' }} >
+                                Hurt? We're here to help.
+                              </Typography>
+
+                            </div>
+
+                            <CardContent>
+                              <div style={{ width: "60%", float: "left", paddingRight: '10px' }}>
+                                <div style={{ paddingBottom: '20px' }}>
+                                  <Typography paragraph>
+                                    We're truly sorry that this meme has hurt you.
+                                </Typography>
+                                  <Typography paragraph>
+                                    We are here to protecc our readers
+                                </Typography>
+                                  <Typography paragraph>
+                                    We shall reflect and do better
+                                </Typography>
+                                  <Typography paragraph>
+                                    Click button to flag post as {<b style={{ color: 'red' }}>inappropriate</b>}
+                                  </Typography>
+
+                                </div>
+                                <Button
+                                  type="submit"
+                                  color="secondary"
+                                  className={classes.flagButton}
+                                  onClick={(e) => {
+                                    this.flagMeme(meme.memeId);
+                                  }}
+                                  fullWidth>
+                                  SAY NO TO TROLLS!
+                              </Button>
+
+                              </div>
+                              <div style={{ width: "40%", float: "right" }}>
+                                <CardMedia
+                                  component="img"
+                                  image={hurt}
+                                  title="Join Pepe"
+                                />
+                              </div>
+                            </CardContent>
+                          </Card>
+                        </Modal>
+                      </Grid>
+
+                    </Grid>
                   </CardContent>
 
 
-                  {/* </CardActionArea> */}
+
 
 
                 </Card>
@@ -452,7 +501,7 @@ class Feed extends Component {
           }
 
         </div>
-        {/* </main> */}
+
       </div>
     );
   }

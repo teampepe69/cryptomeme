@@ -15,7 +15,6 @@ import LandingPage from "./Landing/pages/LandingPage.js";
 import ProfilePage from "./Profile/pages/Profile.js";
 import Subbar from "./Landing/pages/Subbar.js";
 import Navbar from "./Navbar/pages/Navbar.js";
-import Swal from 'sweetalert2';
 
 class App extends Component {
   constructor(props) {
@@ -87,11 +86,9 @@ class App extends Component {
       //this.setState({ web3, accounts, contract: instance }, this.runExample);
     } catch (error) {
       // Catch any errors for any of the above operations.
-      Swal.fire({
-        text: 'Failed to load web3, accounts, or contract. Check console for details.',
-        cancelButtonText: 'LET ME IN',
-        imageUrl: require("./img/Let_Me_In.jpg")
-      })
+      alert(
+        `Failed to load web3, accounts, or contract. Check console for details.`
+      );
       console.error(error);
     }
   }
@@ -126,7 +123,7 @@ class App extends Component {
             <div style={{ paddingLeft: "20px", width: "20%", float: "left" }}>
               <Subbar />
             </div>
-            <div style={{ paddingLeft: "200px" }}>
+            <div style={{ display:'flex',flexGrow:'1' }}>
               <Route
                 exact
                 path="/"

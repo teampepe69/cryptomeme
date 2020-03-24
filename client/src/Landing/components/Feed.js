@@ -16,12 +16,14 @@ import ThumbDownAltOutlinedIcon from '@material-ui/icons/ThumbDownAltOutlined';
 import ThumbUpAltOutlinedIcon from '@material-ui/icons/ThumbUpAltOutlined';
 import ipfs from "../../ipfs";
 import FlagIcon from '@material-ui/icons/Flag';
+import Swal from 'sweetalert2'
 
 const styles = theme => ({
   root: {
     width: '100%',
     // maxWidth: '80%',
     marginTop: '3%',
+    marginBottom:'1%',
     display: 'flex',
     padding: theme.spacing(2),
     borderRadius: 16,
@@ -228,6 +230,11 @@ class Feed extends Component {
     console.log(memeId)
     await this.props.memeketPlaceNetwork.methods.flagMeme(memeId).send({ from: acc })
     this.handleClose("flag");
+    Swal.fire({
+      title: 'Flag successful!',
+      icon: 'success',
+      confirmButtonText: 'Cool beans'
+    })
   }
 
   //------------UPLOAD FILE--------------

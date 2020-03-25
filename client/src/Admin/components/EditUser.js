@@ -39,6 +39,21 @@ const EditUser = (props) => {
     classes, modalState, handleClose, userInfo
   } = props;
 
+  const handleActivate = (user) => {
+    console.log(user)
+    
+  };
+
+  const handlePromote = (user) => {
+    console.log(user)
+    
+  };
+
+  const handleDeactivate = (user) => {
+    console.log(user)
+    
+  };
+
     return (
       <div>
         <Modal
@@ -90,7 +105,7 @@ const EditUser = (props) => {
                         className={classes.media}
                         image={require("../../img/makeAdmin.png")}
                         />
-                        <Button fullWidth style={{backgroundColor:'#5d4037ff', color:'white'}}>
+                        <Button fullWidth style={{backgroundColor:'#5d4037ff', color:'white'}} onClick={() => handlePromote(userInfo)}>
                             Make Admin
                         </Button>
                     </div>
@@ -100,7 +115,7 @@ const EditUser = (props) => {
                             className={classes.media}
                             image={require("../../img/deactivatepepe.png")}
                         /> 
-                        <Button fullWidth style={{backgroundColor:'#cc0000ff', color:'white'}}>
+                        <Button fullWidth style={{backgroundColor:'#cc0000ff', color:'white'}} onClick={() => handleDeactivate(userInfo)}>
                             Deactivate
                         </Button>
                     </div>
@@ -108,7 +123,28 @@ const EditUser = (props) => {
             }
             {userInfo.state ==='Deactivated' &&
                 <div style={{position:'relative', height:'220px', paddingTop:'10px'}}>
-
+                  <CardMedia
+                      component="img"
+                      className={classes.media}
+                      image={require("../../img/jesuspepe.png")}
+                      style={{paddingLeft:'25%'}}
+                  /> 
+                  <Button fullWidth style={{backgroundColor:'#ffd966ff'}} onClick={() => handleActivate(userInfo)}>
+                      Wake Me Up Inside
+                  </Button>
+                </div>
+            }
+            {userInfo.state ==='Admin' &&
+                <div style={{position:'relative', height:'220px', paddingTop:'10px'}}>
+                  <CardMedia
+                      component="img"
+                      className={classes.media}
+                      image={require("../../img/adminpepe.png")}
+                      style={{paddingLeft:'35%'}}
+                  /> 
+                  <Button fullWidth disabled style={{backgroundColor:'#9acdbaff', color:'black'}}>
+                      u r kewt 
+                  </Button>
                 </div>
             }
           </Card>

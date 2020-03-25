@@ -14,7 +14,6 @@ import {
 } from "react-router-dom";
 import LandingPage from "./Landing/pages/LandingPage.js";
 import ProfilePage from "./Profile/pages/Profile.js";
-import Subbar from "./Landing/pages/Subbar.js";
 import Navbar from "./Navbar/pages/Navbar.js";
 import AdminPage from "./Admin/pages/Admin.js";
 
@@ -117,11 +116,10 @@ class App extends Component {
             userNetwork={this.state.userNetwork}
             memeketPlaceNetwork={this.state.memeketPlaceNetwork}
           />
-          <div style={{ paddingTop: "100px" }}>
             <div style={{ paddingLeft: "20px", width: "20%", float: "left" }}>
-              <Subbar />
+              <SideDrawer />
             </div>
-            <div style={{ display: "flex", flexGrow: "1" }}>
+            <div style={{ paddingLeft: "20%", paddingTop: "15%", display: "flex", flexGrow: "1" }}>
               <Route
                 exact
                 path="/"
@@ -138,7 +136,6 @@ class App extends Component {
               <Route exact path="/profile" component={ProfilePage} />
               <Route exact path="/admin" component={AdminPage} />
             </div>
-          </div>
         </Router>
 
       </div>

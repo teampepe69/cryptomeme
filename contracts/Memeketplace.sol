@@ -35,6 +35,21 @@ contract MemeketPlace {
         );
     }
 
+    function dislikeMeme(uint256 _memeId) public {
+        memeContract.setMemeDislikes(
+            _memeId,
+            memeContract.getMemeDislikes(_memeId).add(1)
+        );
+    }
+
+    function flagMeme(uint256 _memeId) public {
+        memeContract.setMemeFlags(
+            _memeId,
+            memeContract.getMemeFlags(_memeId).add(1)
+        );
+    }
+
+
     function createUser(
         string memory _name,
         string memory _email,

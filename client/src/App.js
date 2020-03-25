@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import Swal from 'sweetalert2';
+import Swal from "sweetalert2";
 import SimpleStorageContract from "./contracts/SimpleStorage.json";
 import Meme from "./contracts/Meme.json";
 import User from "./contracts/User.json";
@@ -88,18 +88,22 @@ class App extends Component {
       //this.setState({ web3, accounts, contract: instance }, this.runExample);
     } catch (error) {
       // Catch any errors for any of the above operations.
-      Swal.fire({
-        text: 'Failed to load web3, accounts, or contract. Check console for details.',
-        cancelButtonText: 'LET ME IN',
-        imageUrl: require("./img/Let_Me_In.jpg")
-      })
+      alert(
+        `Failed to load web3, accounts, or contract. Check console for details.`
+      );
       console.error(error);
     }
   }
 
   render() {
     return (
-      <div style={{backgroundColor: "#9acdbaff", height: "100%", minHeight: "100vh"}}>
+      <div
+        style={{
+          backgroundColor: "#9acdbaff",
+          height: "100%",
+          minHeight: "100vh"
+        }}
+      >
         <Router>
           <Navbar
             web3={this.state.web3}
@@ -115,7 +119,7 @@ class App extends Component {
             <div style={{ paddingLeft: "20px", width: "20%", float: "left" }}>
               <Subbar />
             </div>
-            <div style={{ paddingLeft: "200px" }}>
+            <div style={{ display: "flex", flexGrow: "1" }}>
               <Route
                 exact
                 path="/"

@@ -10,7 +10,7 @@ import {
   Container
 } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
-import Swal from 'sweetalert2'
+import Swal from "sweetalert2";
 
 const EthereumTx = require("ethereumjs-tx").Transaction;
 const privateKey = new Buffer(
@@ -67,14 +67,9 @@ const Register = props => {
   async function handleSubmit(event) {
     event.preventDefault();
     console.log(email, password, name, usr, wallet, displayPic);
-    // once below code is okay, just copy these two line 
+    // once below code is okay, just copy these two line
     handleClose();
-    Swal.fire({
-      title: 'Registration successful!',
-      icon: 'success',
-      confirmButtonText: 'Cool beans'
-    })
-    
+
     /*
     let testMethod = props.memeketPlaceNetwork.methods
       .createUser(name, email, usr, password, wallet, displayPic)
@@ -136,18 +131,18 @@ const Register = props => {
       .then(result => {
         handleClose();
         Swal.fire({
-          title: 'Registration successful!',
-          icon: 'success',
-          confirmButtonText: 'Cool beans'
-        })
+          title: "Registration successful!",
+          icon: "success",
+          confirmButtonText: "Cool beans"
+        });
       })
-      .error(err =>{
+      .catch(err => {
         Swal.fire({
-          confirmButtonText: 'LET ME IN',
-          text: 'somer error log',
+          confirmButtonText: "LET ME IN",
+          text: "somer error log",
           imageUrl: require("../../img/Let_Me_In.jpg")
-        })
-      })
+        });
+      });
   }
   return (
     <div>

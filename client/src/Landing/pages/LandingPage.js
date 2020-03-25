@@ -26,6 +26,7 @@ class LandingPage extends Component {
       account: this.props.account,
       memeketPlaceNetwork: this.props.memeketPlaceNetwork,
       memeNetwork: this.props.memeNetwork,
+      userNetwork: this.props.userNetwork
     };
     console.log(this.state.memes)
   }
@@ -40,6 +41,7 @@ class LandingPage extends Component {
         account: this.props.account,
         memeketPlaceNetwork: this.props.memeketPlaceNetwork,
         memeNetwork: this.props.memeNetwork,
+        userNetwork: this.props.userNetwork
       })
 
     }
@@ -129,6 +131,7 @@ class LandingPage extends Component {
             account={this.state.account}
             memeNetwork={this.state.memeNetwork}
             memeketPlaceNetwork={this.state.memeketPlaceNetwork}
+            userNetwork = {this.state.userNetwork}
           /> 
 
       </Container>

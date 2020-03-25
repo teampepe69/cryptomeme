@@ -9,8 +9,8 @@ contract MemeketPlace {
     Meme memeContract;
     User userContract;
 
-    mapping(uint => mapping(address => uint)) public likes; // 0 means no like or dislike, 1 means like, 2 means dislike
-    mapping(uint => mapping(address => bool)) public flags;
+    mapping(uint256 => mapping(address => uint)) public likes; // 0 means no like or dislike, 1 means like, 2 means dislike
+    mapping(uint256 => mapping(address => bool)) public flags;
 
 
     constructor(Meme _memeContract, User _userContract) public {

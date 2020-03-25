@@ -49,6 +49,8 @@ contract User {
 
     struct User {
         uint256 userId;
+        string name;
+        string email;
         string username;
         string passwordHash;
         address userWallet;
@@ -60,11 +62,15 @@ contract User {
 
     event UserCreated(
         uint256 userId,
+        string name,
+        string email,
         string username,
         address userWallet,
         string displayPicturePath
     );
 
+    event NameChanged(uint256 userId, string name);
+    event UserEmailChanged(uint256 userId, string email);
     event UsernameChanged(uint256 userId, string username);
     event UserPasswordChanged(uint256 userId, string passwordHash);
     event UserWalletChanged(uint256 userId, address userWallet);
@@ -75,6 +81,8 @@ contract User {
     event UserBecameAdmin(uint256 userId);
 
     function createUser(
+        string memory _name,
+        string memory _email,
         string memory _username,
         string memory _passwordHash,
         address _userWallet,
@@ -82,6 +90,8 @@ contract User {
     ) public {
         User memory newUser = User(
             numberOfUsers,
+            _name,
+            _email,
             _username,
             _passwordHash,
             _userWallet,
@@ -91,11 +101,23 @@ contract User {
         users.push(newUser);
         emit UserCreated(
             numberOfUsers,
+            _name,
+            _email,
             _username,
             _userWallet,
             _displayPicturePath
         );
         numberOfUsers = numberOfUsers.add(1);
+    }
+
+    function setName(uint256 _userId, string memory _name) public {
+        users[_userId].name = _name;
+        emit NameChanged(_userId, _name);
+    }
+
+    function setEmail(uint256 _userId, string memory _email) public {
+        users[_userId].email = _email;
+        emit UserEmailChanged(_userId, _email);
     }
 
     function setUsername(uint256 _userId, string memory _username) public {

@@ -64,6 +64,10 @@ contract Meme is ERC721 {
         return _memeId;
     }
 
+    // function getMemes() public view returns (Meme){
+
+    // }
+
     function getMemeLikes(uint256 _memeId) public view returns (uint256) {
         return memes[_memeId].memeLikes;
     }

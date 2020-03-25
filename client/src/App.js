@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import Swal from "sweetalert2";
 import SimpleStorageContract from "./contracts/SimpleStorage.json";
 import Meme from "./contracts/Meme.json";
 import User from "./contracts/User.json";
@@ -15,6 +16,7 @@ import LandingPage from "./Landing/pages/LandingPage.js";
 import ProfilePage from "./Profile/pages/Profile.js";
 import Subbar from "./Landing/pages/Subbar.js";
 import Navbar from "./Navbar/pages/Navbar.js";
+import AdminPage from "./Admin/pages/Admin.js";
 
 class App extends Component {
   constructor(props) {
@@ -100,30 +102,24 @@ class App extends Component {
           backgroundColor: "#9acdbaff",
           height: "100%",
           minHeight: "100vh"
-        }}>
+        }}
+      >
         <Router>
-          <Route
-            exact
-            path="/"
-            render={routeProps => (
-              <Navbar
-                {...routeProps}
-                web3={this.state.web3}
-                account={this.state.account}
-                deployedMemeketPlaceNetworkData={
-                  this.state.deployedMemeketPlaceNetworkData
-                }
-                memeNetwork={this.state.memeNetwork}
-                userNetwork={this.state.userNetwork}
-                memeketPlaceNetwork={this.state.memeketPlaceNetwork}
-              />
-            )}
+          <Navbar
+            web3={this.state.web3}
+            account={this.state.account}
+            deployedMemeketPlaceNetworkData={
+              this.state.deployedMemeketPlaceNetworkData
+            }
+            memeNetwork={this.state.memeNetwork}
+            userNetwork={this.state.userNetwork}
+            memeketPlaceNetwork={this.state.memeketPlaceNetwork}
           />
           <div style={{ paddingTop: "100px" }}>
             <div style={{ paddingLeft: "20px", width: "20%", float: "left" }}>
               <Subbar />
             </div>
-            <div style={{ display:'flex',flexGrow:'1' }}>
+            <div style={{ display: "flex", flexGrow: "1" }}>
               <Route
                 exact
                 path="/"
@@ -138,6 +134,7 @@ class App extends Component {
                 )}
               />
               <Route exact path="/profile" component={ProfilePage} />
+              <Route exact path="/admin" component={AdminPage} />
             </div>
           </div>
         </Router>

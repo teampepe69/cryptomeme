@@ -69,11 +69,6 @@ const Register = props => {
     console.log(email, password, name, usr, wallet, displayPic);
     // once below code is okay, just copy these two line
     handleClose();
-    Swal.fire({
-      title: "Registration successful!",
-      icon: "success",
-      confirmButtonText: "Cool beans"
-    });
 
     /*
     let testMethod = props.memeketPlaceNetwork.methods

@@ -119,7 +119,7 @@ class App extends Component {
             <div style={{ paddingLeft: "20px", width: "20%", float: "left" }}>
               <SideDrawer />
             </div>
-            <div style={{ paddingLeft: "20%", paddingTop: "15%", display: "flex", flexGrow: "1" }}>
+            <div style={{ paddingLeft: "20%", paddingTop: "12%", display: "flex", flexGrow: "1" }}>
               <Route
                 exact
                 path="/"

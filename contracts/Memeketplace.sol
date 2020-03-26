@@ -9,6 +9,10 @@ contract MemeketPlace {
     Meme memeContract;
     User userContract;
 
+    mapping(uint256 => mapping(address => uint)) public likes; // 0 means no like or dislike, 1 means like, 2 means dislike
+    mapping(uint256 => mapping(address => bool)) public flags;
+
+
     constructor(Meme _memeContract, User _userContract) public {
         memeContract = _memeContract;
         userContract = _userContract;
@@ -29,6 +33,8 @@ contract MemeketPlace {
     }
 
     function likeMeme(uint256 _memeId) public {
+        require(likes[_memeId][msg.sender] != 1, "You have already liked this meme");
+        likes[_memeId][msg.sender] == 1;
         memeContract.setMemeLikes(
             _memeId,
             memeContract.getMemeLikes(_memeId).add(1)
@@ -36,13 +42,35 @@ contract MemeketPlace {
     }
 
     function dislikeMeme(uint256 _memeId) public {
+        require(likes[_memeId][msg.sender] != 2, "You have already disliked this meme");
+        likes[_memeId][msg.sender] == 2;
         memeContract.setMemeDislikes(
             _memeId,
             memeContract.getMemeDislikes(_memeId).add(1)
         );
     }
 
+    function removeLike(uint256 _memeId) public {
+        require(likes[_memeId][msg.sender] == 1, "You have not liked this meme");
+        likes[_memeId][msg.sender] == 0;
+        memeContract.setMemeLikes(
+            _memeId,
+            memeContract.getMemeLikes(_memeId).sub(1)
+        );
+    }
+
+    function removeDislike(uint256 _memeId) public {
+        require(likes[_memeId][msg.sender] == 2, "You have not disliked this meme");
+        likes[_memeId][msg.sender] == 0;
+        memeContract.setMemeDislikes(
+            _memeId,
+            memeContract.getMemeLikes(_memeId).sub(1)
+        );
+    }
+
     function flagMeme(uint256 _memeId) public {
+        require(flags[_memeId][msg.sender] == false, "You have already flagged this meme");
+        flags[_memeId][msg.sender] == true;
         memeContract.setMemeFlags(
             _memeId,
             memeContract.getMemeFlags(_memeId).add(1)

@@ -12,6 +12,7 @@ import {
 import logo from '../../img/goodjob_pepe.png'
 import hurt from '../../img/sadpepe.png'
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
+import ThumbUpAltIcon from '@material-ui/icons/ThumbUpAlt';
 import ThumbDownAltOutlinedIcon from '@material-ui/icons/ThumbDownAltOutlined';
 import ThumbUpAltOutlinedIcon from '@material-ui/icons/ThumbUpAltOutlined';
 import ipfs from "../../ipfs";
@@ -124,7 +125,7 @@ class Feed extends Component {
     this.getMeme = this.getMeme.bind(this);
     this.dislikeMeme = this.dislikeMeme.bind(this);
     this.flagMeme = this.flagMeme.bind(this);
-
+    // this.checkLikeState = this.checkLikeState.bind(this);
   }
 
 
@@ -169,6 +170,7 @@ class Feed extends Component {
     }
 
   }
+
 
   //----------------CREATE MEME-------------
   createMeme(memePath, memeTitle, memeDescription) {
@@ -221,6 +223,9 @@ class Feed extends Component {
     const updateMeme = await this.props.memeNetwork.methods.memes(memeId).call()
     arr[memeId] = updateMeme
     this.setState({ memes: arr })
+
+    // let index= await this.props.memeketPlaceNetwork.methods.getLikes(memeId, this.props.account).call()
+    // console.log(index)
   }
 
   //------------FLAG MEMES--------------
@@ -292,7 +297,7 @@ class Feed extends Component {
 
 
     return (
-      <div style={{paddingBottom: '20px'}}>
+      <div style={{ paddingBottom: '20px' }}>
 
         <div>
           {/*-----------UPLOAD MEME MOAL----------------------------  */}
@@ -391,7 +396,7 @@ class Feed extends Component {
 
                     <Grid container >
                       <Grid container item xs={8}>
-
+                        {/*--------------------------- LIKE AND DISLIKE BUTTON--------------------- */}
                         <Grid container item xs={2}>
                           <IconButton
                             style={{ minWidth: '10px' }}
@@ -401,7 +406,9 @@ class Feed extends Component {
                             onClick={(e) => {
                               this.likeMeme(meme.memeId);
                             }}>
-                            <ThumbUpAltOutlinedIcon />
+            
+                             <ThumbUpAltOutlinedIcon />
+     
                           </IconButton>
                           <Typography variant="button" color="primary" component="p" style={{ padding: '4px 5px' }}>
                             {meme.memeLikes.toString()}
@@ -425,6 +432,7 @@ class Feed extends Component {
                         </Grid>
                       </Grid>
 
+                      {/*--------------------------- FLAG BUTTON--------------------- */}
                       <Grid container item xs={4} justify="flex-end">
                         <IconButton
                           style={{ minWidth: '12px' }}

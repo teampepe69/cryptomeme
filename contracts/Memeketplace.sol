@@ -126,6 +126,10 @@ contract MemeketPlace {
         );
     }
 
+    function getLikes(uint256 _memeId, address user) public view returns(uint256){
+        return likes[_memeId][user];
+    }
+
 
     function createUser(
         string memory _name,

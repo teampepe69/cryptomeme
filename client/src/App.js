@@ -116,10 +116,11 @@ class App extends Component {
             userNetwork={this.state.userNetwork}
             memeketPlaceNetwork={this.state.memeketPlaceNetwork}
           />
-            <div style={{ paddingLeft: "20px", width: "120px"}}>
+          <div>
+            <div style={{ paddingLeft: "20px", width: "120px" }}>
               <SideDrawer />
             </div>
-            <div style={{ paddingLeft: "140px", paddingTop: "150px"}}>
+            <div style={{ paddingLeft: "140px", paddingTop: "100px"}}>
               <Route
                 exact
                 path="/"
@@ -136,6 +137,7 @@ class App extends Component {
               <Route exact path="/profile" component={ProfilePage} />
               <Route exact path="/admin" component={AdminPage} />
             </div>
+          </div>
         </Router>
 
       </div>

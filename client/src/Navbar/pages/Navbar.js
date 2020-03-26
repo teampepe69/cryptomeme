@@ -21,7 +21,7 @@ import tempDP from "../../img/sadpepe.png";
 
 const styles = theme => ({
   appBar: {
-    position: "absolute",
+    position: "fixed",
     height: 70,
     backgroundColor: "#ffffffff"
   },

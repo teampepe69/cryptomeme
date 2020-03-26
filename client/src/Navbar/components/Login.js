@@ -1,6 +1,7 @@
 import * as React from "react";
 import { Button, Modal, Card, TextField, CardMedia } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
+import Swal from "sweetalert2";
 
 const styles = theme => ({
   modal: {
@@ -32,8 +33,8 @@ const Login = props => {
   const handleOpen = () => {
     props.web3.eth.getAccounts().then(result => {
       setEwallet(result[0]);
+      setOpen(true);
     });
-    setOpen(true);
   };
 
   const handleClose = () => {
@@ -42,6 +43,24 @@ const Login = props => {
 
   function handleSubmit(event) {
     event.preventDefault();
+    props.userNetwork.methods
+      .checkUserExists(eWallet)
+      .call({ from: eWallet })
+      .then((result, error) => {
+        alert("User logged in");
+        sessionStorage.setItem("loggedIn", true);
+        sessionStorage.setItem("account", eWallet);
+        handleClose();
+        window.location.reload();
+      })
+      .catch(error => {
+        handleClose();
+        Swal.fire({
+          confirmButtonText: "LET ME IN",
+          text: "Your account does not exist, please register first",
+          imageUrl: require("../../img/Let_Me_In.jpg")
+        });
+      });
   }
   return (
     <div>

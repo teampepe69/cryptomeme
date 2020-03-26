@@ -45,10 +45,9 @@ const styles = theme => ({
 class Navbar extends React.Component {
   render() {
     const { classes } = this.props;
-    const loggedIn = false;
-    console.log(this.props.memeketPlaceNetwork);
+    var loggedIn = JSON.parse(sessionStorage.getItem("loggedIn"));
+    console.log("loggedIn", loggedIn);
 
-    // props should include whether logged in or not and log in details
     return (
       <div>
         <AppBar position="static" className={classes.appBar}>
@@ -94,7 +93,6 @@ class Navbar extends React.Component {
                 }
                 memeketPlaceNetwork={this.props.memeketPlaceNetwork}
                 userNetwork={this.props.userNetwork}
-                account={this.props.account}
               />
             )}
             {loggedIn && (

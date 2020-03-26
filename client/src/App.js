@@ -17,7 +17,7 @@ import ProfilePage from "./Profile/pages/Profile.js";
 import Navbar from "./Navbar/pages/Navbar.js";
 import AdminPage from "./Admin/pages/Admin.js";
 
-import SideDrawer from './Subbar/components/SideDrawer'
+import SideDrawer from "./Subbar/components/SideDrawer";
 
 class App extends Component {
   constructor(props) {
@@ -116,31 +116,30 @@ class App extends Component {
             userNetwork={this.state.userNetwork}
             memeketPlaceNetwork={this.state.memeketPlaceNetwork}
           />
-            <div style={{ paddingLeft: "20px", width: "120px"}}>
-              <SideDrawer />
-            </div>
-            <div style={{ paddingLeft: "140px", paddingTop: "150px"}}>
-              <Route
-                exact
-                path="/"
-                render={routeProps => (
-                  <LandingPage
-                    {...routeProps}
-                    account={this.state.account}
-                    memeNetwork={this.state.memeNetwork}
-                    userNetwork={this.state.userNetwork}
-                    memeketPlaceNetwork={this.state.memeketPlaceNetwork}
-                  />
-                )}
-              />
-              <Route exact path="/profile" component={ProfilePage} />
-              <Route exact path="/admin" component={AdminPage} />
-            </div>
+          <div style={{ paddingLeft: "20px", width: "120px" }}>
+            <SideDrawer />
+          </div>
+          <div style={{ paddingLeft: "140px", paddingTop: "150px" }}>
+            <Route
+              exact
+              path="/"
+              render={routeProps => (
+                <LandingPage
+                  {...routeProps}
+                  account={this.state.account}
+                  memeNetwork={this.state.memeNetwork}
+                  userNetwork={this.state.userNetwork}
+                  memeketPlaceNetwork={this.state.memeketPlaceNetwork}
+                />
+              )}
+            />
+            <Route exact path="/profile" component={ProfilePage} />
+            <Route exact path="/admin" component={AdminPage} />
+          </div>
         </Router>
-
       </div>
     );
   }
 }
 
-export default App
+export default App;

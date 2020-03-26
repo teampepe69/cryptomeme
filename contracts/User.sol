@@ -82,6 +82,19 @@ contract User {
     event UserActivated(address userWallet);
     event UserDeactivated(address userWallet);
 
+    constructor() public {
+        //Create admin user
+        createUser(
+            msg.sender,
+            "administrator",
+            "I am the boss",
+            "QmP1KdPrFV9wKbDy5WvCDKd3YcyTBbFvqfvBCzjGrDiVLZ",
+            "BigPepeBoss",
+            "www.4chan.org"
+        );
+        users[userIds[msg.sender]].state = userStates.admin;
+    }
+
     function createUser(
         address _userWallet,
         string memory _username,
@@ -110,6 +123,8 @@ contract User {
             _displayName,
             _website
         );
+        userExists[_userWallet] = true;
+        userIds[_userWallet] = numberOfUsers;
         numberOfUsers = numberOfUsers.add(1);
     }
 
@@ -153,6 +168,10 @@ contract User {
     function setUserAsActive(address _userWallet) public {
         users[userIds[_userWallet]].state = userStates.active;
         emit UserActivated(_userWallet);
+    }
+
+    function checkUserExists(address _userWallet) public view returns (bool) {
+        return userExists[_userWallet];
     }
 
     /*

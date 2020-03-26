@@ -118,7 +118,6 @@ const Register = props => {
                 variant="outlined"
                 style={{ width: "100%", paddingBottom: "10px" }}
                 onInput={e => setAbout(e.target.value)}
-                required
               />
               <TextField
                 label="DisplayName"

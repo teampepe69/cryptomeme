@@ -49,22 +49,44 @@ contract MemeketPlace {
         );
     }
 
-
     function createUser(
-        string memory _name,
-        string memory _email,
-        string memory _username,
-        string memory _passwordHash,
         address _userWallet,
-        string memory _displayPicturePath
+        string memory _username,
+        string memory _about,
+        string memory _displayPictureHash,
+        string memory _diplayName,
+        string memory _website
     ) public {
         userContract.createUser(
-            _name,
-            _email,
-            _username,
-            _passwordHash,
             _userWallet,
-            _displayPicturePath
+            _username,
+            _about,
+            _displayPictureHash,
+            _diplayName,
+            _website
         );
+    }
+
+    function updateUserProfile(
+        address _userWallet,
+        string memory _username,
+        string memory _about,
+        string memory _displayPictureHash,
+        string memory _displayName,
+        string memory _website
+    ) public {
+        userContract.setUsername(_userWallet, _username);
+        userContract.setUserAbout(_userWallet, _about);
+        userContract.setUserDisplayPicture(_userWallet, _displayPictureHash);
+        userContract.setUserDisplayName(_userWallet, _displayName);
+        userContract.setUserWebsite(_userWallet, _website);
+    }
+
+    function activateUser(address _userWallet) public {
+        userContract.setUserAsActive(_userWallet);
+    }
+
+    function deactivateUser(address _userWallet) public {
+        userContract.setUserAsDeactivated(_userWallet);
     }
 }

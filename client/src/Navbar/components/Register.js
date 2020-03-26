@@ -12,13 +12,6 @@ import {
 import { withStyles } from "@material-ui/core/styles";
 import Swal from "sweetalert2";
 
-const EthereumTx = require("ethereumjs-tx").Transaction;
-const privateKey = new Buffer(
-  "4f3edf983ac636a65a842ce7c78d9aa706d3b113bce9c46f30d7d21715b23b1d",
-  "hex"
-);
-const ownerAddress = "0x90F8bf6A479f320ead074411a4B0e7944Ea8c9C1";
-
 const styles = theme => ({
   modal: {
     display: "flex",
@@ -47,20 +40,20 @@ const Register = props => {
   console.log(props.account);
   console.log(props.deployedMemeketPlaceNetworkData);
   const [open, setOpen] = React.useState(false);
-  const [name, setName] = React.useState("");
-  const [email, setEmail] = React.useState("");
-  const [usr, setUsr] = React.useState("");
-  const [password, setPwd] = React.useState("");
-  const [eWallet, setEwallet] = React.useState("");
-  const [displayPic, setDisplayPic] = React.useState(
+  const [username, setUsername] = React.useState("");
+  const [about, setAbout] = React.useState("");
+  const [displayPictureHash, setDisplayPictureHash] = React.useState(
     "QmP1KdPrFV9wKbDy5WvCDKd3YcyTBbFvqfvBCzjGrDiVLZ"
   );
+  const [displayName, setDisplayName] = React.useState("");
+  const [website, setWebsite] = React.useState("");
+  const [eWallet, setEwallet] = React.useState("");
 
   const handleOpen = () => {
     props.web3.eth.getAccounts().then(result => {
       setEwallet(result[0]);
+      setOpen(true);
     });
-    setOpen(true);
   };
 
   const handleClose = () => {
@@ -69,13 +62,19 @@ const Register = props => {
 
   async function handleSubmit(event) {
     event.preventDefault();
-    console.log(email, password, name, usr, eWallet, displayPic);
     // once below code is okay, just copy these two line
     handleClose();
     props.memeketPlaceNetwork.methods
-      .createUser(name, email, usr, password, eWallet, displayPic)
+      .createUser(
+        eWallet,
+        username,
+        about,
+        displayPictureHash,
+        displayName,
+        website
+      )
       .send({
-        from: props.account
+        from: eWallet
       })
       .then(result => {
         handleClose();
@@ -108,34 +107,31 @@ const Register = props => {
           <div style={{ width: "60%", float: "left" }}>
             <form className={classes.root} onSubmit={handleSubmit}>
               <TextField
-                label="Name"
-                variant="outlined"
-                style={{ width: "100%", paddingBottom: "10px" }}
-                onInput={e => setName(e.target.value)}
-                required
-              />
-              <TextField
-                label="Email"
-                variant="outlined"
-                style={{ width: "100%", paddingBottom: "10px" }}
-                onInput={e => setEmail(e.target.value)}
-                required
-                type="email"
-              />
-              <TextField
                 label="Username"
                 variant="outlined"
                 style={{ width: "100%", paddingBottom: "10px" }}
-                onInput={e => setUsr(e.target.value)}
+                onInput={e => setUsername(e.target.value)}
                 required
               />
               <TextField
-                label="Password"
+                label="About"
                 variant="outlined"
                 style={{ width: "100%", paddingBottom: "10px" }}
-                onInput={e => setPwd(e.target.value)}
+                onInput={e => setAbout(e.target.value)}
                 required
-                type="password"
+              />
+              <TextField
+                label="DisplayName"
+                variant="outlined"
+                style={{ width: "100%", paddingBottom: "10px" }}
+                onInput={e => setDisplayName(e.target.value)}
+                required
+              />
+              <TextField
+                label="Website"
+                variant="outlined"
+                style={{ width: "100%", paddingBottom: "10px" }}
+                onInput={e => setWebsite(e.target.value)}
               />
               <TextField
                 label="Wallet"

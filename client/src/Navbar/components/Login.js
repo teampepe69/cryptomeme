@@ -42,7 +42,6 @@ const Login = props => {
 
   function handleSubmit(event) {
     event.preventDefault();
-    // code to submit form to backend here...
   }
   return (
     <div>

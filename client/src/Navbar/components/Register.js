@@ -51,12 +51,15 @@ const Register = props => {
   const [email, setEmail] = React.useState("");
   const [usr, setUsr] = React.useState("");
   const [password, setPwd] = React.useState("");
-  const [wallet, setWallet] = React.useState("");
+  const [eWallet, setEwallet] = React.useState("");
   const [displayPic, setDisplayPic] = React.useState(
     "QmP1KdPrFV9wKbDy5WvCDKd3YcyTBbFvqfvBCzjGrDiVLZ"
   );
 
   const handleOpen = () => {
+    props.web3.eth.getAccounts().then(result => {
+      setEwallet(result[0]);
+    });
     setOpen(true);
   };
 
@@ -66,65 +69,11 @@ const Register = props => {
 
   async function handleSubmit(event) {
     event.preventDefault();
-    console.log(email, password, name, usr, wallet, displayPic);
+    console.log(email, password, name, usr, eWallet, displayPic);
     // once below code is okay, just copy these two line
     handleClose();
-
-    /*
-    let testMethod = props.memeketPlaceNetwork.methods
-      .createUser(name, email, usr, password, wallet, displayPic)
-      .encodeABI();
-    console.log(testMethod);
-
-    const noncePromise = props.web3.eth.getTransactionCount(ownerAddress);
-    const gasPricePromise = props.web3.eth.getGasPrice();
-    const [nonce, gasPrice] = await Promise.all([
-      noncePromise,
-      gasPricePromise
-    ]);
-    console.log(nonce);
-    console.log(gasPrice);
-
-    var rawTransaction = {
-      from: ownerAddress,
-      gasPrice: props.web3.utils.toHex(gasPrice),
-      gasLimit: props.web3.utils.toHex(21000),
-      nonce: props.web3.utils.toHex(nonce),
-      to: props.deployedMemeketPlaceNetworkData.address,
-      data: testMethod
-    };
-
-    var tx = new EthereumTx(rawTransaction);
-    tx.sign(privateKey);
-    var serializedTx = tx.serialize();
-    props.web3.eth.sendTransaction(
-      "0x" + serializedTx.toString("hex"),
-      function(error, hash) {
-        if (!error) console.log(hash);
-      }
-      
-    );
-    */
-    // }
-    // const tx = new EthereumTx(testMethod);
-    // console.log(tx);
-    // tx.sign(privateKey);
-    // const serializedTx = tx.serialize();
-
-    // props.web3.eth.sendSignedTransaction(
-    //   "0x" + serializedTx.toString("hex"),
-    //   function(err, hash) {
-    //     if (!err) {
-    //       //this console.logs back information about the transaction
-    //       // including transaction Hash, block number, block Hash,gar used etc..
-    //       console.log("Txn Sent and hash is " + JSON.stringify(hash));
-    //     } else {
-    //       console.error(err);
-    //     }
-    //   }
-    // );
     props.memeketPlaceNetwork.methods
-      .createUser(name, email, usr, password, wallet, displayPic)
+      .createUser(name, email, usr, password, eWallet, displayPic)
       .send({
         from: props.account
       })
@@ -192,7 +141,8 @@ const Register = props => {
                 label="Wallet"
                 variant="outlined"
                 style={{ width: "100%", paddingBottom: "10px" }}
-                onInput={e => setWallet(e.target.value)}
+                onInput={e => setEwallet(e.target.value)}
+                defaultValue={eWallet}
                 required
               />
               <Button type="submit" className={classes.button} fullWidth>

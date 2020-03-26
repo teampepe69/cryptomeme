@@ -46,7 +46,7 @@ class Navbar extends React.Component {
   render() {
     const { classes } = this.props;
     const loggedIn = false;
-    console.log(this.props.memeketPlaceNetwork)
+    console.log(this.props.memeketPlaceNetwork);
 
     // props should include whether logged in or not and log in details
     return (
@@ -76,7 +76,16 @@ class Navbar extends React.Component {
               Cryptomeme
             </Typography>
             <div className={classes.grow} />
-            {!loggedIn && <Login />}
+            {!loggedIn && (
+              <Login
+                web3={this.props.web3}
+                deployedMemeketPlaceNetworkData={
+                  this.props.deployedMemeketPlaceNetworkData
+                }
+                memeketPlaceNetwork={this.props.memeketPlaceNetwork}
+                userNetwork={this.props.userNetwork}
+              />
+            )}
             {!loggedIn && (
               <Register
                 web3={this.props.web3}

@@ -43,18 +43,18 @@ contract User {
     using SafeMath for uint256;
     address admin = msg.sender;
 
-    enum userStates {pending, active, deactivated, moderator, admin}
+    enum userStates {pending, active, deactivated, admin}
 
     uint256 public numberOfUsers = 0;
 
     struct User {
         uint256 userId;
-        string name;
-        string email;
-        string username;
-        string passwordHash;
         address userWallet;
-        string displayPicturePath;
+        string username;
+        string about;
+        string displayPictureHash;
+        string displayName;
+        string website;
         userStates state;
     }
 
@@ -62,48 +62,47 @@ contract User {
 
     event UserCreated(
         uint256 userId,
-        string name,
-        string email,
-        string username,
         address userWallet,
-        string displayPicturePath
+        string username,
+        string about,
+        string displayPictureHash,
+        string displayName,
+        string website,
     );
 
-    event NameChanged(uint256 userId, string name);
-    event UserEmailChanged(uint256 userId, string email);
-    event UsernameChanged(uint256 userId, string username);
-    event UserPasswordChanged(uint256 userId, string passwordHash);
-    event UserWalletChanged(uint256 userId, address userWallet);
-    event UserDisplayPictureChanged(uint256 userId, string displayPicturePath);
+    event UserCreated(uint256 userId, address userWallet, string username, string about, string displayPicturePath, string displayName, string website);
+    event UsernameChanged(address userWallet, string username);
+    event UserAboutChanged(address userWallet, string about);
+    event UserDisplayPictureChanged(address userWallet, string displayPicturePath);
+    event UserDisplayNameChanged(address userWallet, string displayName);
+    event UserWebsiteChanged(address userWallet, string website);
     event UserActivated(uint256 userId);
     event UserDeactivated(uint256 userId);
-    event UserModeratored(uint256 userId);
-    event UserBecameAdmin(uint256 userId);
 
     function createUser(
-        string memory _name,
-        string memory _email,
-        string memory _username,
-        string memory _passwordHash,
         address _userWallet,
-        string memory _displayPicturePath
+        string memory _username,
+        string memory _about,
+        string memory _displayPictureHash,
+        string memory _diplayName,
+        string memory _website
     ) public {
         User memory newUser = User(
             numberOfUsers,
-            _name,
-            _email,
-            _username,
-            _passwordHash,
             _userWallet,
-            _displayPicturePath,
+            _username,
+            _about,
+            _displayPictureHash,
+            _displayName,
+            _website,
             userStates.pending
         );
         users.push(newUser);
         emit UserCreated(
             numberOfUsers,
-            _name,
-            _email,
+            _userWallet,
             _username,
+            _about,
             _userWallet,
             _displayPicturePath
         );

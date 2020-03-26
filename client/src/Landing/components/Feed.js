@@ -23,7 +23,7 @@ const styles = theme => ({
     width: '100%',
     // maxWidth: '80%',
     marginTop: '3%',
-    marginBottom:'1%',
+    // marginBottom:'1%',
     display: 'flex',
     padding: theme.spacing(2),
     borderRadius: 16,
@@ -147,7 +147,7 @@ class Feed extends Component {
     const memeNetwork = this.props.memeNetwork;
     const acc = this.props.account;
     let numberOfMemes = 0;
-    let arr = this.state.memes;
+    let arr = [];
     console.log(arr)
     const result = await memeNetwork.methods
       .numberOfMemes()
@@ -164,7 +164,7 @@ class Feed extends Component {
       this.setState({
         memes: [...arr]
       })
-
+      console.log(arr)
       console.log(this.state.memes)
     }
 
@@ -292,7 +292,7 @@ class Feed extends Component {
 
 
     return (
-      <div className="Feed">
+      <div style={{paddingBottom: '20px'}}>
 
         <div>
           {/*-----------UPLOAD MEME MOAL----------------------------  */}

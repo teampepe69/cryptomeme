@@ -17,7 +17,7 @@ import ProfilePage from "./Profile/pages/Profile.js";
 import Navbar from "./Navbar/pages/Navbar.js";
 import AdminPage from "./Admin/pages/Admin.js";
 
-import SideDrawer from './Subbar/components/SideDrawer'
+import SideDrawer from "./Subbar/components/SideDrawer";
 
 class App extends Component {
   constructor(props) {
@@ -42,8 +42,8 @@ class App extends Component {
 
       // Use web3 to get the user's accounts.
       const accounts = await web3.eth.getAccounts();
-      //this.setState({ account: accounts[0] });
-      this.setState({ account: "0x90F8bf6A479f320ead074411a4B0e7944Ea8c9C1" });
+      this.setState({ account: accounts[0] });
+      //this.setState({ account: "0x90F8bf6A479f320ead074411a4B0e7944Ea8c9C1" });
 
       // Get the Contract instances.
       const networkId = await web3.eth.net.getId();
@@ -120,7 +120,7 @@ class App extends Component {
             <div style={{ paddingLeft: "20px", width: "120px" }}>
               <SideDrawer />
             </div>
-            <div style={{ paddingLeft: "140px", paddingTop: "100px"}}>
+            <div style={{ paddingLeft: "140px", paddingTop: "100px" }}>
               <Route
                 exact
                 path="/"
@@ -139,10 +139,9 @@ class App extends Component {
             </div>
           </div>
         </Router>
-
       </div>
     );
   }
 }
 
-export default App
+export default App;

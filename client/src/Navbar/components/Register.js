@@ -12,13 +12,6 @@ import {
 import { withStyles } from "@material-ui/core/styles";
 import Swal from "sweetalert2";
 
-const EthereumTx = require("ethereumjs-tx").Transaction;
-const privateKey = new Buffer(
-  "4f3edf983ac636a65a842ce7c78d9aa706d3b113bce9c46f30d7d21715b23b1d",
-  "hex"
-);
-const ownerAddress = "0x90F8bf6A479f320ead074411a4B0e7944Ea8c9C1";
-
 const styles = theme => ({
   modal: {
     display: "flex",
@@ -47,17 +40,20 @@ const Register = props => {
   console.log(props.account);
   console.log(props.deployedMemeketPlaceNetworkData);
   const [open, setOpen] = React.useState(false);
-  const [name, setName] = React.useState("");
-  const [email, setEmail] = React.useState("");
-  const [usr, setUsr] = React.useState("");
-  const [password, setPwd] = React.useState("");
-  const [wallet, setWallet] = React.useState("");
-  const [displayPic, setDisplayPic] = React.useState(
+  const [username, setUsername] = React.useState("");
+  const [about, setAbout] = React.useState("");
+  const [displayPictureHash, setDisplayPictureHash] = React.useState(
     "QmP1KdPrFV9wKbDy5WvCDKd3YcyTBbFvqfvBCzjGrDiVLZ"
   );
+  const [displayName, setDisplayName] = React.useState("");
+  const [website, setWebsite] = React.useState("");
+  const [eWallet, setEwallet] = React.useState("");
 
   const handleOpen = () => {
-    setOpen(true);
+    props.web3.eth.getAccounts().then(result => {
+      setEwallet(result[0]);
+      setOpen(true);
+    });
   };
 
   const handleClose = () => {
@@ -66,67 +62,19 @@ const Register = props => {
 
   async function handleSubmit(event) {
     event.preventDefault();
-    console.log(email, password, name, usr, wallet, displayPic);
     // once below code is okay, just copy these two line
     handleClose();
-
-    /*
-    let testMethod = props.memeketPlaceNetwork.methods
-      .createUser(name, email, usr, password, wallet, displayPic)
-      .encodeABI();
-    console.log(testMethod);
-
-    const noncePromise = props.web3.eth.getTransactionCount(ownerAddress);
-    const gasPricePromise = props.web3.eth.getGasPrice();
-    const [nonce, gasPrice] = await Promise.all([
-      noncePromise,
-      gasPricePromise
-    ]);
-    console.log(nonce);
-    console.log(gasPrice);
-
-    var rawTransaction = {
-      from: ownerAddress,
-      gasPrice: props.web3.utils.toHex(gasPrice),
-      gasLimit: props.web3.utils.toHex(21000),
-      nonce: props.web3.utils.toHex(nonce),
-      to: props.deployedMemeketPlaceNetworkData.address,
-      data: testMethod
-    };
-
-    var tx = new EthereumTx(rawTransaction);
-    tx.sign(privateKey);
-    var serializedTx = tx.serialize();
-    props.web3.eth.sendTransaction(
-      "0x" + serializedTx.toString("hex"),
-      function(error, hash) {
-        if (!error) console.log(hash);
-      }
-      
-    );
-    */
-    // }
-    // const tx = new EthereumTx(testMethod);
-    // console.log(tx);
-    // tx.sign(privateKey);
-    // const serializedTx = tx.serialize();
-
-    // props.web3.eth.sendSignedTransaction(
-    //   "0x" + serializedTx.toString("hex"),
-    //   function(err, hash) {
-    //     if (!err) {
-    //       //this console.logs back information about the transaction
-    //       // including transaction Hash, block number, block Hash,gar used etc..
-    //       console.log("Txn Sent and hash is " + JSON.stringify(hash));
-    //     } else {
-    //       console.error(err);
-    //     }
-    //   }
-    // );
     props.memeketPlaceNetwork.methods
-      .createUser(name, email, usr, password, wallet, displayPic)
+      .createUser(
+        eWallet,
+        username,
+        about,
+        displayPictureHash,
+        displayName,
+        website
+      )
       .send({
-        from: props.account
+        from: eWallet
       })
       .then(result => {
         handleClose();
@@ -159,40 +107,37 @@ const Register = props => {
           <div style={{ width: "60%", float: "left" }}>
             <form className={classes.root} onSubmit={handleSubmit}>
               <TextField
-                label="Name"
-                variant="outlined"
-                style={{ width: "100%", paddingBottom: "10px" }}
-                onInput={e => setName(e.target.value)}
-                required
-              />
-              <TextField
-                label="Email"
-                variant="outlined"
-                style={{ width: "100%", paddingBottom: "10px" }}
-                onInput={e => setEmail(e.target.value)}
-                required
-                type="email"
-              />
-              <TextField
                 label="Username"
                 variant="outlined"
                 style={{ width: "100%", paddingBottom: "10px" }}
-                onInput={e => setUsr(e.target.value)}
+                onInput={e => setUsername(e.target.value)}
                 required
               />
               <TextField
-                label="Password"
+                label="About"
                 variant="outlined"
                 style={{ width: "100%", paddingBottom: "10px" }}
-                onInput={e => setPwd(e.target.value)}
+                onInput={e => setAbout(e.target.value)}
+              />
+              <TextField
+                label="DisplayName"
+                variant="outlined"
+                style={{ width: "100%", paddingBottom: "10px" }}
+                onInput={e => setDisplayName(e.target.value)}
                 required
-                type="password"
+              />
+              <TextField
+                label="Website"
+                variant="outlined"
+                style={{ width: "100%", paddingBottom: "10px" }}
+                onInput={e => setWebsite(e.target.value)}
               />
               <TextField
                 label="Wallet"
                 variant="outlined"
                 style={{ width: "100%", paddingBottom: "10px" }}
-                onInput={e => setWallet(e.target.value)}
+                onInput={e => setEwallet(e.target.value)}
+                defaultValue={eWallet}
                 required
               />
               <Button type="submit" className={classes.button} fullWidth>

@@ -1,41 +1,40 @@
-import * as React from 'react';
-import {
-  Button, Modal, Card, TextField, CardMedia
-} from '@material-ui/core';
-import { withStyles } from '@material-ui/core/styles';
+import * as React from "react";
+import { Button, Modal, Card, TextField, CardMedia } from "@material-ui/core";
+import { withStyles } from "@material-ui/core/styles";
+import Swal from "sweetalert2";
 
 const styles = theme => ({
   modal: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: theme.spacing(2, 4, 3),
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: theme.spacing(2, 4, 3)
   },
   paper: {
     backgroundColor: theme.palette.background.paper,
     boxShadow: theme.shadows[5],
-    padding: theme.spacing(2, 4, 3),
+    padding: theme.spacing(2, 4, 3)
   },
   button: {
-    height: '50px',
-    backgroundColor: '#6aa84fff',
-    color: 'whitesmoke',
+    height: "50px",
+    backgroundColor: "#6aa84fff",
+    color: "whitesmoke",
     "&:hover": {
       backgroundColor: "#6aa84fff"
     }
   }
 });
 
-const Login = (props) => {
-  const {
-    classes,
-  } = props;
+const Login = props => {
+  const { classes } = props;
   const [open, setOpen] = React.useState(false);
-  const [usr, setUsr] = React.useState('');
-  const [password, setPwd] = React.useState('');
+  const [eWallet, setEwallet] = React.useState("");
 
   const handleOpen = () => {
-    setOpen(true);
+    props.web3.eth.getAccounts().then(result => {
+      setEwallet(result[0]);
+      setOpen(true);
+    });
   };
 
   const handleClose = () => {
@@ -43,61 +42,72 @@ const Login = (props) => {
   };
 
   function handleSubmit(event) {
-      event.preventDefault();
-      console.log(password, usr); 
-     // code to submit form to backend here...
+    event.preventDefault();
+    props.userNetwork.methods
+      .checkUserExists(eWallet)
+      .call({ from: eWallet })
+      .then((result, error) => {
+        alert("User logged in");
+        sessionStorage.setItem("loggedIn", true);
+        sessionStorage.setItem("account", eWallet);
+        handleClose();
+        window.location.reload();
+      })
+      .catch(error => {
+        handleClose();
+        Swal.fire({
+          confirmButtonText: "LET ME IN",
+          text: "Your account does not exist, please register first",
+          imageUrl: require("../../img/Let_Me_In.jpg")
+        });
+      });
   }
-    return (
-      <div>
-        <Button onClick={handleOpen}>
-          Login
-        </Button>
-        <Modal
-          aria-labelledby="simple-modal-title"
-          aria-describedby="simple-modal-description"
-          open={open}
-          onClose={handleClose}
-          className={classes.modal}
-        >
-          <Card className={classes.paper}>
-            <div>
-              <h2 id="simple-modal-title" style={{position:'absolute', padding:'28px'}}>Login</h2>
-              <CardMedia
-                component="img"
-                className={classes.media}
-                image={require('../../img/loginpepe.png')}
-                title="Welcome Pepe"
-                style={{ float:'left', maxWidth:'30%',height:'auto'}}
+  return (
+    <div>
+      <Button onClick={handleOpen}>Login</Button>
+      <Modal
+        aria-labelledby="simple-modal-title"
+        aria-describedby="simple-modal-description"
+        open={open}
+        onClose={handleClose}
+        className={classes.modal}
+      >
+        <Card className={classes.paper}>
+          <div>
+            <h2
+              id="simple-modal-title"
+              style={{ position: "absolute", padding: "28px" }}
+            >
+              Login
+            </h2>
+            <CardMedia
+              component="img"
+              className={classes.media}
+              image={require("../../img/loginpepe.png")}
+              title="Welcome Pepe"
+              style={{ float: "left", maxWidth: "30%", height: "auto" }}
+            />
+          </div>
+
+          <div>
+            <form className={classes.root} onSubmit={handleSubmit}>
+              <TextField
+                label="Ewallet"
+                variant="outlined"
+                style={{ width: "100%", paddingBottom: "10px" }}
+                onInput={e => setEwallet(e.target.value)}
+                defaultValue={eWallet}
+                required
               />
-            </div>
-            
-            <div>
-              <form className={classes.root} onSubmit={handleSubmit}>
-                <TextField
-                  label="Username" 
-                  variant="outlined" 
-                  style={{width:'100%', paddingBottom:'10px'}}
-                  onInput={ e=>setUsr(e.target.value)}
-                  required
-                />
-                <TextField 
-                  label="Password"
-                  variant="outlined" 
-                  style={{width:'100%', paddingBottom:'10px'}}
-                  onInput={ e=>setPwd(e.target.value)}
-                  required
-                  type="password"
-                />
-                <Button type="submit" className={classes.button} fullWidth>
-                  Be Nice Man
-                </Button>
-              </form>
-            </div>
-          </Card>
-        </Modal>
-      </div>
-    );
-  };
-  
-  
-  export default withStyles(styles, { withTheme: true })(Login);
+              <Button type="submit" className={classes.button} fullWidth>
+                Be Nice Man
+              </Button>
+            </form>
+          </div>
+        </Card>
+      </Modal>
+    </div>
+  );
+};
+
+export default withStyles(styles, { withTheme: true })(Login);

@@ -43,126 +43,135 @@ contract User {
     using SafeMath for uint256;
     address admin = msg.sender;
 
-    enum userStates {pending, active, deactivated, moderator, admin}
+    enum userStates {pending, active, deactivated, admin}
 
     uint256 public numberOfUsers = 0;
 
     struct User {
         uint256 userId;
-        string name;
-        string email;
-        string username;
-        string passwordHash;
         address userWallet;
-        string displayPicturePath;
+        string username;
+        string about;
+        string displayPictureHash;
+        string displayName;
+        string website;
         userStates state;
     }
 
     User[] public users;
+    mapping(address => bool) userExists;
+    mapping(address => uint256) userIds;
 
     event UserCreated(
         uint256 userId,
-        string name,
-        string email,
-        string username,
         address userWallet,
-        string displayPicturePath
+        string username,
+        string about,
+        string displayPictureHash,
+        string displayName,
+        string website
     );
+    event UsernameChanged(address userWallet, string username);
+    event UserAboutChanged(address userWallet, string about);
+    event UserDisplayPictureChanged(
+        address userWallet,
+        string displayPictureHash
+    );
+    event UserDisplayNameChanged(address userWallet, string displayName);
+    event UserWebsiteChanged(address userWallet, string website);
+    event UserActivated(address userWallet);
+    event UserDeactivated(address userWallet);
 
-    event NameChanged(uint256 userId, string name);
-    event UserEmailChanged(uint256 userId, string email);
-    event UsernameChanged(uint256 userId, string username);
-    event UserPasswordChanged(uint256 userId, string passwordHash);
-    event UserWalletChanged(uint256 userId, address userWallet);
-    event UserDisplayPictureChanged(uint256 userId, string displayPicturePath);
-    event UserActivated(uint256 userId);
-    event UserDeactivated(uint256 userId);
-    event UserModeratored(uint256 userId);
-    event UserBecameAdmin(uint256 userId);
+    constructor() public {
+        //Create admin user
+        createUser(
+            msg.sender,
+            "administrator",
+            "I am the boss",
+            "QmP1KdPrFV9wKbDy5WvCDKd3YcyTBbFvqfvBCzjGrDiVLZ",
+            "BigPepeBoss",
+            "www.4chan.org"
+        );
+        users[userIds[msg.sender]].state = userStates.admin;
+    }
 
     function createUser(
-        string memory _name,
-        string memory _email,
-        string memory _username,
-        string memory _passwordHash,
         address _userWallet,
-        string memory _displayPicturePath
+        string memory _username,
+        string memory _about,
+        string memory _displayPictureHash,
+        string memory _displayName,
+        string memory _website
     ) public {
         User memory newUser = User(
             numberOfUsers,
-            _name,
-            _email,
-            _username,
-            _passwordHash,
             _userWallet,
-            _displayPicturePath,
+            _username,
+            _about,
+            _displayPictureHash,
+            _displayName,
+            _website,
             userStates.pending
         );
         users.push(newUser);
         emit UserCreated(
             numberOfUsers,
-            _name,
-            _email,
-            _username,
             _userWallet,
-            _displayPicturePath
+            _username,
+            _about,
+            _displayPictureHash,
+            _displayName,
+            _website
         );
+        userExists[_userWallet] = true;
+        userIds[_userWallet] = numberOfUsers;
         numberOfUsers = numberOfUsers.add(1);
     }
 
-    function setName(uint256 _userId, string memory _name) public {
-        users[_userId].name = _name;
-        emit NameChanged(_userId, _name);
+    function setUsername(address _userWallet, string memory _username) public {
+        users[userIds[_userWallet]].username = _username;
+        emit UsernameChanged(_userWallet, _username);
     }
 
-    function setEmail(uint256 _userId, string memory _email) public {
-        users[_userId].email = _email;
-        emit UserEmailChanged(_userId, _email);
+    function setUserAbout(address _userWallet, string memory _about) public {
+        users[userIds[_userWallet]].about = _about;
+        emit UserAboutChanged(_userWallet, _about);
     }
 
-    function setUsername(uint256 _userId, string memory _username) public {
-        users[_userId].username = _username;
-        emit UsernameChanged(_userId, _username);
+    function setUserDisplayPicture(
+        address _userWallet,
+        string memory _displayPictureHash
+    ) public {
+        users[userIds[_userWallet]].displayPictureHash = _displayPictureHash;
+        emit UserDisplayPictureChanged(_userWallet, _displayPictureHash);
     }
 
-    function setUserPassword(uint256 _userId, string memory _passwordHash)
+    function setUserDisplayName(address _userWallet, string memory _displayName)
         public
     {
-        users[_userId].passwordHash = _passwordHash;
-        emit UserPasswordChanged(_userId, _passwordHash);
+        users[userIds[_userWallet]].displayName = _displayName;
+        emit UserDisplayNameChanged(_userWallet, _displayName);
     }
 
-    function setUserWallet(uint256 _userId, address _userWallet) public {
-        users[_userId].userWallet = _userWallet;
-        emit UserWalletChanged(_userId, _userWallet);
+    function setUserWebsite(address _userWallet, string memory _website)
+        public
+    {
+        users[userIds[_userWallet]].website = _website;
+        emit UserWebsiteChanged(_userWallet, _website);
     }
 
-    function setDisplayPicturePath(
-        uint256 _userId,
-        string memory _displayPicturePath
-    ) public {
-        users[_userId].displayPicturePath = _displayPicturePath;
-        emit UserDisplayPictureChanged(_userId, _displayPicturePath);
+    function setUserAsDeactivated(address _userWallet) public {
+        users[userIds[_userWallet]].state = userStates.deactivated;
+        emit UserDeactivated(_userWallet);
     }
 
-    function setUserAsDeactivated(uint256 _userId) public {
-        users[_userId].state = userStates.deactivated;
-        emit UserDeactivated(_userId);
+    function setUserAsActive(address _userWallet) public {
+        users[userIds[_userWallet]].state = userStates.active;
+        emit UserActivated(_userWallet);
     }
 
-    function setUserAsActive(uint256 _userId) public {
-        users[_userId].state = userStates.active;
-        emit UserActivated(_userId);
-    }
-
-    function setUserAsModerator(uint256 _userId) public {
-        users[_userId].state = userStates.moderator;
-        emit UserModeratored(_userId);
-    }
-
-    function setUserAsAdmin(uint256 _userId) public {
-        users[_userId].state = userStates.admin;
-        emit UserBecameAdmin(_userId);
+    function checkUserExists(address _userWallet) public view returns (bool) {
+        return userExists[_userWallet];
     }
 
     /*

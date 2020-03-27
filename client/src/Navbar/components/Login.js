@@ -41,26 +41,36 @@ const Login = props => {
     setOpen(false);
   };
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault();
-    props.userNetwork.methods
+    let userExists = props.userNetwork.methods
       .checkUserExists(eWallet)
-      .call({ from: eWallet })
-      .then((result, error) => {
-        alert("User logged in");
-        sessionStorage.setItem("loggedIn", true);
-        sessionStorage.setItem("account", eWallet);
-        handleClose();
-        window.location.reload();
-      })
-      .catch(error => {
-        handleClose();
-        Swal.fire({
-          confirmButtonText: "LET ME IN",
-          text: "Your account does not exist, please register first",
-          imageUrl: require("../../img/Let_Me_In.jpg")
-        });
+      .call({ from: eWallet });
+    if (userExists) {
+      sessionStorage.setItem("loggedIn", true);
+      sessionStorage.setItem("account", eWallet);
+      let userIsAdmin = props.userNetwork.methods
+        .checkUserIsAdmin(eWallet)
+        .call({ from: eWallet });
+      if (userIsAdmin) {
+        sessionStorage.setItem("isAdmin", true);
+      }
+      handleClose();
+      Swal.fire({
+        title: "Login successful!",
+        icon: "success",
+        confirmButtonText: "Cool beans"
       });
+      window.location.reload();
+    } else {
+      handleClose();
+      Swal.fire({
+        confirmButtonText: "LET ME IN",
+        text:
+          "Your account does not exist or is not activated. Please register first",
+        imageUrl: require("../../img/Let_Me_In.jpg")
+      });
+    }
   }
   return (
     <div>

@@ -47,7 +47,7 @@ contract User {
 
     uint256 public numberOfUsers = 0;
 
-    struct User {
+    struct user {
         uint256 userId;
         address userWallet;
         string username;
@@ -58,7 +58,7 @@ contract User {
         userStates state;
     }
 
-    User[] public users;
+    user[] public users;
     mapping(address => bool) userExists;
     mapping(address => uint256) userIds;
 
@@ -103,7 +103,7 @@ contract User {
         string memory _displayName,
         string memory _website
     ) public {
-        User memory newUser = User(
+        user memory newUser = user(
             numberOfUsers,
             _userWallet,
             _username,
@@ -172,6 +172,10 @@ contract User {
 
     function checkUserExists(address _userWallet) public view returns (bool) {
         return userExists[_userWallet];
+    }
+
+    function checkUserIsAdmin(address _userWallet) public view returns (bool) {
+        return users[userIds[_userWallet]].state == userStates.admin;
     }
 
     /*

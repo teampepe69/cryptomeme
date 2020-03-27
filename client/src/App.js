@@ -117,10 +117,10 @@ class App extends Component {
             memeketPlaceNetwork={this.state.memeketPlaceNetwork}
           />
           <div style={{ paddingTop: "100px" }}>
-            <div style={{ paddingLeft: "20px", width: "120px", float: 'left' }}>
+            <div style={{ paddingLeft: "20px", width: "120px"}}>
               <SideDrawer />
             </div>
-            <div style={{ paddingLeft: "200px", float:'right', width:'100%'}}>
+            <div style={{ paddingLeft: "200px", width:'100%'}}>
               <Route
                 exact
                 path="/"

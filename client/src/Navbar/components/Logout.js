@@ -38,8 +38,9 @@ const Logout = props => {
 
   function handleSubmit(event) {
     event.preventDefault();
-    sessionStorage.setItem("loggedIn", false);
-    sessionStorage.setItem("account", "");
+    sessionStorage.removeItem("loggedIn");
+    sessionStorage.removeItem("account");
+    sessionStorage.removeItem("isAdmin");
     window.location.reload();
   }
   return (

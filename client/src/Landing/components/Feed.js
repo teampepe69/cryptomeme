@@ -23,7 +23,7 @@ const styles = theme => ({
   root: {
     width: '100%',
     // maxWidth: '80%',
-    marginTop: '3%',
+    marginTop: '10px',
     // marginBottom:'1%',
     display: 'flex',
     padding: theme.spacing(2),
@@ -39,8 +39,8 @@ const styles = theme => ({
   media: {
     // width: 150,
     // height: 200,
-    minWidth: '20%',
-    maxWidth: '20%',
+    minWidth: '200px',
+    maxWidth: '200px',
     boxShadow: '0 2px 8px 0 #c1c9d7, 0 -2px 8px 0 #cce1e9',
     flexShrink: '0',
     borderRadius: '12px',
@@ -103,7 +103,7 @@ class Feed extends Component {
 
     this.state = {
       buffer: null,
-      memes: [],
+      memes: this.props.meme,
       loading: false,
       open: false,
       memeTitle: '',
@@ -132,9 +132,9 @@ class Feed extends Component {
   //---When passing updated props over, calls getMeme----
   componentDidUpdate(prevProps) {
     if (prevProps !== this.props) {
-      console.log("Different")
-      console.log(prevProps)
-      console.log(this.props)
+      // console.log("Different")
+      // console.log(prevProps)
+      // console.log(this.props)
       if (this.props.memeNetwork !== null) {
         this.getMeme()
       }
@@ -149,15 +149,15 @@ class Feed extends Component {
     const acc = this.props.account;
     let numberOfMemes = 0;
     let arr = [];
-    console.log(arr)
+    // console.log(arr)
     const result = await memeNetwork.methods
       .numberOfMemes()
       .call({
         from: acc
       })
-    console.log(result)
+    // console.log(result)
     for (var i = 0; i < result; i++) {
-      console.log("index: ", i)
+      // console.log("index: ", i)
       const meme = await memeNetwork.methods.memes(i).call({ from: acc })
 
       // console.log(result)
@@ -165,8 +165,8 @@ class Feed extends Component {
       this.setState({
         memes: [...arr]
       })
-      console.log(arr)
-      console.log(this.state.memes)
+      // console.log(arr)
+      // console.log(this.state.memes)
     }
 
   }
@@ -294,78 +294,87 @@ class Feed extends Component {
 
   render() {
     const { classes } = this.props;
-
+    // console.log(this.state.memes)
 
     return (
-      <div style={{ paddingBottom: '20px' }}>
+      <div style={{ padding: '15px 15px 20px 15px' }}>
 
         <div>
-          {/*-----------UPLOAD MEME MOAL----------------------------  */}
-          <Button
-            onClick={() => this.handleOpen("create")}
-            variant="contained"
-            style={{ marginTop: '8px' }}
-            color="default" size="small"
-            startIcon={<CloudUploadIcon />}>
-            Create Meme
+          <Grid container direction="row">
+            <Grid container item xs={6}>
+              <Typography variant="h4">
+                Feed
+            </Typography>
+            </Grid>
+            <Grid container item xs={6} justify="flex-end">
+              {/*-----------UPLOAD MEME MOAL----------------------------  */}
+              <Button
+                onClick={() => this.handleOpen("create")}
+                variant="contained"
+                style={{ marginTop: '8px' }}
+                color="default" size="small"
+                startIcon={<CloudUploadIcon />}>
+                Create Meme
             </Button>
-          <Modal
-            aria-labelledby="simple-modal-title"
-            aria-describedby="simple-modal-description"
-            open={this.state.open}
-            onClose={() => this.handleClose("create")}
-            className={classes.modal}
-          >
-            <Card className={classes.paper}>
-              <div>
-                <h2 id="simple-modal-title" style={{ position: 'fixed' }}>Meme Time</h2>
-              </div>
 
-              <div>
-                <form onSubmit={this.handleSubmit} style={{ paddingTop: '50px' }}>
+              <Modal
+                aria-labelledby="simple-modal-title"
+                aria-describedby="simple-modal-description"
+                open={this.state.open}
+                onClose={() => this.handleClose("create")}
+                className={classes.modal}
+              >
+                <Card className={classes.paper}>
+                  <div>
+                    <h2 id="simple-modal-title" style={{ position: 'fixed' }}>Meme Time</h2>
+                  </div>
 
-                  <TextField
-                    id="memePath"
-                    type="file"
-                    variant="outlined"
-                    style={{ width: '100%', paddingBottom: '10px' }}
-                    onChange={this.captureFile}
-                    required
-                  />
+                  <div>
+                    <form onSubmit={this.handleSubmit} style={{ paddingTop: '50px' }}>
 
-                  <TextField
-                    // id="memeTitle"
-                    label="memeTitle"
-                    variant="outlined"
-                    style={{ width: '100%', paddingBottom: '10px' }}
-                    // inputRef={input => {
-                    //   this.memeTitle = input;
-                    // }}
-                    value={this.state.memeTitle}
-                    onChange={e => { this.setState({ memeTitle: e.target.value }) }}
-                    required
-                  />
-                  <TextField
-                    // id="memeDescription"
-                    label="memeDescription"
-                    variant="outlined"
-                    style={{ width: '100%', paddingBottom: '10px' }}
-                    // inputRef={input => {
-                    //   this.memeDescription = input;
-                    // }}
-                    value={this.state.memeDescription}
-                    onChange={e => { this.setState({ memeDescription: e.target.value }) }}
-                    required
+                      <TextField
+                        id="memePath"
+                        type="file"
+                        variant="outlined"
+                        style={{ width: '100%', paddingBottom: '10px' }}
+                        onChange={this.captureFile}
+                        required
+                      />
 
-                  />
-                  <Button type="submit" className={classes.button} fullWidth>
-                    What is life anyway?
+                      <TextField
+                        // id="memeTitle"
+                        label="memeTitle"
+                        variant="outlined"
+                        style={{ width: '100%', paddingBottom: '10px' }}
+                        // inputRef={input => {
+                        //   this.memeTitle = input;
+                        // }}
+                        value={this.state.memeTitle}
+                        onChange={e => { this.setState({ memeTitle: e.target.value }) }}
+                        required
+                      />
+                      <TextField
+                        // id="memeDescription"
+                        label="memeDescription"
+                        variant="outlined"
+                        style={{ width: '100%', paddingBottom: '10px' }}
+                        // inputRef={input => {
+                        //   this.memeDescription = input;
+                        // }}
+                        value={this.state.memeDescription}
+                        onChange={e => { this.setState({ memeDescription: e.target.value }) }}
+                        required
+
+                      />
+                      <Button type="submit" className={classes.button} fullWidth>
+                        What is life anyway?
                 </Button>
-                </form>
-              </div>
-            </Card>
-
-          </Modal>
+                    </form>
+                  </div>
+                </Card>
+              </Modal>
+            </Grid>
+          </Grid>
 
 
           {(this.state.memes && this.state.memes.length > 0) ?
@@ -406,9 +415,9 @@ class Feed extends Component {
                             onClick={(e) => {
                               this.likeMeme(meme.memeId);
                             }}>
-            
-                             <ThumbUpAltOutlinedIcon />
-     
+
+                            <ThumbUpAltOutlinedIcon />
+
                           </IconButton>
                           <Typography variant="button" color="primary" component="p" style={{ padding: '4px 5px' }}>
                             {meme.memeLikes.toString()}

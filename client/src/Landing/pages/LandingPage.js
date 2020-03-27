@@ -34,8 +34,8 @@ class LandingPage extends Component {
   componentDidUpdate(prevProps) {
     if (prevProps !== this.props) {
       console.log("Different")
-      console.log(prevProps)
-      console.log(this.props)
+      // console.log(prevProps)
+      // console.log(this.props)
 
       this.setState({
         account: this.props.account,
@@ -120,12 +120,12 @@ class LandingPage extends Component {
   render() {
     const { classes } = this.props;
     console.log(this.props)
-    console.log(this.props.memeketPlaceNetwork);
-    console.log(this.state.memeketPlaceNetwork)
+    // console.log(this.props.memeketPlaceNetwork);
+    // console.log(this.state.memeketPlaceNetwork)
 
 
     return (
-      <Container maxWidth="md">
+      <Container fixed>
       
           <Feed
             account={this.state.account}

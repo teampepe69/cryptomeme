@@ -43,13 +43,13 @@ const Login = props => {
 
   async function handleSubmit(event) {
     event.preventDefault();
-    let userExists = props.userNetwork.methods
+    let userExists = await props.userNetwork.methods
       .checkUserExists(eWallet)
       .call({ from: eWallet });
     if (userExists) {
       sessionStorage.setItem("loggedIn", true);
       sessionStorage.setItem("account", eWallet);
-      let userIsAdmin = props.userNetwork.methods
+      let userIsAdmin = await props.userNetwork.methods
         .checkUserIsAdmin(eWallet)
         .call({ from: eWallet });
       if (userIsAdmin) {

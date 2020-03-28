@@ -20,7 +20,10 @@ import AdminPage from "./Admin/pages/Admin.js";
 import SideDrawer from "./Subbar/components/SideDrawer";
 
 setGlobal({
-  web3: null
+  web3: null,
+  userNetwork: null,
+  memeNetwork: null,
+  memeketPlaceNetwork: null
 });
 
 class App extends Component {
@@ -63,6 +66,7 @@ class App extends Component {
           deployedMemeNetworkData.address
         );
         this.setState({ memeNetwork: memeNetwork });
+        this.setGlobal({ memeNetwork: memeNetwork });
         //this.setGlobal(memeNetwork => memeNetwork);
       }
 
@@ -75,6 +79,7 @@ class App extends Component {
           deployedUserNetworkData.address
         );
         this.setState({ userNetwork: userNetwork });
+        this.setGlobal({ userNetwork: userNetwork });
         //this.setGlobal(userNetwork => userNetwork);
       }
 
@@ -89,6 +94,7 @@ class App extends Component {
         this.setState({
           deployedMemeketPlaceNetworkData: deployedMemeketPlaceNetworkData
         });
+        this.setGlobal({ memeketPlaceNetwork: memeketPlaceNetwork });
         //this.setGlobal(memeketPlaceNetwork => memeketPlaceNetwork);
       }
 

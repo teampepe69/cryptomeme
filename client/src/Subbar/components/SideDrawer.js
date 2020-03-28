@@ -14,6 +14,7 @@ const styles = theme => ({
 const sideDrawer = props => {
   //const [global] = useGlobal();
   //console.log(global.web3);
+  const loggedIn = JSON.parse(sessionStorage.getItem("loggedIn"));
   const { classes } = props;
   let drawerClasses = "side-drawer";
   if (props.show) {
@@ -30,14 +31,16 @@ const sideDrawer = props => {
         >
           Home
         </Typography>
-        <Typography
-          variant="h5"
-          className={classes.title}
-          component={Link}
-          to="/profile"
-        >
-          Profile
-        </Typography>
+        {loggedIn && (
+          <Typography
+            variant="h5"
+            className={classes.title}
+            component={Link}
+            to="/profile"
+          >
+            Profile
+          </Typography>
+        )}
         <Typography
           variant="h5"
           className={classes.title}

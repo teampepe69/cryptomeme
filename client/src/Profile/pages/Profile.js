@@ -43,7 +43,7 @@ const ProfilePage = props => {
   console.log(userNetwork);
   const [web3] = useGlobal("web3");
   const [userData, setUserData] = React.useState();
-  const [userId, setUserId] = React.useState(0);
+  const [userId, setUserId] = React.useState(999);
   const [userWallet, setUserWallet] = React.useState(
     sessionStorage.getItem("account")
   );
@@ -86,7 +86,7 @@ const ProfilePage = props => {
         <Typography variant="h4" style={{ paddingBottom: "10px" }}>
           Profile
         </Typography>
-        <Card elevation={2} className={classes.card}>
+        <Card elevation={2} className={classes.card} onLoad={populateUserData}>
           <div style={{ width: "40%", float: "left", paddingLeft: "5%" }}>
             <Avatar src={tempDP} className={classes.avatar} />
             <Button color="primary" className={classes.displayButton}>
@@ -107,16 +107,12 @@ const ProfilePage = props => {
               paddingBottom: "20px"
             }}
           >
-            <form
-              className={classes.form}
-              onSubmit={handleSubmit}
-              onLoad={populateUserData}
-            >
+            <form className={classes.form} onSubmit={handleSubmit}>
               <Typography variant="h6">User ID</Typography>
               <TextField
                 variant="outlined"
                 disabled="true"
-                defaultValue={userId}
+                value={userId}
                 style={{ width: "100%", paddingBottom: "5px" }}
                 required
               />
@@ -124,7 +120,7 @@ const ProfilePage = props => {
               <TextField
                 variant="outlined"
                 disabled="true"
-                defaultValue={userWallet}
+                value={userWallet}
                 style={{ width: "100%", paddingBottom: "5px" }}
                 required
               />
@@ -132,7 +128,7 @@ const ProfilePage = props => {
               {console.log(username)}
               <TextField
                 variant="outlined"
-                defaultValue={username}
+                value={username}
                 style={{ width: "100%", paddingBottom: "5px" }}
                 onInput={e => setUsername(e.target.value)}
                 required
@@ -140,7 +136,7 @@ const ProfilePage = props => {
               <Typography variant="h6">About</Typography>
               <TextField
                 variant="outlined"
-                defaultValue={about}
+                value={about}
                 style={{ width: "100%", paddingBottom: "5px" }}
                 onInput={e => setAbout(e.target.value)}
                 required
@@ -148,7 +144,7 @@ const ProfilePage = props => {
               <Typography variant="h6">Display Picture Hash</Typography>
               <TextField
                 variant="outlined"
-                defaultValue={displayPictureHash}
+                value={displayPictureHash}
                 style={{ width: "100%", paddingBottom: "5px" }}
                 onInput={e => setDisplayPictureHash(e.target.value)}
                 required
@@ -156,7 +152,7 @@ const ProfilePage = props => {
               <Typography variant="h6">Display Name</Typography>
               <TextField
                 variant="outlined"
-                defaultValue={displayName}
+                value={displayName}
                 style={{ width: "100%", paddingBottom: "5px" }}
                 onInput={e => setDisplayPictureHash(e.target.value)}
                 required
@@ -164,7 +160,7 @@ const ProfilePage = props => {
               <Typography variant="h6">Website</Typography>
               <TextField
                 variant="outlined"
-                defaultValue={website}
+                value={website}
                 style={{ width: "100%", paddingBottom: "5px" }}
                 onInput={e => setWebsite(e.target.value)}
                 required

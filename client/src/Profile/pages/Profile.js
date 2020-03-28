@@ -20,6 +20,8 @@ import {
 import tempDP from "../../img/sadpepe.png";
 import peperoni from "../../img/peperoni.png";
 import Container from "@material-ui/core/Container";
+import ipfs from "../../ipfs";
+import Swal from "sweetalert2";
 
 const styles = theme => ({
   root: {
@@ -40,7 +42,7 @@ const styles = theme => ({
 const ProfilePage = props => {
   const { classes } = props;
   const [userNetwork] = useGlobal("userNetwork");
-  console.log(userNetwork);
+  const [memeketPlaceNetwork] = useGlobal("memeketPlaceNetwork");
   const [web3] = useGlobal("web3");
   const [userData, setUserData] = React.useState();
   const [userId, setUserId] = React.useState(999);
@@ -54,6 +56,7 @@ const ProfilePage = props => {
     "displayPictureHash"
   );
   const [website, setWebsite] = React.useState("website");
+  var temporaryHash = "";
 
   //------------Fetch User Properties-------------------------
   async function populateUserData() {
@@ -70,14 +73,59 @@ const ProfilePage = props => {
     setUserWallet(user[1]);
     setUsername(user[2]);
     setAbout(user[3]);
-    setDisplayName(user[4]);
-    setDisplayPictureHash(user[5]);
+    setDisplayPictureHash(user[4]);
+    setDisplayName(user[5]);
     setWebsite(user[6]);
   }
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault();
-    // code to submit form to backend here...
+    console.log(
+      userWallet,
+      username,
+      about,
+      displayPictureHash,
+      displayName,
+      website
+    );
+
+    var updateProfile = await memeketPlaceNetwork.methods
+      .updateUserProfile(
+        userWallet,
+        username,
+        about,
+        displayPictureHash,
+        displayName,
+        website
+      )
+      .send({ from: userWallet });
+    Swal.fire({
+      title: "Update profile successful!",
+      icon: "success",
+      confirmButtonText: "Cool beans"
+    });
+    populateUserData();
+  }
+
+  function updateDisplayPicture(event) {
+    console.log("old", displayPictureHash);
+    event.preventDefault();
+    var file = event.target.files[0];
+    var reader = new window.FileReader();
+    reader.readAsArrayBuffer(file);
+    reader.onloadend = () => {
+      ipfs.files.add(Buffer(reader.result), (error, result) => {
+        if (error) {
+          console.error(error);
+          return;
+        }
+        const hash = result[0].hash;
+        console.log(hash);
+        setDisplayPictureHash(hash);
+        console.log("displayHash", displayPictureHash);
+        //To figure out why not updating
+      });
+    };
   }
 
   return (
@@ -88,7 +136,10 @@ const ProfilePage = props => {
         </Typography>
         <Card elevation={2} className={classes.card} onLoad={populateUserData}>
           <div style={{ width: "40%", float: "left", paddingLeft: "5%" }}>
-            <Avatar src={tempDP} className={classes.avatar} />
+            <Avatar
+              src={`https://ipfs.io/ipfs/${displayPictureHash}`}
+              className={classes.avatar}
+            />
             <Button color="primary" className={classes.displayButton}>
               Change Display Picture
             </Button>
@@ -141,20 +192,19 @@ const ProfilePage = props => {
                 onInput={e => setAbout(e.target.value)}
                 required
               />
-              <Typography variant="h6">Display Picture Hash</Typography>
+              <Typography variant="h6">Display Picture</Typography>
               <TextField
                 variant="outlined"
-                value={displayPictureHash}
+                type="file"
                 style={{ width: "100%", paddingBottom: "5px" }}
-                onInput={e => setDisplayPictureHash(e.target.value)}
-                required
+                onChange={updateDisplayPicture}
               />
               <Typography variant="h6">Display Name</Typography>
               <TextField
                 variant="outlined"
                 value={displayName}
                 style={{ width: "100%", paddingBottom: "5px" }}
-                onInput={e => setDisplayPictureHash(e.target.value)}
+                onInput={e => setDisplayName(e.target.value)}
                 required
               />
               <Typography variant="h6">Website</Typography>

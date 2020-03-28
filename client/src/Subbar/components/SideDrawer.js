@@ -14,7 +14,6 @@ const styles = theme => ({
 const sideDrawer = props => {
   //const [global] = useGlobal();
   //console.log(global.web3);
-  const loggedIn = JSON.parse(sessionStorage.getItem("loggedIn"));
   const { classes } = props;
   let drawerClasses = "side-drawer";
   if (props.show) {

@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, setGlobal } from "reactn";
 import Swal from "sweetalert2";
 import SimpleStorageContract from "./contracts/SimpleStorage.json";
 import Meme from "./contracts/Meme.json";
@@ -18,6 +18,13 @@ import Navbar from "./Navbar/pages/Navbar.js";
 import AdminPage from "./Admin/pages/Admin.js";
 
 import SideDrawer from "./Subbar/components/SideDrawer";
+
+setGlobal({
+  web3: null,
+  userNetwork: null,
+  memeNetwork: null,
+  memeketPlaceNetwork: null
+});
 
 class App extends Component {
   constructor(props) {
@@ -39,6 +46,7 @@ class App extends Component {
       // Get network provider and web3 instance.
       const web3 = await getWeb3();
       this.setState({ web3: web3 });
+      this.setGlobal({ web3: web3 });
 
       // Use web3 to get the user's accounts.
       const accounts = await web3.eth.getAccounts();
@@ -58,6 +66,8 @@ class App extends Component {
           deployedMemeNetworkData.address
         );
         this.setState({ memeNetwork: memeNetwork });
+        this.setGlobal({ memeNetwork: memeNetwork });
+        //this.setGlobal(memeNetwork => memeNetwork);
       }
 
       // Get User instance and all the Memes
@@ -69,6 +79,8 @@ class App extends Component {
           deployedUserNetworkData.address
         );
         this.setState({ userNetwork: userNetwork });
+        this.setGlobal({ userNetwork: userNetwork });
+        //this.setGlobal(userNetwork => userNetwork);
       }
 
       //Get Memeketplace instance
@@ -82,6 +94,8 @@ class App extends Component {
         this.setState({
           deployedMemeketPlaceNetworkData: deployedMemeketPlaceNetworkData
         });
+        this.setGlobal({ memeketPlaceNetwork: memeketPlaceNetwork });
+        //this.setGlobal(memeketPlaceNetwork => memeketPlaceNetwork);
       }
 
       // Set web3, accounts, and contract to the state, and then proceed with an
@@ -117,10 +131,10 @@ class App extends Component {
             memeketPlaceNetwork={this.state.memeketPlaceNetwork}
           />
           <div style={{ paddingTop: "100px" }}>
-            <div style={{ paddingLeft: "20px", width: "120px"}}>
+            <div style={{ paddingLeft: "20px", width: "120px" }}>
               <SideDrawer />
             </div>
-            <div style={{ paddingLeft: "200px", width:'100%'}}>
+            <div style={{ paddingLeft: "200px", width: "100%" }}>
               <Route
                 exact
                 path="/"

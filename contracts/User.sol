@@ -1,6 +1,7 @@
 pragma solidity ^0.5.0;
 import "../node_modules/@openzeppelin/contracts/math/SafeMath.sol";
 
+
 contract User {
     /*
     modifier adminOnly() {
@@ -59,8 +60,8 @@ contract User {
     }
 
     user[] public users;
-    mapping(address => bool) userExists;
-    mapping(address => uint256) userIds;
+    mapping(address => bool) public userExists;
+    mapping(address => uint256) public userIds;
 
     event UserCreated(
         uint256 userId,
@@ -232,5 +233,4 @@ contract User {
         return following[userAd];
     }
     */
-
 }

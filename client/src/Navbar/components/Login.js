@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useGlobal } from "reactn";
 import { Button, Modal, Card, TextField, CardMedia } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
 import Swal from "sweetalert2";

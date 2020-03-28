@@ -10,7 +10,7 @@ contract Meme is ERC721 {
 
     enum memeStates {approved, rejected, pending}
 
-    struct Meme {
+    struct meme {
         uint256 memeId;
         uint256 memeLikes;
         uint256 memeDislikes;
@@ -22,7 +22,7 @@ contract Meme is ERC721 {
         memeStates memeState;
     }
 
-    Meme[] public memes;
+    meme[] public memes;
 
     event MemeCreated(
         uint256 memeId,
@@ -46,7 +46,7 @@ contract Meme is ERC721 {
         string memory _memeTitle,
         string memory _memeDescription
     ) public returns (uint256) {
-        Meme memory _meme = Meme(
+        meme memory _meme = meme(
             numberOfMemes,
             0,
             0,

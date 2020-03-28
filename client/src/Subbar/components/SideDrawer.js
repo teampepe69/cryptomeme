@@ -17,6 +17,8 @@ const sideDrawer = props => {
     if (props.show) {
       drawerClasses = 'side-drawer open'
     }
+    var loggedIn = JSON.parse(sessionStorage.getItem("loggedIn"));
+    var isAdmin = JSON.parse(sessionStorage.getItem("isAdmin"));
     return (
       <nav className={drawerClasses}>
         <ul>
@@ -28,30 +30,36 @@ const sideDrawer = props => {
           >
             Home
           </Typography>
-          <Typography
-            variant="h5"
-            className={classes.title}
-            component={Link}
-            to="/profile"
-          >
-            Profile
-          </Typography>
-          <Typography
-            variant="h5"
-            className={classes.title}
-            component={Link}
-            to="/feed"
-          >
-            Feed
-          </Typography>
-          <Typography
-            variant="h5"
-            className={classes.title}
-            component={Link}
-            to="/following"
-          >
-            Following
-          </Typography>
+          {loggedIn && 
+            <Typography
+              variant="h5"
+              className={classes.title}
+              component={Link}
+              to="/feed"
+            >
+              Feed
+            </Typography>
+          }
+          {loggedIn && 
+            <Typography
+              variant="h5"
+              className={classes.title}
+              component={Link}
+              to="/profile"
+            >
+              Profile
+            </Typography>
+          }
+          {loggedIn && 
+            <Typography
+              variant="h5"
+              className={classes.title}
+              component={Link}
+              to="/following"
+            >
+              Following
+            </Typography>
+          }
           <Typography
             variant="h5"
             className={classes.title}
@@ -59,7 +67,18 @@ const sideDrawer = props => {
             to="/market"
           >
             Market
+          </Typography>
+          {isAdmin && 
+            <Typography
+              variant="h5"
+              className={classes.title}
+              component={Link}
+              to="/admin"
+            >
+              Admin
             </Typography>
+          }
+
         </ul>
       </nav>
     )

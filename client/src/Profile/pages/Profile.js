@@ -1,4 +1,4 @@
-import React, { useGlobal } from "reactn";
+import React, { useGlobal, useEffect } from "reactn";
 import { Link } from "react-router-dom";
 import { withStyles } from "@material-ui/core/styles";
 import {
@@ -56,17 +56,15 @@ const ProfilePage = props => {
     "displayPictureHash"
   );
   const [website, setWebsite] = React.useState("website");
-  var temporaryHash = "";
-
+  useEffect(() => {
+    populateUserData()
+  }, []);
   //------------Fetch User Properties-------------------------
   async function populateUserData() {
     var account = sessionStorage.getItem("account");
-    console.log(account);
-    console.log(userNetwork);
     var userId = await userNetwork.methods
       .userIds(account)
       .call({ from: account });
-    console.log(userId);
     var user = await userNetwork.methods.users(userId).call({ from: account });
     setUserData(user);
     setUserId(user[0]);
@@ -80,16 +78,7 @@ const ProfilePage = props => {
 
   async function handleSubmit(event) {
     event.preventDefault();
-    console.log(
-      userWallet,
-      username,
-      about,
-      displayPictureHash,
-      displayName,
-      website
-    );
-
-    var updateProfile = await memeketPlaceNetwork.methods
+    await memeketPlaceNetwork.methods
       .updateUserProfile(
         userWallet,
         username,
@@ -108,7 +97,6 @@ const ProfilePage = props => {
   }
 
   function updateDisplayPicture(event) {
-    console.log("old", displayPictureHash);
     event.preventDefault();
     var file = event.target.files[0];
     var reader = new window.FileReader();
@@ -116,14 +104,11 @@ const ProfilePage = props => {
     reader.onloadend = () => {
       ipfs.files.add(Buffer(reader.result), (error, result) => {
         if (error) {
-          console.error(error);
           return;
         }
         const hash = result[0].hash;
-        console.log(hash);
         setDisplayPictureHash(hash);
-        console.log("displayHash", displayPictureHash);
-        //To figure out why not updating
+        return hash;
       });
     };
   }
@@ -134,15 +119,12 @@ const ProfilePage = props => {
         <Typography variant="h4" style={{ paddingBottom: "10px" }}>
           Profile
         </Typography>
-        <Card elevation={2} className={classes.card} onLoad={populateUserData}>
+        <Card elevation={2} className={classes.card}>
           <div style={{ width: "40%", float: "left", paddingLeft: "5%" }}>
             <Avatar
               src={`https://ipfs.io/ipfs/${displayPictureHash}`}
               className={classes.avatar}
             />
-            <Button color="primary" className={classes.displayButton}>
-              Change Display Picture
-            </Button>
             <br />
             <Typography variant="h6">Current Tokens</Typography>
             <div style={{ width: "20%", float: "left" }}>
@@ -176,7 +158,6 @@ const ProfilePage = props => {
                 required
               />
               <Typography variant="h6">Username</Typography>
-              {console.log(username)}
               <TextField
                 variant="outlined"
                 value={username}
@@ -197,7 +178,7 @@ const ProfilePage = props => {
                 variant="outlined"
                 type="file"
                 style={{ width: "100%", paddingBottom: "5px" }}
-                onChange={updateDisplayPicture}
+                onChange={e => updateDisplayPicture(e)}
               />
               <Typography variant="h6">Display Name</Typography>
               <TextField

@@ -136,17 +136,20 @@ const MemeFeed = props => {
     const [buffer, setBuffer] = React.useState('');
     const [userId, setUserId] = React.useState(null);
     const loggedIn = JSON.parse(sessionStorage.getItem("loggedIn"));
+    const [memeOwners, setMemeOwners] = React.useState([]);
 
     useEffect(() => {
-        // console.log(memeketPlaceNetwork)
-        // console.log(memeNetwork)
         if (memeNetwork && memeketPlaceNetwork !== null) {
             populateMeme()
         }
-        else {
-            console.log("Dead")
-        }
     });
+
+    useEffect(() => {
+        return () => {
+            console.log("cleaned up");
+        };
+    }, []);
+
 
 
     async function populateMeme() {
@@ -158,13 +161,22 @@ const MemeFeed = props => {
         // console.log(memeNetwork)
 
         let arr = [];
+        let memeOwners = [];
         const result = await memeNetwork.methods.numberOfMemes().call();
         for (var i = 0; i < result; i++) {
             const meme = await memeNetwork.methods.memes(i).call();
+
+            const userId = await userNetwork.methods
+                .userIds(meme.memeOwner)
+                .call();
+
+            const user = await userNetwork.methods.users(userId).call({ from: acc });
+            memeOwners = memeOwners.concat(user);
             arr = arr.concat(meme);
         }
         setMemes(arr)
-        // console.log(memes)
+        setMemeOwners(memeOwners);
+
     };
 
     //----------------CREATE MEME-------------
@@ -176,10 +188,9 @@ const MemeFeed = props => {
             .send({
                 from: acc
             })
-            .then(() => {
-                updateMeme();
-                handleClose("create");
-            });
+        updateMeme();
+        handleClose("create");
+            
     };
 
     //----------Update the meme feed when meme is created-------
@@ -187,14 +198,29 @@ const MemeFeed = props => {
     async function updateMeme() {
         const acc = sessionStorage.getItem("account");
         var arr = memes
+        var arr_owner = memeOwners
+
         const numOfMemes = await memeNetwork.methods
             .numberOfMemes()
             .call({ from: acc });
         const newMeme = await memeNetwork.methods
             .memes(numOfMemes - 1)
             .call({ from: acc });
+
+        const userId = await userNetwork.methods
+            .userIds(newMeme.memeOwner)
+            .call({ from: acc });
+
+        const user = await userNetwork.methods
+            .users(userId)
+            .call({ from: acc });
+
+        // console.log(user);
         arr = arr.concat(newMeme);
+        arr_owner = arr_owner.concat(user);
         setMemes(arr);
+        setMemeOwners(arr_owner);
+
     }
 
 
@@ -249,11 +275,6 @@ const MemeFeed = props => {
         const file = event.target.files[0];
         const reader = new window.FileReader();
         reader.readAsArrayBuffer(file);
-        // reader.onloadend = () => {
-        //     setBuffer(reader.result)
-        //     // this.setState({ buffer: Buffer(reader.result) });
-        //     console.log("buffer", buffer);
-        // };
         reader.onloadend = () => {
             ipfs.files.add(Buffer(reader.result), (error, result) => {
                 if (error) {
@@ -261,7 +282,6 @@ const MemeFeed = props => {
                 }
                 const hash = result[0].hash;
                 setBuffer(hash);
-                console.log(buffer)
                 return hash;
             });
         };
@@ -270,18 +290,6 @@ const MemeFeed = props => {
     //------------SUBMIT FORM-------------------
     function handleSubmit(event) {
         event.preventDefault();
-        // ipfs.files.add(buffer, (error, result) => {
-        //     if (error) {
-        //         console.error(error);
-        //         return;
-        //     }
-        //     const path = result[0].hash;
-        //     const title = memeTitle;
-        //     const description = memeDescription;
-        //     createMeme(path, title, description);
-        // });
-        console.log(buffer)
-        console.log(memeDescription)
         createMeme(buffer, memeTitle, memeDescription);
     };
 
@@ -399,7 +407,7 @@ const MemeFeed = props => {
 
                 {memes && memes.length > 0 ? (
                     memes.map((meme, key) => {
-                   
+
                         return (
                             /*------------- MEME CARDS ---------------------------*/
                             <Card key={key} className={classes.root}>
@@ -411,10 +419,14 @@ const MemeFeed = props => {
                                 <CardHeader className={classes.head}
                                     avatar={
                                         <Avatar aria-label="recipe" className={classes.avatar}>
-                                            R
+
                                         </Avatar>
                                     }
-                                    title="user"
+                                    // title={Promise.resolve(userNetwork.methods.users(userNetwork.methods.userIds(meme.memeOwner).call()).call().displayName)}
+                                    title={memeOwners.length > 0 && memeOwners[key]  ?
+                                        memeOwners[key].displayName :
+                                        'Nobody'}
+                                    // title="User1231"
 
                                 />
                                 <div className={classes.body}>
@@ -429,15 +441,15 @@ const MemeFeed = props => {
                                         <Typography gutterBottom variant="h5" component="h2">
                                             {meme.memeTitle}
                                         </Typography>
-                                        <Typography
+                                        {/* <Typography
                                             variant="body1"
                                             color="textSecondary"
                                             component="p"
                                         >
                                             {meme.memePath}
-                                        </Typography>
+                                        </Typography> */}
                                         <Typography
-                                            variant="body2"
+                                            variant="body1"
                                             color="textSecondary"
                                             component="p"
                                             style={{ textAlign: "justify" }}

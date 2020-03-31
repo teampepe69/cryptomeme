@@ -139,10 +139,12 @@ const MemeFeed = props => {
     const [memeOwners, setMemeOwners] = React.useState([]);
 
     useEffect(() => {
-        if (memeNetwork && memeketPlaceNetwork !== null) {
-            populateMeme()
-        }
-    });
+        console.log(memeNetwork)
+        // if (memeNetwork && memeketPlaceNetwork !== null) {
+        //     populateMeme()
+        // }
+        populateMeme()
+    }, [memeNetwork, memeketPlaceNetwork, userNetwork]);
 
     useEffect(() => {
         return () => {
@@ -162,20 +164,44 @@ const MemeFeed = props => {
 
         let arr = [];
         let memeOwners = [];
-        const result = await memeNetwork.methods.numberOfMemes().call();
-        for (var i = 0; i < result; i++) {
-            const meme = await memeNetwork.methods.memes(i).call();
 
-            const userId = await userNetwork.methods
-                .userIds(meme.memeOwner)
-                .call();
+        try {
+            if (memeNetwork && memeketPlaceNetwork && userNetwork) {
 
-            const user = await userNetwork.methods.users(userId).call({ from: acc });
-            memeOwners = memeOwners.concat(user);
-            arr = arr.concat(meme);
+
+                const result = await memeNetwork.methods.numberOfMemes().call();
+                for (var i = 0; i < result; i++) {
+                    const meme = await memeNetwork.methods.memes(i).call();
+                    arr = arr.concat(meme);
+                    
+                    const address = meme.memeOwner
+                    const userId = await userNetwork.methods
+                        .userIds(address)
+                        .call();
+
+                    const user = await userNetwork.methods.users(userId).call({ from: acc });
+
+                    memeOwners = memeOwners.concat(user);
+                    setMemes(arr)
+                    setMemeOwners(memeOwners);
+                }
+
+              
+                console.log(memes)
+
+                // .then(async () => {
+                //     console.log(memes)
+             
+
+            }
+            else {
+                console.log("Null networks")
+            }
+        } catch (err) {
+            console.log(err)
         }
-        setMemes(arr)
-        setMemeOwners(memeOwners);
+
+
 
     };
 
@@ -190,7 +216,7 @@ const MemeFeed = props => {
             })
         updateMeme();
         handleClose("create");
-            
+
     };
 
     //----------Update the meme feed when meme is created-------
@@ -207,16 +233,19 @@ const MemeFeed = props => {
             .memes(numOfMemes - 1)
             .call({ from: acc });
 
-        const userId = await userNetwork.methods
-            .userIds(newMeme.memeOwner)
-            .call({ from: acc });
+        arr = arr.concat(newMeme);
+        const address = newMeme.memeOwner
 
+        const userId = await userNetwork.methods
+            .userIds(address)
+            .call({ from: acc });
+        
         const user = await userNetwork.methods
             .users(userId)
             .call({ from: acc });
 
         // console.log(user);
-        arr = arr.concat(newMeme);
+
         arr_owner = arr_owner.concat(user);
         setMemes(arr);
         setMemeOwners(arr_owner);
@@ -423,10 +452,10 @@ const MemeFeed = props => {
                                         </Avatar>
                                     }
                                     // title={Promise.resolve(userNetwork.methods.users(userNetwork.methods.userIds(meme.memeOwner).call()).call().displayName)}
-                                    title={memeOwners.length > 0 && memeOwners[key]  ?
+                                    title={memeOwners.length > 0 && memeOwners[key] ?
                                         memeOwners[key].displayName :
-                                        'Nobody'}
-                                    // title="User1231"
+                                        ''}
+                                // title="User1231"
 
                                 />
                                 <div className={classes.body}>
@@ -592,7 +621,7 @@ const MemeFeed = props => {
                     })
                 ) : (
                         <div>
-                            <CircularProgress />
+                            <p>Nothing</p>
                         </div>
                     )}
             </div>

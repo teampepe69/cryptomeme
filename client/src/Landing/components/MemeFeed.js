@@ -173,7 +173,7 @@ const MemeFeed = props => {
                 for (var i = 0; i < result; i++) {
                     const meme = await memeNetwork.methods.memes(i).call();
                     arr = arr.concat(meme);
-                    
+
                     const address = meme.memeOwner
                     const userId = await userNetwork.methods
                         .userIds(address)
@@ -186,12 +186,12 @@ const MemeFeed = props => {
                     setMemeOwners(memeOwners);
                 }
 
-              
+
                 console.log(memes)
 
                 // .then(async () => {
                 //     console.log(memes)
-             
+
 
             }
             else {
@@ -239,7 +239,7 @@ const MemeFeed = props => {
         const userId = await userNetwork.methods
             .userIds(address)
             .call({ from: acc });
-        
+
         const user = await userNetwork.methods
             .users(userId)
             .call({ from: acc });
@@ -445,19 +445,24 @@ const MemeFeed = props => {
                                         User
                                         </Avatar>
                                 </div> */}
-                                <CardHeader className={classes.head}
-                                    avatar={
-                                        <Avatar aria-label="recipe" className={classes.avatar}>
+                                {memeOwners.length > 0 && memeOwners[key] ? 
+                                    <CardHeader className={classes.head}
+                                        avatar={
+                                            <Avatar
+                                                aria-label="recipe"
+                                                className={classes.avatar}
+                                                src={`https://ipfs.io/ipfs/${memeOwners[key].displayPictureHash}`}
+                                            />
 
-                                        </Avatar>
-                                    }
-                                    // title={Promise.resolve(userNetwork.methods.users(userNetwork.methods.userIds(meme.memeOwner).call()).call().displayName)}
-                                    title={memeOwners.length > 0 && memeOwners[key] ?
-                                        memeOwners[key].displayName :
-                                        ''}
-                                // title="User1231"
+                                        }
+                                        // title={Promise.resolve(userNetwork.methods.users(userNetwork.methods.userIds(meme.memeOwner).call()).call().displayName)}
+                                        title={memeOwners.length > 0 && memeOwners[key] ?
+                                            memeOwners[key].displayName :
+                                            ''}
+                                    // title="User1231"
 
-                                />
+                                    />
+                                 : null}
                                 <div className={classes.body}>
                                     <CardMedia
                                         className={classes.media}

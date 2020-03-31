@@ -88,7 +88,6 @@ const Users = (props) => {
   };
 
   const openModal = (user) => {
-    console.log(user)
     const targetUser = { uid: user.uid, username: user.username, email:user.email, state:user.state};
     setUser(targetUser); 
     setOpen(true);

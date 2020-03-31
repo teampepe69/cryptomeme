@@ -1,4 +1,5 @@
 pragma solidity ^0.5.0;
+pragma experimental ABIEncoderV2;
 import "../node_modules/@openzeppelin/contracts/math/SafeMath.sol";
 
 
@@ -82,7 +83,8 @@ contract User {
     event UserWebsiteChanged(address userWallet, string website);
     event UserActivated(address userWallet);
     event UserDeactivated(address userWallet);
-
+    event UserNewAdmin(address userWallet);
+    
     constructor() public {
         //Create admin user
         createUser(
@@ -171,12 +173,36 @@ contract User {
         emit UserActivated(_userWallet);
     }
 
+    function setUserAsAdmin(address _userWallet) public {
+        users[userIds[_userWallet]].state = userStates.admin;
+        emit UserNewAdmin(_userWallet);
+    }
+
     function checkUserExists(address _userWallet) public view returns (bool) {
         return userExists[_userWallet];
     }
 
     function checkUserIsAdmin(address _userWallet) public view returns (bool) {
         return users[userIds[_userWallet]].state == userStates.admin;
+    }
+
+    function checkUserIsActive(address _userWallet) public view returns (bool) {
+        return users[userIds[_userWallet]].state == userStates.active;
+    }
+
+    function getUser(uint256 i) public view returns(user memory) {
+        //require(i < numberOfUsers);
+        return users[i];
+    }
+
+    function getNumberUsers() public view returns(uint256) {
+        //require(i < numberOfUsers);
+        return numberOfUsers;
+    }
+
+    function getUserAddress(uint256 i) public view returns(address) {
+        //require(i < numberOfUsers);
+        return users[i].userWallet;
     }
 
     /*

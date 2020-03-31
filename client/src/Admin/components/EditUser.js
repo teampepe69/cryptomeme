@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useGlobal, useEffect } from "reactn";
 import {
   Button, Modal, Card, TextField, CardMedia, Typography
 } from '@material-ui/core';
@@ -38,19 +39,57 @@ const EditUser = (props) => {
   const {
     classes, modalState, handleClose, userInfo
   } = props;
+  const [userNetwork] = useGlobal("userNetwork");
+  const [memeketPlaceNetwork] = useGlobal("memeketPlaceNetwork");
+  const [web3] = useGlobal("web3");
 
-  const handleActivate = (user) => {
-    console.log(user)
-    
+  async function handleActivate(user) {
+    // Set sender
+    let result = await web3.eth.getAccounts();
+    // Find user address
+    let userAddress = await userNetwork.methods.getUserAddress(user.uid).call({from : result[0]});
+    // Activate user
+    let isActive  =await userNetwork.methods.checkUserIsActive(userAddress).call({from : result[0]});
+    console.log("before activation isActive:", isActive)
+    await userNetwork.methods.setUserAsActive(userAddress).send({from : result[0]});
+    let isActive2  =await userNetwork.methods.checkUserIsActive(userAddress).call({from : result[0]});
+    console.log("after activation isActive:", isActive2)
   };
 
-  const handlePromote = (user) => {
+  /* const handleActivate = (user) => {
     console.log(user)
-    
+    let userExists = await props.userNetwork.methods
+      .checkUserExists(eWallet)
+      .call({ from: eWallet });
+  }; */
+
+  async function  handlePromote  (user) {
+    console.log(user)
+    // Set sender
+    let result = await web3.eth.getAccounts();
+    // Find user address
+    let userAddress = await userNetwork.methods.getUserAddress(user.uid).call({from : result[0]});
+    //let userAddress = "0xBB336C1C31e7151437C077aaF94F7FE272b38CAa"
+    // Activate user
+    let isAdmin  =await userNetwork.methods.checkUserIsAdmin(userAddress).call({from : result[0]});
+    console.log("before promotion isActive:", isAdmin)
+    await userNetwork.methods.setUserAsAdmin(userAddress).send({from : result[0]});
+    let isAdmin2  =await userNetwork.methods.checkUserIsAdmin(userAddress).call({from : result[0]});
+    console.log("after promotion isActive:", isAdmin2)
   };
 
-  const handleDeactivate = (user) => {
-    console.log(user)
+  async function  handleDeactivate (user) {
+    // Set sender
+    let result = await web3.eth.getAccounts();
+    // Find user address
+    let userAddress = await userNetwork.methods.getUserAddress(user.uid).call({from : result[0]});
+    //let userAddress = "0xBB336C1C31e7151437C077aaF94F7FE272b38CAa"
+    // Activate user
+    let isActive  =await userNetwork.methods.checkUserIsActive(userAddress).call({from : result[0]});
+    console.log("before desactivation isActive:", isActive)
+    await userNetwork.methods.setUserAsDeactivated(userAddress).send({from : result[0]});
+    let isActive2  =await userNetwork.methods.checkUserIsActive(userAddress).call({from : result[0]});
+    console.log("before desactivation isActive:", isActive2)
     
   };
 
@@ -71,17 +110,17 @@ const EditUser = (props) => {
                 </Typography>
                 </div>
                 <div style={{ width: "25%", float: "right"}}>
-                    {userInfo.state === 'Active' && 
+                    {(userInfo.state === 'Active' || userInfo.state == 0) && 
                         <Button disabled fullWidth style={{backgroundColor:'#57bb8aff', color:'white'}}>
                             {userInfo.state}
                         </Button>
                     }
-                    {userInfo.state === 'Admin' && 
+                    {(userInfo.state === 'Deactivated' || userInfo.state == 3) && 
                         <Button disabled fullWidth style={{backgroundColor:'#cca677ff', color:'white'}}>
                             {userInfo.state}
                         </Button>
                     }
-                    {userInfo.state === 'Deactivated' && 
+                    {(userInfo.state === 'Admin' || userInfo.state == 2) && 
                         <Button disabled fullWidth style={{backgroundColor:'#666666ff', color:'white'}}>
                             {userInfo.state}
                         </Button>
@@ -97,7 +136,7 @@ const EditUser = (props) => {
                     Email: {userInfo.email}
                 </Typography>
             </div>
-            {userInfo.state ==='Active' &&
+            {(userInfo.state === 'Active' || userInfo.state == 0) &&
                 <div style={{position:'relative', height:'220px', paddingTop:'10px'}}>
                     <div style={{ width: "45%", float: "left"}}>
                         <CardMedia
@@ -121,7 +160,7 @@ const EditUser = (props) => {
                     </div>
                 </div>
             }
-            {userInfo.state ==='Deactivated' &&
+            {(userInfo.state === 'Deactivated' || userInfo.state == 3) &&
                 <div style={{position:'relative', height:'220px', paddingTop:'10px'}}>
                   <CardMedia
                       component="img"
@@ -134,7 +173,7 @@ const EditUser = (props) => {
                   </Button>
                 </div>
             }
-            {userInfo.state ==='Admin' &&
+            {(userInfo.state === 'Admin' || userInfo.state == 2) &&
                 <div style={{position:'relative', height:'220px', paddingTop:'10px'}}>
                   <CardMedia
                       component="img"

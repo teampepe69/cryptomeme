@@ -7,7 +7,7 @@ import getWeb3 from "../../getWeb3";
 import Container from '@material-ui/core/Container';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { withStyles } from '@material-ui/core/styles';
-
+import MemeFeed from '../components/MemeFeed.js'
 
 const styles = theme => ({
   root: {
@@ -28,12 +28,12 @@ class LandingPage extends Component {
       memeNetwork: this.props.memeNetwork,
       userNetwork: this.props.userNetwork
     };
-    console.log(this.state.memes)
+    // console.log(this.state.memes)
   }
 
   componentDidUpdate(prevProps) {
     if (prevProps !== this.props) {
-      console.log("Different")
+      // console.log("Different")
       // console.log(prevProps)
       // console.log(this.props)
 
@@ -119,7 +119,7 @@ class LandingPage extends Component {
 
   render() {
     const { classes } = this.props;
-    console.log(this.props)
+    // console.log(this.props)
     // console.log(this.props.memeketPlaceNetwork);
     // console.log(this.state.memeketPlaceNetwork)
 
@@ -127,13 +127,13 @@ class LandingPage extends Component {
     return (
       <Container fixed>
       
-          <Feed
+          {/* <Feed
             account={this.state.account}
             memeNetwork={this.state.memeNetwork}
             memeketPlaceNetwork={this.state.memeketPlaceNetwork}
             userNetwork = {this.state.userNetwork}
-          /> 
-
+          />  */}
+          <MemeFeed/>
       </Container>
     );
   }

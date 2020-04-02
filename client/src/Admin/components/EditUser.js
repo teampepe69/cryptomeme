@@ -37,7 +37,7 @@ const styles = theme => ({
 
 const EditUser = (props) => {
   const {
-    classes, modalState, handleClose, userInfo
+    classes, modalState, handleClose, userInfo,rows
   } = props;
   const [userNetwork] = useGlobal("userNetwork");
   const [memeketPlaceNetwork] = useGlobal("memeketPlaceNetwork");

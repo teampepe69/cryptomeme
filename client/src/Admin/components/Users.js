@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useGlobal, useEffect } from "reactn";
 import {
   Typography,Grid,Paper,Table,TableCell, IconButton,
   TableRow,Tooltip,TableHead,TableSortLabel,
@@ -32,7 +33,6 @@ const columnData = [
   },
 ];
 
-
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
     return -1;
@@ -60,32 +60,41 @@ function stableSort(array, comparator) {
 }
 
 const Users = (props) => {
-  const { people, value, index, classes, ...other} = props;
+  const { value, index, peopleParent,classes, ...other} = props;
+  const [rows, setRows] = React.useState([]);
+  const [people, setPeople] = React.useState(peopleParent);
+  const [disobedientRows, setDisobedientRows] = React.useState([]);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('calories');
   const [open, setOpen] = React.useState(false);
   const [selectedUser, setUser] = React.useState({ uid: 69,  username: 'test', email:'my', state:'code'})
-
-
+  const [userNetwork] = useGlobal("userNetwork");
+  const [pepeCoinNetwork] = useGlobal("pepeCoinNetwork");
+  const [web3] = useGlobal("web3");
+  
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);
+    
   };
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
+    
   };
 
   const handleChangeRowsPerPage = event => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
+  
   };
 
   const createSortHandler = property => event => {
     handleRequestSort(event, property);
+    
   };
 
   const openModal = (user) => {
@@ -96,10 +105,99 @@ const Users = (props) => {
 
   const closeModal = () => {
     setOpen(false);
+    // When we close a modal -> Check for fetching data in case of change
+    fetchData();
+    
   };
 
-  const emptyRows = rowsPerPage - Math.min(rowsPerPage, people.length - page * rowsPerPage);
+  // Function to fetch data when only User state change 
+  async function fetchData() {
+    // fetch the data from contracts to have current users status
+    const resObedients = [];
+    const resDisobedients = [];
+    async function fetchDataInside(resObedients,resDisobedients) {
+
+      // Use try / catch to prevent error when network is not loaded (when you go directly to admin page in dev mode) -> Thus global constatns are not set
+      
+      try {
+      
+        // Check networks are up to date
+        console.log("this is userNetwork: ", value);
+        console.log("this is web3: ", web3);
+        
+        // Get number of accounts to iter on it (could be improve but impossible to return array from solidity)
+        const result = await web3.eth.getAccounts();
+        const numOfElements = await userNetwork.methods.getNumberUsers().call({from : result[0]});
+        
+        // Maybe there is a proper way however i do not find how to return dynamic array in solidity 
+        for (let i = 0; i < numOfElements; i++) {
+          // Current user
+          const elem = await userNetwork.methods.getUser(i).call({from : result[0]});
+          // If user is disobedient : bad guy 
+          if (elem.state == 2){
+            console.log("user is not Obedient",elem)
+            resDisobedients.push(createData(elem.userId, elem.displayName,elem.userWallet, mapStatus(elem.state)));
+          }
+          // If user is clean : good guy 
+          else {
+            console.log("user is Obedient",elem)
+            resObedients.push(createData(elem.userId, elem.displayName,elem.userWallet, mapStatus(elem.state)));
+          }
+        }
+
+      } catch (e) {
+        console.log("Error in the process");
+      };
+
+    };
+
+    // Do something with the results : await for fetch and update state
+    await fetchDataInside(resObedients,resDisobedients);
+    
+    if (index == 0){
+      setPeople(resObedients);
+     
+    }
+    else{
+      setPeople(resDisobedients);
+      
+    }
+    
+  }
+
+
+  function mapStatus(statusInt){
+
+    if (statusInt ==0){
+      return('Pending');
+    }
+    else if (statusInt ==1){
+      return('Active');
+    }
+    else if(statusInt ==2){
+      return('Deactivated');
+    }
+    else if(statusInt ==3){
+      return('Admin');
+    }
+
+  }
   
+  useEffect(() => {
+    
+    setPeople(peopleParent);
+    console.log("People parent have change -> We update people for printing",peopleParent)
+  },[peopleParent]);
+
+  function createData(uid, username, email, state) {
+    return { uid, username, email, state };
+  }
+  
+  const emptyRows = rowsPerPage - Math.min(rowsPerPage, people.length - page * rowsPerPage);
+
+
+
+
   return (
     <Typography
       component="div"

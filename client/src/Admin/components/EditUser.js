@@ -42,8 +42,6 @@ const EditUser = (props) => {
   const [userNetwork] = useGlobal("userNetwork");
   const [memeketPlaceNetwork] = useGlobal("memeketPlaceNetwork");
   const [web3] = useGlobal("web3");
-  const [pepeCoinNetwork] = useGlobal("pepeCoinNetwork");
-  //const [random, setRandom] = React.useState(Math.random());
 
   async function handleActivate(user) {
     // Set sender
@@ -52,19 +50,18 @@ const EditUser = (props) => {
     let userAddress = await userNetwork.methods.getUserAddress(user.uid).call({from : result[0]});
     // Activate user
     let isActive  =await userNetwork.methods.checkUserIsActive(userAddress).call({from : result[0]});
-    console.log("before activation isActive:", isActive);
+    console.log("before activation isActive:", isActive)
     await userNetwork.methods.setUserAsActive(userAddress).send({from : result[0]});
     let isActive2  =await userNetwork.methods.checkUserIsActive(userAddress).call({from : result[0]});
-    console.log("after activation isActive:", isActive2);
-    // Check balance : should be minted
-    let balanceAfterMint = await pepeCoinNetwork.methods.getBalance(userAddress).call({from : result[0]});
-    console.log("Balance: ",balanceAfterMint)
-    // Close pop-up
-    
-    handleClose();
+    console.log("after activation isActive:", isActive2)
   };
 
-
+  /* const handleActivate = (user) => {
+    console.log(user)
+    let userExists = await props.userNetwork.methods
+      .checkUserExists(eWallet)
+      .call({ from: eWallet });
+  }; */
 
   async function  handlePromote  (user) {
     console.log(user)
@@ -72,16 +69,13 @@ const EditUser = (props) => {
     let result = await web3.eth.getAccounts();
     // Find user address
     let userAddress = await userNetwork.methods.getUserAddress(user.uid).call({from : result[0]});
-    
+    //let userAddress = "0xBB336C1C31e7151437C077aaF94F7FE272b38CAa"
     // Activate user
     let isAdmin  =await userNetwork.methods.checkUserIsAdmin(userAddress).call({from : result[0]});
-    console.log("before promotion isActive:", isAdmin);
+    console.log("before promotion isActive:", isAdmin)
     await userNetwork.methods.setUserAsAdmin(userAddress).send({from : result[0]});
     let isAdmin2  =await userNetwork.methods.checkUserIsAdmin(userAddress).call({from : result[0]});
-    console.log("after promotion isActive:", isAdmin2);
-    
-    // Close pop-up
-    handleClose();
+    console.log("after promotion isActive:", isAdmin2)
   };
 
   async function  handleDeactivate (user) {
@@ -89,7 +83,7 @@ const EditUser = (props) => {
     let result = await web3.eth.getAccounts();
     // Find user address
     let userAddress = await userNetwork.methods.getUserAddress(user.uid).call({from : result[0]});
-    
+    //let userAddress = "0xBB336C1C31e7151437C077aaF94F7FE272b38CAa"
     // Activate user
     let isActive  =await userNetwork.methods.checkUserIsActive(userAddress).call({from : result[0]});
     console.log("before desactivation isActive:", isActive)
@@ -97,12 +91,6 @@ const EditUser = (props) => {
     let isActive2  =await userNetwork.methods.checkUserIsActive(userAddress).call({from : result[0]});
     console.log("before desactivation isActive:", isActive2)
     
-    let balanceAfterBurn = await pepeCoinNetwork.methods.getBalance(userAddress).call({from : result[0]});
-    console.log("Balance: ",balanceAfterBurn)
-    // Close pop-up
-
-    // Close pop-up 
-    handleClose();
   };
 
     return (
@@ -127,7 +115,7 @@ const EditUser = (props) => {
                             {userInfo.state}
                         </Button>
                     }
-                    {(userInfo.state === 'Pending' || userInfo.state == 3 || userInfo.state === 'Deactivated' ) && 
+                    {(userInfo.state === 'Deactivated' || userInfo.state == 3) && 
                         <Button disabled fullWidth style={{backgroundColor:'#cca677ff', color:'white'}}>
                             {userInfo.state}
                         </Button>
@@ -172,7 +160,7 @@ const EditUser = (props) => {
                     </div>
                 </div>
             }
-            {(userInfo.state === 'Pending' || userInfo.state == 3 || userInfo.state === 'Deactivated' ) &&
+            {(userInfo.state === 'Deactivated' || userInfo.state == 3) &&
                 <div style={{position:'relative', height:'220px', paddingTop:'10px'}}>
                   <CardMedia
                       component="img"

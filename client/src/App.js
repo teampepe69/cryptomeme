@@ -3,7 +3,6 @@ import Swal from "sweetalert2";
 import SimpleStorageContract from "./contracts/SimpleStorage.json";
 import Meme from "./contracts/Meme.json";
 import User from "./contracts/User.json";
-import PepeCoin from "./contracts/PepeCoin.json";
 import MemeketPlace from "./contracts/MemeketPlace.json";
 import getWeb3 from "./getWeb3";
 import {
@@ -23,7 +22,6 @@ setGlobal({
   web3: null,
   userNetwork: null,
   memeNetwork: null,
-  pepeCoinNetwork: null,
   memeketPlaceNetwork: null
 });
 
@@ -36,7 +34,6 @@ class App extends Component {
       account: "",
       memeketPlaceNetwork: null,
       deployedMemeketPlaceNetworkData: null,
-      pepeCoinNetwork: null,
       memeNetwork: null,
       userNetwork: null
     };
@@ -53,7 +50,8 @@ class App extends Component {
       // Use web3 to get the user's accounts.
       const accounts = await web3.eth.getAccounts();
       this.setState({ account: accounts[0] });
-    
+      //this.setState({ account: "0x90F8bf6A479f320ead074411a4B0e7944Ea8c9C1" });
+
       // Get the Contract instances.
       const networkId = await web3.eth.net.getId();
       // const networkId = localStorage.getItem("networkId")
@@ -84,20 +82,6 @@ class App extends Component {
         //this.setGlobal(userNetwork => userNetwork);
       }
 
-      // Get User instance and all the Memes
-      const deployedPepeCoinNetworkData = PepeCoin.networks[networkId];
-
-      if (deployedPepeCoinNetworkData) {
-        const pepeCoinNetwork = new web3.eth.Contract(
-          PepeCoin.abi,
-          deployedPepeCoinNetworkData.address
-        );
-        this.setState({ pepeCoinNetwork: pepeCoinNetwork });
-        this.setGlobal({ pepeCoinNetwork: pepeCoinNetwork });
-        //this.setGlobal(userNetwork => userNetwork);
-      }
-
-
       //Get Memeketplace instance
       const deployedMemeketPlaceNetworkData = MemeketPlace.networks[networkId];
       if (deployedMemeketPlaceNetworkData) {
@@ -124,6 +108,7 @@ class App extends Component {
       console.error(error);
     }
   }
+
   render() {
     return (
       <div

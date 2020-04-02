@@ -1,13 +1,11 @@
 var MemeketPlace = artifacts.require("MemeketPlace.sol");
 var User = artifacts.require("User.sol");
 var Meme = artifacts.require("Meme.sol");
-var PepeCoin = artifacts.require("PepeCoin.sol");
 
 contract("MemeketPlace.sol", function(accounts) {
   let userInstance;
   let memeInstance;
   let memeketPlaceInstance;
-  let pepeCoinInstance;
   let memeOwner1 = accounts[1];
   let memeOwner2 = accounts[2];
   let memeOwner3 = accounts[3];
@@ -15,8 +13,7 @@ contract("MemeketPlace.sol", function(accounts) {
   before(async () => {
     userInstance = await User.deployed();
     memeInstance = await Meme.deployed();
-    pepeCoinInstance = await PepeCoin.deployed();
-    memeketPlaceInstance = await MemeketPlace.deployed();
+    memeketPlaceInstance = await MemeketPlace.new(memeInstance.address,userInstance.address);
   });
 
   it("Should successfully deploy user instance", async () => {

@@ -66,7 +66,7 @@ contract Meme is ERC721 {
         return _memeId;
     }
 
-    function balanceAfterBurn public view returns (address){
+    function getMemeOwner(uint256 _memeId) public view returns (address){
         return memes[_memeId].memeOwner;
     }
 

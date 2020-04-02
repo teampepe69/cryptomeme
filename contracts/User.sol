@@ -1,7 +1,7 @@
 pragma solidity ^0.5.0;
 pragma experimental ABIEncoderV2;
 import "../node_modules/@openzeppelin/contracts/math/SafeMath.sol";
-import "./PepeCoin.sol";
+
 
 contract User {
     /*
@@ -44,26 +44,10 @@ contract User {
     */
     using SafeMath for uint256;
     address admin = msg.sender;
-    PepeCoin pepeCoinContract;
 
     enum userStates {pending, active, deactivated, admin}
 
     uint256 public numberOfUsers = 0;
-
-    constructor(PepeCoin _pepeCoin) public {
-        pepeCoinContract = _pepeCoin;
-
-        //Create admin user
-        createUser(
-            msg.sender,
-            "administrator",
-            "I am the boss",
-            "QmP1KdPrFV9wKbDy5WvCDKd3YcyTBbFvqfvBCzjGrDiVLZ",
-            "BigPepeBoss",
-            "www.4chan.org"
-        );
-        users[userIds[msg.sender]].state = userStates.admin;
-    }
 
     struct user {
         uint256 userId;
@@ -101,6 +85,18 @@ contract User {
     event UserDeactivated(address userWallet);
     event UserNewAdmin(address userWallet);
     
+    constructor() public {
+        //Create admin user
+        createUser(
+            msg.sender,
+            "administrator",
+            "I am the boss",
+            "QmP1KdPrFV9wKbDy5WvCDKd3YcyTBbFvqfvBCzjGrDiVLZ",
+            "BigPepeBoss",
+            "www.4chan.org"
+        );
+        users[userIds[msg.sender]].state = userStates.admin;
+    }
 
     function createUser(
         address _userWallet,
@@ -133,7 +129,6 @@ contract User {
         userExists[_userWallet] = true;
         userIds[_userWallet] = numberOfUsers;
         numberOfUsers = numberOfUsers.add(1);
-        
     }
 
     function setUsername(address _userWallet, string memory _username) public {
@@ -171,13 +166,11 @@ contract User {
     function setUserAsDeactivated(address _userWallet) public {
         users[userIds[_userWallet]].state = userStates.deactivated;
         emit UserDeactivated(_userWallet);
-        pepeCoinContract.burnBalance(_userWallet);
     }
 
     function setUserAsActive(address _userWallet) public {
         users[userIds[_userWallet]].state = userStates.active;
         emit UserActivated(_userWallet);
-        pepeCoinContract.mintUserCreation( _userWallet);
     }
 
     function setUserAsAdmin(address _userWallet) public {

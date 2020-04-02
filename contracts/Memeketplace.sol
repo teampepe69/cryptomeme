@@ -92,24 +92,6 @@ contract MemeketPlace {
         }
     }
 
-    // function removeLike(uint256 _memeId) public {
-    //     require(likes[_memeId][msg.sender] == 1, "You have not liked this meme");
-    //     likes[_memeId][msg.sender] == 0;
-    //     memeContract.setMemeLikes(
-    //         _memeId,
-    //         memeContract.getMemeLikes(_memeId).sub(1)
-    //     );
-    // }
-
-    // function removeDislike(uint256 _memeId) public {
-    //     require(likes[_memeId][msg.sender] == 2, "You have not disliked this meme");
-    //     likes[_memeId][msg.sender] == 0;
-    //     memeContract.setMemeDislikes(
-    //         _memeId,
-    //         memeContract.getMemeLikes(_memeId).sub(1)
-    //     );
-    // }
-
     function flagMeme(uint256 _memeId) public {
         require(
             flags[_memeId][msg.sender] == false,

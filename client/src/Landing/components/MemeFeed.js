@@ -137,14 +137,18 @@ const MemeFeed = props => {
     const [userId, setUserId] = React.useState(null);
     const loggedIn = JSON.parse(sessionStorage.getItem("loggedIn"));
     const [memeOwners, setMemeOwners] = React.useState([]);
-
+    const [userAddress, setUserAddress] = React.useState(sessionStorage.getItem("account"));
+   
     useEffect(() => {
         console.log(memeNetwork)
-        // if (memeNetwork && memeketPlaceNetwork !== null) {
-        //     populateMeme()
-        // }
+ 
         populateMeme()
     }, [memeNetwork, memeketPlaceNetwork, userNetwork]);
+
+    useEffect(() => {
+        setMemes(memes)
+        
+    }, [memes])
 
     useEffect(() => {
         return () => {
@@ -156,16 +160,18 @@ const MemeFeed = props => {
 
     async function populateMeme() {
         const acc = sessionStorage.getItem("account");
-        // var userId = await userNetwork.methods
-        // .userIds(acc)
-        // .call({ from: acc });
-        // setUserId(userId);
-        // console.log(memeNetwork)
-
         let arr = [];
         let memeOwners = [];
 
         try {
+            if (userNetwork && loggedIn) {
+                var userId = await userNetwork.methods
+                    .userIds(acc)
+                    .call({ from: acc });
+                var user = await userNetwork.methods.users(userId).call({ from: acc });
+                setUserAddress(user[1])
+            }
+
             if (memeNetwork && memeketPlaceNetwork && userNetwork) {
 
 
@@ -188,10 +194,6 @@ const MemeFeed = props => {
 
 
                 console.log(memes)
-
-                // .then(async () => {
-                //     console.log(memes)
-
 
             }
             else {
@@ -252,7 +254,6 @@ const MemeFeed = props => {
 
     }
 
-
     //------------LIKE MEMES--------------
     async function likeMeme(memeId) {
         const acc = sessionStorage.getItem("account");
@@ -261,11 +262,14 @@ const MemeFeed = props => {
         await memeketPlaceNetwork.methods
             .likeMeme(memeId)
             .send({ from: acc });
+
         const updateMeme = await memeNetwork.methods
             .memes(memeId)
             .call();
-        arr[memeId] = updateMeme;
-        setMemes(arr);
+       
+        const state = arr.map(meme => meme[1] === memeId ? updateMeme : meme)
+     
+        setMemes(state);
     }
 
     //------------DISLIKE MEMES--------------
@@ -275,11 +279,15 @@ const MemeFeed = props => {
         await memeketPlaceNetwork.methods
             .dislikeMeme(memeId)
             .send({ from: acc });
+
         const updateMeme = await memeNetwork.methods
             .memes(memeId)
             .call();
-        arr[memeId] = updateMeme;
-        setMemes(arr);
+      
+     
+        const state = arr.map(meme => meme[1] === memeId ? updateMeme : meme)
+        setMemes(state);
+        
     }
 
     //-------------FLAG MEME--------------------
@@ -436,16 +444,12 @@ const MemeFeed = props => {
 
                 {memes && memes.length > 0 ? (
                     memes.map((meme, key) => {
-
+                    
                         return (
                             /*------------- MEME CARDS ---------------------------*/
                             <Card key={key} className={classes.root}>
-                                {/* <div className={classes.head}>
-                                    <Avatar aria-label="recipe" className={classes.avatar}>
-                                        User
-                                        </Avatar>
-                                </div> */}
-                                {memeOwners.length > 0 && memeOwners[key] ? 
+
+                                {memeOwners.length > 0 && memeOwners[key] ?
                                     <CardHeader className={classes.head}
                                         avatar={
                                             <Avatar
@@ -462,7 +466,7 @@ const MemeFeed = props => {
                                     // title="User1231"
 
                                     />
-                                 : null}
+                                    : null}
                                 <div className={classes.body}>
                                     <CardMedia
                                         className={classes.media}
@@ -475,13 +479,7 @@ const MemeFeed = props => {
                                         <Typography gutterBottom variant="h5" component="h2">
                                             {meme.memeTitle}
                                         </Typography>
-                                        {/* <Typography
-                                            variant="body1"
-                                            color="textSecondary"
-                                            component="p"
-                                        >
-                                            {meme.memePath}
-                                        </Typography> */}
+
                                         <Typography
                                             variant="body1"
                                             color="textSecondary"
@@ -499,12 +497,14 @@ const MemeFeed = props => {
                                                     <IconButton
                                                         style={{ minWidth: "10px" }}
                                                         // startIcon={<ThumbUpAltOutlinedIcon />}
+                                                        disabled={loggedIn ? false : true}
                                                         size="small"
                                                         color="primary"
                                                         onClick={e => {
                                                             likeMeme(meme.memeId);
                                                         }}
                                                     >
+                                                        {}
                                                         <ThumbUpAltOutlinedIcon />
                                                     </IconButton>
                                                     <Typography
@@ -519,7 +519,7 @@ const MemeFeed = props => {
                                                 <Grid container item xs={2}>
                                                     <IconButton
                                                         style={{ minWidth: "10px" }}
-                                                        // startIcon={<ThumbDownAltOutlinedIcon />}
+                                                        disabled={loggedIn ? false : true}
                                                         size="small"
                                                         color="primary"
                                                         onClick={e => {
@@ -545,6 +545,7 @@ const MemeFeed = props => {
                                                 <IconButton
                                                     style={{ minWidth: "12px" }}
                                                     size="small"
+                                                    disabled={loggedIn ? false : true}
                                                     onClick={() => handleOpen("flag")}
                                                 >
                                                     <FlagIcon color="secondary" />

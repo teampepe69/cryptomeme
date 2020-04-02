@@ -16,6 +16,7 @@ import LandingPage from "./Landing/pages/LandingPage.js";
 import ProfilePage from "./Profile/pages/Profile.js";
 import Navbar from "./Navbar/pages/Navbar.js";
 import AdminPage from "./Admin/pages/Admin.js";
+
 import SideDrawer from "./Subbar/components/SideDrawer";
 
 setGlobal({

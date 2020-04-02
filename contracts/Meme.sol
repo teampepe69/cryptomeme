@@ -11,7 +11,6 @@ contract Meme is ERC721 {
     enum memeStates {approved, rejected, pending}
 
     struct Meme {
-        address memeOwner;
         uint256 memeId;
         uint256 memeLikes;
         uint256 memeDislikes;
@@ -48,7 +47,6 @@ contract Meme is ERC721 {
         string memory _memeDescription
     ) public returns (uint256) {
         Meme memory _meme = Meme(
-            _memeOwner,
             numberOfMemes,
             0,
             0,
@@ -66,9 +64,6 @@ contract Meme is ERC721 {
         return _memeId;
     }
 
-    function getMemeOwner(uint256 _memeId) public view returns (address){
-        return memes[_memeId].memeOwner;
-    }
 
     function getMemeLikes(uint256 _memeId) public view returns (uint256) {
         return memes[_memeId].memeLikes;

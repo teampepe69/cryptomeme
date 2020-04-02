@@ -1,6 +1,7 @@
 pragma solidity ^0.5.0;
 import "./Meme.sol";
 import "./User.sol";
+import "./PepeCoin.sol";
 import "../node_modules/@openzeppelin/contracts/math/SafeMath.sol";
 
 contract MemeketPlace {
@@ -8,13 +9,15 @@ contract MemeketPlace {
 
     Meme memeContract;
     User userContract;
+    PepeCoin pepeCoinContract;
 
     mapping(uint256 => mapping(address => uint256)) public likes; // 0 means no like or dislike, 1 means like, 2 means dislike
     mapping(uint256 => mapping(address => bool)) public flags;
 
-    constructor(Meme _memeContract, User _userContract) public {
+    constructor(Meme _memeContract, User _userContract, PepeCoin _pepeCoin) public {
         memeContract = _memeContract;
         userContract = _userContract;
+        pepeCoinContract = _pepeCoin;
     }
 
     function uploadMeme(
@@ -41,6 +44,10 @@ contract MemeketPlace {
             likes[_memeId][msg.sender] = 0;
         } else if (likes[_memeId][msg.sender] == 2) {
             //This meme was intially dislike, so when they like, dislike should subtract
+            
+            // React to memeSend One PepeCoin
+            pepeCoinContract.reactToMeme(memeContract.getMemeOwner(_memeId));
+
             memeContract.setMemeDislikes(
                 _memeId,
                 memeContract.getMemeDislikes(_memeId).sub(1)
@@ -50,13 +57,20 @@ contract MemeketPlace {
                 memeContract.getMemeLikes(_memeId).add(1)
             );
             likes[_memeId][msg.sender] = 1;
+            
+            
         } else {
             //uint by default is 0
+            
+            // React to memeSend One PepeCoin
+            pepeCoinContract.reactToMeme(memeContract.getMemeOwner(_memeId));
+
             memeContract.setMemeLikes(
                 _memeId,
                 memeContract.getMemeLikes(_memeId).add(1)
             );
             likes[_memeId][msg.sender] = 1;
+            
         }
 
     }

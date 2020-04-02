@@ -43,6 +43,7 @@ const AdminPage = (props) => {
     const [value, setValue] = React.useState(0);
     const [rows, setRows] = React.useState([]);
     const [userNetwork] = useGlobal("userNetwork");
+    const [pepeCoinNetwork] = useGlobal("pepeCoinNetwork");
     const [web3] = useGlobal("web3");
     const [disobidentrows, setDisobedientRows] = React.useState([]);
     
@@ -51,9 +52,26 @@ const AdminPage = (props) => {
       console.log(props);
     };
 
+    function mapStatus(statusInt){
+
+      if (statusInt ==0){
+        return('Pending');
+      }
+      else if (statusInt ==1){
+        return('Active');
+      }
+      else if(statusInt ==2){
+        return('Deactivated');
+      }
+      else if(statusInt ==3){
+        return('Admin');
+      }
+
+    }
+
     // Load data from web3 to populate [disobidentrows, setDisobedientRows]
     useEffect(() => {
-      // Hooks when smthg is updated
+      // Hooks when smthg is update
 
       async function fetchData() {
         // fetch the data from contracts to have current users status
@@ -84,12 +102,12 @@ const AdminPage = (props) => {
               // If user is disobedient : bad guy 
               if (elem.state == 2){
                 console.log("user is not Obedient",elem)
-                resDisobedients.push(createData(elem.userId, elem.displayName,elem.userWallet, elem.state));
+                resDisobedients.push(createData(elem.userId, elem.displayName,elem.userWallet, mapStatus(elem.state)));
               }
               // If user is clean : good guy 
               else {
                 console.log("user is Obedient",elem)
-                resObedients.push(createData(elem.userId, elem.displayName,elem.userWallet, elem.state));
+                resObedients.push(createData(elem.userId, elem.displayName,elem.userWallet, mapStatus(elem.state)));
               }
             }
 
@@ -107,6 +125,7 @@ const AdminPage = (props) => {
       }
       // Global laucnh 
       fetchData();
+      
     }, []);
     
     return (

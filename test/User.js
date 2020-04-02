@@ -1,4 +1,5 @@
 var User = artifacts.require("User.sol");
+var PepeCoin = artifacts.require("PepeCoin.sol");
 
 contract("User.sol", function(accounts) {
   let userInstance;
@@ -8,7 +9,10 @@ contract("User.sol", function(accounts) {
   let memeOwner3 = accounts[3];
 
   before(async () => {
+    
     userInstance = await User.deployed();
+    pepeCoinInstance = await PepeCoin.deployed();
+    
   });
 
   it("Should successfully deploy user instance", async () => {
@@ -25,7 +29,7 @@ contract("User.sol", function(accounts) {
       assert.strictEqual(
         address1.toString(),
         memeOwner0,
-        "Should userId equal to 0"
+        "Address of user 0 sould be memeowner0"
       );
     assert.strictEqual(
         res1.userId,
@@ -34,7 +38,7 @@ contract("User.sol", function(accounts) {
       );
   });
 
-  it("Should activate user", async () => {
+  it("Should activate user and mint pepeCoin", async () => {
     
     await userInstance.createUser(
       memeOwner1,
@@ -48,6 +52,15 @@ contract("User.sol", function(accounts) {
     let isActive1 = await userInstance.checkUserIsActive(memeOwner1);
     await userInstance.setUserAsActive(memeOwner1);
     let isActive2 = await userInstance.checkUserIsActive(memeOwner1);
+
+    let memeCoins = await pepeCoinInstance.getBalance(memeOwner1);
+
+    assert.strictEqual(
+      memeCoins.toNumber(),
+      100,
+      "Balance should be minted"
+    );
+
       assert.strictEqual(
         isActive1.toString(),
         "false",

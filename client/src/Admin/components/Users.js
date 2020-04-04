@@ -39,8 +39,8 @@ const columnData = [
     label: "Username",
   },
   {
-    id: "email",
-    label: "Email",
+    id: "userWallet",
+    label: "User Wallet",
   },
   {
     id: "state",
@@ -87,7 +87,7 @@ const Users = (props) => {
   const [selectedUser, setUser] = React.useState({
     uid: 69,
     username: "test",
-    email: "my",
+    userWallet: "my",
     state: "code",
   });
   const [userNetwork] = useGlobal("userNetwork");
@@ -117,7 +117,7 @@ const Users = (props) => {
     const targetUser = {
       uid: user.uid,
       username: user.username,
-      email: user.email,
+      userWallet: user.userWallet,
       state: user.state,
     };
     setUser(targetUser);
@@ -215,8 +215,8 @@ const Users = (props) => {
     );
   }, [peopleParent]);
 
-  function createData(uid, username, email, state) {
-    return { uid, username, email, state };
+  function createData(uid, username, userWallet, state) {
+    return { uid, username, userWallet, state };
   }
 
   const emptyRows =
@@ -270,7 +270,7 @@ const Users = (props) => {
                   <TableRow hover tabIndex={0} key={n.uid}>
                     <TableCell>{n.uid}</TableCell>
                     <TableCell>{n.username}</TableCell>
-                    <TableCell>{n.email}</TableCell>
+                    <TableCell>{n.userWallet}</TableCell>
                     <TableCell>{n.state}</TableCell>
                     <TableCell>
                       <IconButton

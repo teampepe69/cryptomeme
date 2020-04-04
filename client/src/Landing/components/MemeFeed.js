@@ -23,6 +23,8 @@ import CloudUploadIcon from "@material-ui/icons/CloudUpload";
 // import ThumbUpAltIcon from "@material-ui/icons/ThumbUpAlt";
 import ThumbDownAltOutlinedIcon from "@material-ui/icons/ThumbDownAltOutlined";
 import ThumbUpAltOutlinedIcon from "@material-ui/icons/ThumbUpAltOutlined";
+import ThumbUpAltRoundedIcon from '@material-ui/icons/ThumbUpAltRounded';
+import ThumbDownRoundedIcon from '@material-ui/icons/ThumbDownRounded';
 import ipfs from "../../ipfs";
 import FlagIcon from "@material-ui/icons/Flag";
 import Swal from "sweetalert2";
@@ -138,6 +140,7 @@ const MemeFeed = props => {
     const loggedIn = JSON.parse(sessionStorage.getItem("loggedIn"));
     const [memeOwners, setMemeOwners] = React.useState([]);
     const [userAddress, setUserAddress] = React.useState(sessionStorage.getItem("account"));
+    const [likeStatus, setLikeStatus] = React.useState([]);
    
     useEffect(() => {
         console.log(memeNetwork)
@@ -162,6 +165,7 @@ const MemeFeed = props => {
         const acc = sessionStorage.getItem("account");
         let arr = [];
         let memeOwners = [];
+        let likeStatus = [];
 
         try {
             if (userNetwork && loggedIn) {
@@ -181,6 +185,7 @@ const MemeFeed = props => {
                     arr = arr.concat(meme);
 
                     const address = meme.memeOwner
+                    await getStatus(meme.memeId)
                     const userId = await userNetwork.methods
                         .userIds(address)
                         .call();
@@ -268,7 +273,7 @@ const MemeFeed = props => {
             .call();
        
         const state = arr.map(meme => meme[1] === memeId ? updateMeme : meme)
-     
+        await getStatus(memeId)
         setMemes(state);
     }
 
@@ -286,8 +291,25 @@ const MemeFeed = props => {
       
      
         const state = arr.map(meme => meme[1] === memeId ? updateMeme : meme)
+        await getStatus(memeId)
         setMemes(state);
         
+    }
+
+    //-------------USER LIKE STATUS--------------------
+    async function getStatus(memeId) {
+        var status = likeStatus;
+        // console.log(memeId);
+        var ans;
+        if(loggedIn) {
+            const acc = sessionStorage.getItem("account");
+            ans = await memeketPlaceNetwork.methods
+                    .getLikes(memeId, acc)
+                    .call();
+            status[memeId] = ans;
+        }
+        
+        setLikeStatus(status);
     }
 
     //-------------FLAG MEME--------------------
@@ -505,7 +527,11 @@ const MemeFeed = props => {
                                                         }}
                                                     >
                                                         {}
-                                                        <ThumbUpAltOutlinedIcon />
+                                                        {likeStatus[meme.memeId] == 1 ? (
+                                                            <ThumbUpAltRoundedIcon />
+                                                        ) : (
+                                                            <ThumbUpAltOutlinedIcon />
+                                                        )}     
                                                     </IconButton>
                                                     <Typography
                                                         variant="button"
@@ -522,11 +548,15 @@ const MemeFeed = props => {
                                                         disabled={loggedIn ? false : true}
                                                         size="small"
                                                         color="primary"
-                                                        onClick={e => {
+                                                        onClick={e => {           
                                                             dislikeMeme(meme.memeId);
                                                         }}
                                                     >
-                                                        <ThumbDownAltOutlinedIcon />
+                                                        {likeStatus[meme.memeId] == 2 ? (
+                                                            <ThumbDownRoundedIcon />
+                                                        ) : (
+                                                            <ThumbDownAltOutlinedIcon />
+                                                        )}                                                                                                               
                                                     </IconButton>
 
                                                     <Typography

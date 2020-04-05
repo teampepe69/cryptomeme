@@ -141,16 +141,16 @@ const MemeFeed = props => {
     const [memeOwners, setMemeOwners] = React.useState([]);
     const [userAddress, setUserAddress] = React.useState(sessionStorage.getItem("account"));
     const [likeStatus, setLikeStatus] = React.useState([]);
-   
+
     useEffect(() => {
         console.log(memeNetwork)
- 
+
         populateMeme()
     }, [memeNetwork, memeketPlaceNetwork, userNetwork]);
 
     useEffect(() => {
         setMemes(memes)
-        
+
     }, [memes])
 
     useEffect(() => {
@@ -271,7 +271,7 @@ const MemeFeed = props => {
         const updateMeme = await memeNetwork.methods
             .memes(memeId)
             .call();
-       
+
         const state = arr.map(meme => meme[1] === memeId ? updateMeme : meme)
         await getStatus(memeId)
         setMemes(state);
@@ -288,12 +288,12 @@ const MemeFeed = props => {
         const updateMeme = await memeNetwork.methods
             .memes(memeId)
             .call();
-      
-     
+
+
         const state = arr.map(meme => meme[1] === memeId ? updateMeme : meme)
         await getStatus(memeId)
         setMemes(state);
-        
+
     }
 
     //-------------USER LIKE STATUS--------------------
@@ -301,14 +301,14 @@ const MemeFeed = props => {
         var status = likeStatus;
         // console.log(memeId);
         var ans;
-        if(loggedIn) {
+        if (loggedIn) {
             const acc = sessionStorage.getItem("account");
             ans = await memeketPlaceNetwork.methods
-                    .getLikes(memeId, acc)
-                    .call();
+                .getLikes(memeId, acc)
+                .call();
             status[memeId] = ans;
         }
-        
+
         setLikeStatus(status);
     }
 
@@ -317,15 +317,25 @@ const MemeFeed = props => {
         const acc = sessionStorage.getItem("account");
         var arr = memes
         // console.log(memeId);
-        await memeketPlaceNetwork.methods
+
+        memeketPlaceNetwork.methods
             .flagMeme(memeId)
-            .send({ from: acc });
-        handleClose("flag");
-        Swal.fire({
-            title: "Flag successful!",
-            icon: "success",
-            confirmButtonText: "Cool beans"
-        });
+            .send({ from: acc })
+            .then((instance) => {
+                try {
+                    handleClose("flag");
+                    Swal.fire({
+                        title: "Flag successful!",
+                        icon: "success",
+                        confirmButtonText: "Cool beans"
+                    });
+                }
+                catch(e){
+                    console.log("error", e)
+                }
+            });
+
+
     }
 
     //------------UPLOAD FILE--------------
@@ -466,7 +476,7 @@ const MemeFeed = props => {
 
                 {memes && memes.length > 0 ? (
                     memes.map((meme, key) => {
-                    
+
                         return (
                             /*------------- MEME CARDS ---------------------------*/
                             <Card key={key} className={classes.root}>
@@ -530,8 +540,8 @@ const MemeFeed = props => {
                                                         {likeStatus[meme.memeId] == 1 ? (
                                                             <ThumbUpAltRoundedIcon />
                                                         ) : (
-                                                            <ThumbUpAltOutlinedIcon />
-                                                        )}     
+                                                                <ThumbUpAltOutlinedIcon />
+                                                            )}
                                                     </IconButton>
                                                     <Typography
                                                         variant="button"
@@ -548,15 +558,15 @@ const MemeFeed = props => {
                                                         disabled={loggedIn ? false : true}
                                                         size="small"
                                                         color="primary"
-                                                        onClick={e => {           
+                                                        onClick={e => {
                                                             dislikeMeme(meme.memeId);
                                                         }}
                                                     >
                                                         {likeStatus[meme.memeId] == 2 ? (
                                                             <ThumbDownRoundedIcon />
                                                         ) : (
-                                                            <ThumbDownAltOutlinedIcon />
-                                                        )}                                                                                                               
+                                                                <ThumbDownAltOutlinedIcon />
+                                                            )}
                                                     </IconButton>
 
                                                     <Typography

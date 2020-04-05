@@ -97,7 +97,7 @@ contract MemeketPlace {
             flags[_memeId][msg.sender] == false,
             "You have already flagged this meme"
         );
-        flags[_memeId][msg.sender] == true;
+        flags[_memeId][msg.sender] = true;
         memeContract.setMemeFlags(
             _memeId,
             memeContract.getMemeFlags(_memeId).add(1)

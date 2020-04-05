@@ -10,7 +10,10 @@ import {
   Switch,
   Route,
   Link,
-  NavLink
+  NavLink,
+  Redirect,
+  useHistory,
+  useLocation
 } from "react-router-dom";
 import LandingPage from "./Landing/pages/LandingPage.js";
 import ProfilePage from "./Profile/pages/Profile.js";
@@ -24,6 +27,17 @@ setGlobal({
   memeNetwork: null,
   memeketPlaceNetwork: null
 });
+
+const isLoggedIn = JSON.parse(sessionStorage.getItem("loggedIn"));
+
+const PrivateRoute = ({ component: Component, ...rest }) => (
+  <Route {...rest} render={(props) => (
+    isLoggedIn === true
+      ? <Component {...props} />
+      : <Redirect to='/' />
+  )} />
+)
+
 
 class App extends Component {
   constructor(props) {
@@ -147,8 +161,8 @@ class App extends Component {
                   />
                 )}
               />
-              <Route exact path="/profile" component={ProfilePage} />
-              <Route exact path="/admin" component={AdminPage} />
+              <PrivateRoute exact path="/profile" component={ProfilePage} />
+              <PrivateRoute exact path="/admin" component={AdminPage} />
             </div>
           </div>
         </Router>

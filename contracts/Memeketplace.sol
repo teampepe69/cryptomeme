@@ -112,6 +112,14 @@ contract MemeketPlace {
         return likes[_memeId][user];
     }
 
+    function getFlags(uint256 _memeId, address user)
+        public
+        view
+        returns (bool)
+    {
+        return flags[_memeId][user];
+    }
+
     function createUser(
         address _userWallet,
         string memory _username,

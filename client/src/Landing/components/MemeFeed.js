@@ -140,6 +140,7 @@ const MemeFeed = props => {
     const loggedIn = JSON.parse(sessionStorage.getItem("loggedIn"));
     const [memeOwners, setMemeOwners] = React.useState([]);
     const [likeStatus, setLikeStatus] = React.useState([]);
+    const [userAddress, setUserAddress] = React.useState(sessionStorage.getItem("account"));
 
     useEffect(() => {
         console.log(memeNetwork)
@@ -162,8 +163,9 @@ const MemeFeed = props => {
 
     async function populateMeme() {
         const acc = sessionStorage.getItem("account");
+        setUserAddress(acc)
         let arr = [];
-        let memeOwners = [];
+        let _memeOwners = [];
         let likeStatus = [];
 
         try {
@@ -188,14 +190,14 @@ const MemeFeed = props => {
                     //retrieve meme creator object
                     const _memeOwner = await userNetwork.methods.users(userId).call({ from: acc });
 
-                    memeOwners = memeOwners.concat(_memeOwner);
+                    _memeOwners = _memeOwners.concat(_memeOwner);
 
                     setMemes(arr)
-                    setMemeOwners(memeOwners);
+                    setMemeOwners(_memeOwners);
+                    console.log(_memeOwners)
                 }
 
 
-                console.log(memes)
 
             }
             else {
@@ -314,15 +316,29 @@ const MemeFeed = props => {
         const acc = sessionStorage.getItem("account");
         var arr = memes
         // console.log(memeId);
-        await memeketPlaceNetwork.methods
-            .flagMeme(memeId)
-            .send({ from: acc });
-        handleClose("flag");
-        Swal.fire({
-            title: "Flag successful!",
-            icon: "success",
-            confirmButtonText: "Cool beans"
-        });
+        const isFlagged = await memeketPlaceNetwork.methods.getFlags(memeId, acc).call();
+        if (!isFlagged) {
+            await memeketPlaceNetwork.methods
+                .flagMeme(memeId)
+                .send({ from: acc });
+            handleClose("flag");
+            Swal.fire({
+                title: "Flag successful!",
+                icon: "success",
+                confirmButtonText: "Cool beans"
+            });
+        }
+        else {
+            handleClose("flag");
+            Swal.fire({
+                title: "You have already flagged this meme!",
+                icon: "error",
+                confirmButtonText: "Cool beans"
+            });
+        }
+
+
+
     }
 
     //------------UPLOAD FILE--------------
@@ -509,144 +525,150 @@ const MemeFeed = props => {
                                         </Typography>
                                         <Divider className={classes.divider} light />
 
-                                        <Grid container>
-                                            <Grid container item xs={8}>
-                                                {/*--------------------------- LIKE AND DISLIKE BUTTON--------------------- */}
-                                                <Grid container item xs={2}>
-                                                    <IconButton
-                                                        style={{ minWidth: "10px" }}
-                                                        // startIcon={<ThumbUpAltOutlinedIcon />}
-                                                        disabled={loggedIn ? false : true}
-                                                        size="small"
-                                                        color="primary"
-                                                        onClick={e => {
-                                                            likeMeme(meme.memeId);
-                                                        }}
-                                                    >
-                                                        {}
-                                                        {likeStatus[meme.memeId] == 1 ? (
-                                                            <ThumbUpAltRoundedIcon />
-                                                        ) : (
-                                                                <ThumbUpAltOutlinedIcon />
-                                                            )}
-                                                    </IconButton>
-                                                    <Typography
-                                                        variant="button"
-                                                        color="primary"
-                                                        component="p"
-                                                        style={{ padding: "4px 5px" }}
-                                                    >
-                                                        {meme.memeLikes.toString()}
-                                                    </Typography>
-                                                </Grid>
-                                                <Grid container item xs={2}>
-                                                    <IconButton
-                                                        style={{ minWidth: "10px" }}
-                                                        disabled={loggedIn ? false : true}
-                                                        size="small"
-                                                        color="primary"
-                                                        onClick={e => {
-                                                            dislikeMeme(meme.memeId);
-                                                        }}
-                                                    >
-                                                        {likeStatus[meme.memeId] == 2 ? (
-                                                            <ThumbDownRoundedIcon />
-                                                        ) : (
-                                                                <ThumbDownAltOutlinedIcon />
-                                                            )}
-                                                    </IconButton>
+                                        {/*------------------ LIKES/DISLIKE/FLAG SECTION------------------------ */}
+                                  
+                                            <Grid container>
+                                                <Grid container item xs={8}>
+                                                    {/*--------------------------- LIKE AND DISLIKE BUTTON--------------------- */}
 
-                                                    <Typography
-                                                        variant="button"
-                                                        color="primary"
-                                                        component="p"
-                                                        style={{ padding: "4px 5px" }}
-                                                    >
-                                                        {meme.memeDislikes.toString()}
-                                                    </Typography>
-                                                </Grid>
-                                            </Grid>
-
-                                            {/*--------------------------- FLAG BUTTON--------------------- */}
-                                            <Grid container item xs={4} justify="flex-end">
-                                                <IconButton
-                                                    style={{ minWidth: "12px" }}
-                                                    size="small"
-                                                    disabled={loggedIn ? false : true}
-                                                    onClick={() => handleOpen("flag")}
-                                                >
-                                                    <FlagIcon color="secondary" />
-                                                </IconButton>
-                                                <Modal
-                                                    aria-labelledby="simple-modal-title"
-                                                    aria-describedby="simple-modal-description"
-                                                    open={openFlag}
-                                                    onClose={() => handleClose("flag")}
-                                                    className={classes.modal}
-                                                >
-                                                    <Card className={classes.paper}>
-                                                        <div style={{ padding: "10px 5px 20px 5px" }}>
-                                                            <Typography
-                                                                variant="h4"
-                                                                align="center"
-                                                                style={{ fontWeight: "bold" }}
-                                                            >
-                                                                Hurt? We're here to help.
+                                                    <Grid container item xs={2}>
+                                                        <IconButton
+                                                            style={{ minWidth: "10px" }}
+                                                            // startIcon={<ThumbUpAltOutlinedIcon />}
+                                                            disabled={loggedIn && (memeOwners[key] &&  memeOwners[key].userWallet !== userAddress) ? false : true}
+                                                            size="small"
+                                                            color="primary"
+                                                            onClick={e => {
+                                                                likeMeme(meme.memeId);
+                                                            }}
+                                                        >
+                                                            {}
+                                                            {likeStatus[meme.memeId] == 1 ? (
+                                                                <ThumbUpAltRoundedIcon />
+                                                            ) : (
+                                                                    <ThumbUpAltOutlinedIcon />
+                                                                )}
+                                                        </IconButton>
+                                                        <Typography
+                                                            variant="button"
+                                                            color="primary"
+                                                            component="p"
+                                                            style={{ padding: "4px 5px" }}
+                                                        >
+                                                            {meme.memeLikes.toString()}
                                                         </Typography>
-                                                        </div>
+                                                    </Grid>
+                                                    <Grid container item xs={2}>
+                                                        <IconButton
+                                                            style={{ minWidth: "10px" }}
+                                                            disabled={loggedIn  && (memeOwners[key] &&  memeOwners[key].userWallet !== userAddress) ? false : true}
+                                                            size="small"
+                                                            color="primary"
+                                                            onClick={e => {
+                                                                dislikeMeme(meme.memeId);
+                                                            }}
+                                                        >
+                                                            {likeStatus[meme.memeId] == 2 ? (
+                                                                <ThumbDownRoundedIcon />
+                                                            ) : (
+                                                                    <ThumbDownAltOutlinedIcon />
+                                                                )}
+                                                        </IconButton>
 
-                                                        <CardContent>
-                                                            <div
-                                                                style={{
-                                                                    width: "60%",
-                                                                    float: "left",
-                                                                    paddingRight: "10px"
-                                                                }}
-                                                            >
-                                                                <div style={{ paddingBottom: "20px" }}>
-                                                                    <Typography paragraph>
-                                                                        We're truly sorry that this meme has hurt
-                                                                        you.
-                                                                </Typography>
-                                                                    <Typography paragraph>
-                                                                        We are here to protecc our readers
-                                                                </Typography>
-                                                                    <Typography paragraph>
-                                                                        We shall reflect and do better
-                                                                </Typography>
-                                                                    <Typography paragraph>
-                                                                        Click button to flag post as{" "}
-                                                                        {
-                                                                            <b style={{ color: "red" }}>
-                                                                                inappropriate
-                                                                        </b>
-                                                                        }
-                                                                    </Typography>
-                                                                </div>
-                                                                <Button
-                                                                    type="submit"
-                                                                    color="secondary"
-                                                                    className={classes.flagButton}
-                                                                    onClick={e => {
-                                                                        flagMeme(meme.memeId);
-                                                                    }}
-                                                                    fullWidth
+                                                        <Typography
+                                                            variant="button"
+                                                            color="primary"
+                                                            component="p"
+                                                            style={{ padding: "4px 5px" }}
+                                                        >
+                                                            {meme.memeDislikes.toString()}
+                                                        </Typography>
+
+                                                    </Grid>
+
+                                                </Grid>
+
+                                                {/*--------------------------- FLAG BUTTON--------------------- */}
+                                                <Grid container item xs={4} justify="flex-end">
+                                                    <IconButton
+                                                        style={{ minWidth: "12px" }}
+                                                        size="small"
+                                                        disabled={loggedIn && (memeOwners[key] &&  memeOwners[key].userWallet !== userAddress) ? false : true}
+                                                        onClick={() => handleOpen("flag")}
+                                                    >
+                                                        <FlagIcon color="secondary" />
+                                                    </IconButton>
+                                                    <Modal
+                                                        aria-labelledby="simple-modal-title"
+                                                        aria-describedby="simple-modal-description"
+                                                        open={openFlag}
+                                                        onClose={() => handleClose("flag")}
+                                                        className={classes.modal}
+                                                    >
+                                                        <Card className={classes.paper}>
+                                                            <div style={{ padding: "10px 5px 20px 5px" }}>
+                                                                <Typography
+                                                                    variant="h4"
+                                                                    align="center"
+                                                                    style={{ fontWeight: "bold" }}
                                                                 >
-                                                                    SAY NO TO TROLLS!
+                                                                    Hurt? We're here to help.
+                                                        </Typography>
+                                                            </div>
+
+                                                            <CardContent>
+                                                                <div
+                                                                    style={{
+                                                                        width: "60%",
+                                                                        float: "left",
+                                                                        paddingRight: "10px"
+                                                                    }}
+                                                                >
+                                                                    <div style={{ paddingBottom: "20px" }}>
+                                                                        <Typography paragraph>
+                                                                            We're truly sorry that this meme has hurt
+                                                                            you.
+                                                                        </Typography>
+                                                                        <Typography paragraph>
+                                                                            We are here to protecc our readers
+                                                                        </Typography>
+                                                                        <Typography paragraph>
+                                                                            We shall reflect and do better
+                                                                        </Typography>
+                                                                        <Typography paragraph>
+                                                                            Click button to flag post as{" "}
+                                                                            {
+                                                                                <b style={{ color: "red" }}>
+                                                                                    inappropriate
+                                                                                </b>
+                                                                            }
+                                                                        </Typography>
+                                                                    </div>
+                                                                    <Button
+                                                                        type="submit"
+                                                                        color="secondary"
+                                                                        className={classes.flagButton}
+                                                                        onClick={e => {
+                                                                            flagMeme(meme.memeId);
+                                                                        }}
+                                                                        fullWidth
+                                                                    >
+                                                                        SAY NO TO TROLLS!
                                                             </Button>
-                                                            </div>
-                                                            <div style={{ width: "40%", float: "right" }}>
-                                                                <CardMedia
-                                                                    component="img"
-                                                                    image={hurt}
-                                                                    title="Join Pepe"
-                                                                />
-                                                            </div>
-                                                        </CardContent>
-                                                    </Card>
-                                                </Modal>
+                                                                </div>
+                                                                <div style={{ width: "40%", float: "right" }}>
+                                                                    <CardMedia
+                                                                        component="img"
+                                                                        image={hurt}
+                                                                        title="Join Pepe"
+                                                                    />
+                                                                </div>
+                                                            </CardContent>
+                                                        </Card>
+                                                    </Modal>
+                                                </Grid>
                                             </Grid>
-                                        </Grid>
+                                       
                                     </CardContent>
                                 </div>
                             </Card>

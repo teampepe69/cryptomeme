@@ -97,7 +97,7 @@ contract MemeketPlace {
             flags[_memeId][msg.sender] == false,
             "You have already flagged this meme"
         );
-        flags[_memeId][msg.sender] == true;
+        flags[_memeId][msg.sender] = true;
         memeContract.setMemeFlags(
             _memeId,
             memeContract.getMemeFlags(_memeId).add(1)
@@ -110,6 +110,14 @@ contract MemeketPlace {
         returns (uint256)
     {
         return likes[_memeId][user];
+    }
+
+    function getFlags(uint256 _memeId, address user)
+        public
+        view
+        returns (bool)
+    {
+        return flags[_memeId][user];
     }
 
     function createUser(

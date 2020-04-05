@@ -526,7 +526,7 @@ const MemeFeed = props => {
                                         <Divider className={classes.divider} light />
 
                                         {/*------------------ LIKES/DISLIKE/FLAG SECTION------------------------ */}
-                                        {memeOwners.length > 0 && memeOwners[key] && memeOwners[key].userWallet !== userAddress ? (
+                                  
                                             <Grid container>
                                                 <Grid container item xs={8}>
                                                     {/*--------------------------- LIKE AND DISLIKE BUTTON--------------------- */}
@@ -535,7 +535,7 @@ const MemeFeed = props => {
                                                         <IconButton
                                                             style={{ minWidth: "10px" }}
                                                             // startIcon={<ThumbUpAltOutlinedIcon />}
-                                                            disabled={loggedIn ? false : true}
+                                                            disabled={loggedIn && (memeOwners[key] &&  memeOwners[key].userWallet !== userAddress) ? false : true}
                                                             size="small"
                                                             color="primary"
                                                             onClick={e => {
@@ -561,7 +561,7 @@ const MemeFeed = props => {
                                                     <Grid container item xs={2}>
                                                         <IconButton
                                                             style={{ minWidth: "10px" }}
-                                                            disabled={loggedIn ? false : true}
+                                                            disabled={loggedIn  && (memeOwners[key] &&  memeOwners[key].userWallet !== userAddress) ? false : true}
                                                             size="small"
                                                             color="primary"
                                                             onClick={e => {
@@ -593,7 +593,7 @@ const MemeFeed = props => {
                                                     <IconButton
                                                         style={{ minWidth: "12px" }}
                                                         size="small"
-                                                        disabled={loggedIn ? false : true}
+                                                        disabled={loggedIn && (memeOwners[key] &&  memeOwners[key].userWallet !== userAddress) ? false : true}
                                                         onClick={() => handleOpen("flag")}
                                                     >
                                                         <FlagIcon color="secondary" />
@@ -668,18 +668,7 @@ const MemeFeed = props => {
                                                     </Modal>
                                                 </Grid>
                                             </Grid>
-                                        ) : (
-                                                <Grid container>
-                                                    <Typography
-                                                        variant="body1"
-                                                        color="textSecondary"
-                                                        component="p"
-                                                        style={{ textAlign: "justify" }}
-                                                    >
-                                                        Wow awesome look at your own meme on the feed
-                                                    </Typography>
-                                                </Grid>
-                                            )}
+                                       
                                     </CardContent>
                                 </div>
                             </Card>

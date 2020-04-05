@@ -139,7 +139,6 @@ const MemeFeed = props => {
     const [userId, setUserId] = React.useState(null);
     const loggedIn = JSON.parse(sessionStorage.getItem("loggedIn"));
     const [memeOwners, setMemeOwners] = React.useState([]);
-    const [userAddress, setUserAddress] = React.useState(sessionStorage.getItem("account"));
     const [likeStatus, setLikeStatus] = React.useState([]);
 
     useEffect(() => {
@@ -168,31 +167,29 @@ const MemeFeed = props => {
         let likeStatus = [];
 
         try {
-            if (userNetwork && loggedIn) {
-                var userId = await userNetwork.methods
-                    .userIds(acc)
-                    .call({ from: acc });
-                var user = await userNetwork.methods.users(userId).call({ from: acc });
-                setUserAddress(user[1])
-            }
 
             if (memeNetwork && memeketPlaceNetwork && userNetwork) {
-
-
+                //Retrieve meme feed by calling memes function
                 const result = await memeNetwork.methods.numberOfMemes().call();
                 for (var i = 0; i < result; i++) {
                     const meme = await memeNetwork.methods.memes(i).call();
                     arr = arr.concat(meme);
 
-                    const address = meme.memeOwner
+
+                    //for every meme, retrieve the getStatus to see if user has liked this before
                     await getStatus(meme.memeId)
+
+                    //retrieve the meme creator's address to get his userId
+                    const address = meme.memeOwner
                     const userId = await userNetwork.methods
                         .userIds(address)
                         .call();
 
-                    const user = await userNetwork.methods.users(userId).call({ from: acc });
+                    //retrieve meme creator object
+                    const _memeOwner = await userNetwork.methods.users(userId).call({ from: acc });
 
-                    memeOwners = memeOwners.concat(user);
+                    memeOwners = memeOwners.concat(_memeOwner);
+
                     setMemes(arr)
                     setMemeOwners(memeOwners);
                 }

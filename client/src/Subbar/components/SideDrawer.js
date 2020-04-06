@@ -62,14 +62,6 @@ const sideDrawer = props => {
             Following
           </Typography>
         )}
-        <Typography
-          variant="h5"
-          className={classes.title}
-          component={Link}
-          to="/market"
-        >
-          Market
-        </Typography>
         {isAdmin && (
           <Typography
             variant="h5"

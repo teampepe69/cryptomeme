@@ -1,8 +1,8 @@
 import React, { Component, setGlobal } from "reactn";
 import Swal from "sweetalert2";
-import SimpleStorageContract from "./contracts/SimpleStorage.json";
 import Meme from "./contracts/Meme.json";
 import User from "./contracts/User.json";
+import PepeCoin from "./contracts/PepeCoin.json";
 import MemeketPlace from "./contracts/MemeketPlace.json";
 import getWeb3 from "./getWeb3";
 import {
@@ -13,7 +13,7 @@ import {
   NavLink,
   Redirect,
   useHistory,
-  useLocation
+  useLocation,
 } from "react-router-dom";
 import LandingPage from "./Landing/pages/LandingPage.js";
 import ProfilePage from "./Profile/pages/Profile.js";
@@ -25,19 +25,19 @@ setGlobal({
   web3: null,
   userNetwork: null,
   memeNetwork: null,
-  memeketPlaceNetwork: null
+  memeketPlaceNetwork: null,
 });
 
 const isLoggedIn = JSON.parse(sessionStorage.getItem("loggedIn"));
 
 const PrivateRoute = ({ component: Component, ...rest }) => (
-  <Route {...rest} render={(props) => (
-    isLoggedIn === true
-      ? <Component {...props} />
-      : <Redirect to='/' />
-  )} />
-)
-
+  <Route
+    {...rest}
+    render={(props) =>
+      isLoggedIn === true ? <Component {...props} /> : <Redirect to="/" />
+    }
+  />
+);
 
 class App extends Component {
   constructor(props) {
@@ -49,7 +49,7 @@ class App extends Component {
       memeketPlaceNetwork: null,
       deployedMemeketPlaceNetworkData: null,
       memeNetwork: null,
-      userNetwork: null
+      userNetwork: null,
     };
   }
 
@@ -64,7 +64,6 @@ class App extends Component {
       // Use web3 to get the user's accounts.
       const accounts = await web3.eth.getAccounts();
       this.setState({ account: accounts[0] });
-      //this.setState({ account: "0x90F8bf6A479f320ead074411a4B0e7944Ea8c9C1" });
 
       // Get the Contract instances.
       const networkId = await web3.eth.net.getId();
@@ -96,6 +95,18 @@ class App extends Component {
         //this.setGlobal(userNetwork => userNetwork);
       }
 
+      // Get PepeCoin instance and all the Memes
+      const deployedPepeCoinNetworkData = PepeCoin.networks[networkId];
+
+      if (deployedPepeCoinNetworkData) {
+        const pepeCoinNetwork = new web3.eth.Contract(
+          PepeCoin.abi,
+          deployedPepeCoinNetworkData.address
+        );
+        this.setGlobal({ pepeCoinNetwork: pepeCoinNetwork });
+        //this.setGlobal(userNetwork => userNetwork);
+      }
+
       //Get Memeketplace instance
       const deployedMemeketPlaceNetworkData = MemeketPlace.networks[networkId];
       if (deployedMemeketPlaceNetworkData) {
@@ -105,7 +116,7 @@ class App extends Component {
         );
         this.setState({ memeketPlaceNetwork: memeketPlaceNetwork });
         this.setState({
-          deployedMemeketPlaceNetworkData: deployedMemeketPlaceNetworkData
+          deployedMemeketPlaceNetworkData: deployedMemeketPlaceNetworkData,
         });
         this.setGlobal({ memeketPlaceNetwork: memeketPlaceNetwork });
         //this.setGlobal(memeketPlaceNetwork => memeketPlaceNetwork);
@@ -129,7 +140,7 @@ class App extends Component {
         style={{
           backgroundColor: "#9acdbaff",
           height: "100%",
-          minHeight: "100vh"
+          minHeight: "100vh",
         }}
       >
         <Router>
@@ -151,7 +162,7 @@ class App extends Component {
               <Route
                 exact
                 path="/"
-                render={routeProps => (
+                render={(routeProps) => (
                   <LandingPage
                     {...routeProps}
                     account={this.state.account}

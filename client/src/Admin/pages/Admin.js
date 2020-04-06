@@ -16,8 +16,8 @@ const styles = (theme) => ({
     backgroundColor: "transparent",
   },
 });
-function createData(uid, username, email, state) {
-  return { uid, username, email, state };
+function createData(uid, username, userWallet, state) {
+  return { uid, username, userWallet, state };
 }
 
 const rows = [
@@ -145,24 +145,8 @@ const AdminPage = (props) => {
           <Tab label="Disobedient Users" {...a11yProps(1)} />
         </Tabs>
       </AppBar>
-      <Users
-        value={value}
-        index={0}
-        peopleParent={rows}
-        web3={props.web3}
-        deployedMemeketPlaceNetworkData={props.deployedMemeketPlaceNetworkData}
-        memeketPlaceNetwork={props.memeketPlaceNetwork}
-        userNetwork={props.userNetwork}
-      />
-      <Users
-        value={value}
-        index={1}
-        peopleParent={disobidentrows}
-        web3={props.web3}
-        deployedMemeketPlaceNetworkData={props.deployedMemeketPlaceNetworkData}
-        memeketPlaceNetwork={props.memeketPlaceNetwork}
-        userNetwork={props.userNetwork}
-      />
+      <Users value={value} index={0} peopleParent={rows} />
+      <Users value={value} index={1} peopleParent={disobidentrows} />
     </div>
   );
 };

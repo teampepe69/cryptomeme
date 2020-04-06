@@ -159,13 +159,14 @@ const EditUser = (props) => {
             </div>
           </div>
           <div style={{ position: "relative" }}>
-            <Typography variant="p" gutterBottom>
+            <Typography variant="h4" gutterBottom>
               UID: {userInfo.uid}
             </Typography>
             <br />
-            <Typography variant="p" gutterBottom>
-              Email: {userInfo.email}
+            <Typography variant="h4" gutterBottom>
+              User Wallet: {userInfo.userWallet}
             </Typography>
+            <br />
           </div>
           {(userInfo.state === "Active" || userInfo.state == 0) && (
             <div

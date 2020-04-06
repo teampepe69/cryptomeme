@@ -1,6 +1,6 @@
 var User = artifacts.require("User.sol");
 
-contract("User.sol", function(accounts) {
+contract("User.sol", function (accounts) {
   let userInstance;
   let memeOwner0 = accounts[0];
   let memeOwner1 = accounts[1];
@@ -22,20 +22,15 @@ contract("User.sol", function(accounts) {
   it("Should add one user and return it", async () => {
     let res1 = await userInstance.getUser(0);
     let address1 = await userInstance.getUserAddress(0);
-      assert.strictEqual(
-        address1.toString(),
-        memeOwner0,
-        "Should userId equal to 0"
-      );
     assert.strictEqual(
-        res1.userId,
-        "0",
-        "Should userId equal to 0"
-      );
+      address1.toString(),
+      memeOwner0,
+      "Should userId equal to 0"
+    );
+    assert.strictEqual(res1.userId, "0", "Should userId equal to 0");
   });
 
   it("Should activate user", async () => {
-    
     await userInstance.createUser(
       memeOwner1,
       "_username",
@@ -43,21 +38,12 @@ contract("User.sol", function(accounts) {
       "_displayPictureHash",
       "_displayName",
       "_website"
-  ); 
-    
+    );
+
     let isActive1 = await userInstance.checkUserIsActive(memeOwner1);
     await userInstance.setUserAsActive(memeOwner1);
     let isActive2 = await userInstance.checkUserIsActive(memeOwner1);
-      assert.strictEqual(
-        isActive1.toString(),
-        "false",
-        "Should be false"
-      );
-    assert.strictEqual(
-        isActive2.toString(),
-        "true",
-        "Should be true"
-      );
+    assert.strictEqual(isActive1.toString(), "false", "Should be false");
+    assert.strictEqual(isActive2.toString(), "true", "Should be true");
   });
-
-})
+});

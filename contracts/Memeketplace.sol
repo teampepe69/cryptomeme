@@ -1,20 +1,38 @@
 pragma solidity ^0.5.0;
 import "./Meme.sol";
 import "./User.sol";
+import "./PepeCoin.sol";
 import "../node_modules/@openzeppelin/contracts/math/SafeMath.sol";
+
 
 contract MemeketPlace {
     using SafeMath for uint256;
 
     Meme memeContract;
     User userContract;
+    PepeCoin pepeCoinContract;
+
+    uint256 likeMemeRewardValue;
+    uint256 createMemeRewardValue;
+    uint256 createUserRewardValue;
 
     mapping(uint256 => mapping(address => uint256)) public likes; // 0 means no like or dislike, 1 means like, 2 means dislike
     mapping(uint256 => mapping(address => bool)) public flags;
 
-    constructor(Meme _memeContract, User _userContract) public {
+    constructor(
+        Meme _memeContract,
+        User _userContract,
+        PepeCoin _pepeCoinContract,
+        uint256 _likeMemeRewardValue,
+        uint256 _createMemeRewardValue,
+        uint256 _createUserRewardValue
+    ) public {
         memeContract = _memeContract;
         userContract = _userContract;
+        pepeCoinContract = _pepeCoinContract;
+        likeMemeRewardValue = _likeMemeRewardValue;
+        createMemeRewardValue = _createMemeRewardValue;
+        createUserRewardValue = _createUserRewardValue;
     }
 
     function uploadMeme(
@@ -29,6 +47,7 @@ contract MemeketPlace {
             _memeTitle,
             _memeDescription
         );
+        pepeCoinContract.mintPepeCoins(_memeOwner, createMemeRewardValue);
     }
 
     function likeMeme(uint256 _memeId) public {
@@ -57,8 +76,11 @@ contract MemeketPlace {
                 memeContract.getMemeLikes(_memeId).add(1)
             );
             likes[_memeId][msg.sender] = 1;
+            pepeCoinContract.mintPepeCoins(
+                memeContract.getMemeOwner(_memeId),
+                likeMemeRewardValue
+            );
         }
-
     }
 
     function dislikeMeme(uint256 _memeId) public {
@@ -154,6 +176,9 @@ contract MemeketPlace {
     }
 
     function activateUser(address _userWallet) public {
+        if (userContract.checkUserIsPending(_userWallet)) {
+            pepeCoinContract.mintPepeCoins(_userWallet, createUserRewardValue);
+        }
         userContract.setUserAsActive(_userWallet);
     }
 

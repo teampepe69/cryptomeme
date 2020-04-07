@@ -61,22 +61,32 @@ const Login = (props) => {
         .checkUserIsAdmin(eWallet)
         .call({ from: eWallet });
       if (userIsActivated || userIsAdmin) {
-        await web3.eth.personal.sign(
-          `Sign to confirm your login using metamask with the account ${eWallet}`,
-          eWallet
-        );
-        sessionStorage.setItem("loggedIn", true);
-        sessionStorage.setItem("account", eWallet);
-        if (userIsAdmin) {
-          sessionStorage.setItem("isAdmin", true);
+        try {
+          await web3.eth.personal.sign(
+            `Sign to confirm your login using metamask with the account ${eWallet}`,
+            eWallet
+          );
+          sessionStorage.setItem("loggedIn", true);
+          sessionStorage.setItem("account", eWallet);
+          if (userIsAdmin) {
+            sessionStorage.setItem("isAdmin", true);
+          }
+          handleClose();
+          Swal.fire({
+            title: "Login successful!",
+            icon: "success",
+            confirmButtonText: "Cool beans",
+          });
+          window.location.reload();
+        } catch (error) {
+          handleClose();
+          Swal.fire({
+            title: "No MetaMask detected. You will need to login with MetaMask",
+            icon: "warning",
+            confirmButtonText: "What's this MetaMask you speak of?",
+            showCancelButton: true,
+          });
         }
-        handleClose();
-        Swal.fire({
-          title: "Login successful!",
-          icon: "success",
-          confirmButtonText: "Cool beans",
-        });
-        window.location.reload();
       } else {
         handleClose();
         Swal.fire({

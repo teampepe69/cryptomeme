@@ -1,4 +1,3 @@
-var MemeketPlace = artifacts.require("MemeketPlace.sol");
 var User = artifacts.require("User.sol");
 var Meme = artifacts.require("Meme.sol");
 var PepeCoin = artifacts.require("PepeCoin.sol");

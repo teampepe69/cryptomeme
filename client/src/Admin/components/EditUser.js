@@ -103,13 +103,16 @@ const EditUser = (props) => {
       .checkUserIsActive(userAddress)
       .call({ from: result[0] });
     console.log("before desactivation isActive:", isActive);
-    await memeketPlaceNetwork.methods
-      .deactivateUser(userAddress)
+    await userNetwork.methods
+      .setUserAsDeactivated(userAddress)
       .send({ from: result[0] });
     let isActive2 = await userNetwork.methods
       .checkUserIsActive(userAddress)
       .call({ from: result[0] });
     console.log("before desactivation isActive:", isActive2);
+
+    // Close Modal
+    handleClose();
   }
 
   return (
@@ -138,6 +141,15 @@ const EditUser = (props) => {
                   {userInfo.state}
                 </Button>
               )}
+              {(userInfo.state === "Pending" || userInfo.state == 1) && (
+                <Button
+                  disabled
+                  fullWidth
+                  style={{ backgroundColor: "#cca677ff", color: "white" }}
+                >
+                  {userInfo.state}
+                </Button>
+              )}
               {(userInfo.state === "Deactivated" || userInfo.state == 3) && (
                 <Button
                   disabled
@@ -159,16 +171,15 @@ const EditUser = (props) => {
             </div>
           </div>
           <div style={{ position: "relative" }}>
-            <Typography variant="h4" gutterBottom>
+            <Typography variant="p" gutterBottom>
               UID: {userInfo.uid}
             </Typography>
             <br />
-            <Typography variant="h4" gutterBottom>
+            <Typography variant="p" gutterBottom>
               User Wallet: {userInfo.userWallet}
             </Typography>
-            <br />
           </div>
-          {(userInfo.state === "Active" || userInfo.state == 0) && (
+          {userInfo.state === "Active" && (
             <div
               style={{
                 position: "relative",
@@ -208,7 +219,8 @@ const EditUser = (props) => {
               </div>
             </div>
           )}
-          {(userInfo.state === "Deactivated" || userInfo.state == 3) && (
+          {(userInfo.state === "Deactivated" ||
+            userInfo.state === "Pending") && (
             <div
               style={{
                 position: "relative",
@@ -231,7 +243,7 @@ const EditUser = (props) => {
               </Button>
             </div>
           )}
-          {(userInfo.state === "Admin" || userInfo.state == 2) && (
+          {userInfo.state === "Admin" && (
             <div
               style={{
                 position: "relative",

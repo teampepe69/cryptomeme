@@ -15,7 +15,7 @@ import {
   Avatar,
   ListItemText,
   CardHeader,
-  TextField
+  TextField,
 } from "@material-ui/core";
 import tempDP from "../../img/sadpepe.png";
 import peperoni from "../../img/peperoni.png";
@@ -23,25 +23,26 @@ import Container from "@material-ui/core/Container";
 import ipfs from "../../ipfs";
 import Swal from "sweetalert2";
 
-const styles = theme => ({
+const styles = (theme) => ({
   root: {
-    padding: "15px"
+    padding: "15px",
   },
   card: {
     width: "90%",
-    paddingTop: "20px"
+    paddingTop: "20px",
   },
   avatar: {
     width: theme.spacing(15),
-    height: theme.spacing(15)
+    height: theme.spacing(15),
   },
   displayButton: {
-    fontSize: 9
-  }
+    fontSize: 9,
+  },
 });
-const ProfilePage = props => {
+const ProfilePage = (props) => {
   const { classes } = props;
   const [userNetwork] = useGlobal("userNetwork");
+  const [pepeCoinNetwork] = useGlobal("pepeCoinNetwork");
   const [memeketPlaceNetwork] = useGlobal("memeketPlaceNetwork");
   const [web3] = useGlobal("web3");
   const [userData, setUserData] = React.useState();
@@ -56,8 +57,10 @@ const ProfilePage = props => {
     "displayPictureHash"
   );
   const [website, setWebsite] = React.useState("website");
+  const [peperonis, setPeperonis] = React.useState(0);
+
   useEffect(() => {
-    populateUserData()
+    populateUserData();
   }, []);
   //------------Fetch User Properties-------------------------
   async function populateUserData() {
@@ -74,6 +77,11 @@ const ProfilePage = props => {
     setDisplayPictureHash(user[4]);
     setDisplayName(user[5]);
     setWebsite(user[6]);
+    var userPepeRonis = await pepeCoinNetwork.methods
+      .balanceOf(userWallet)
+      .call({ from: account });
+    console.log("userPepeRonis", userPepeRonis);
+    setPeperonis(userPepeRonis);
   }
 
   async function handleSubmit(event) {
@@ -91,7 +99,7 @@ const ProfilePage = props => {
     Swal.fire({
       title: "Update profile successful!",
       icon: "success",
-      confirmButtonText: "Cool beans"
+      confirmButtonText: "Cool beans",
     });
     populateUserData();
   }
@@ -130,14 +138,14 @@ const ProfilePage = props => {
             <div style={{ width: "20%", float: "left" }}>
               <Avatar src={peperoni} />
             </div>
-            <div style={{ paddingTop: "7px" }}>50 Peperonis</div>
+            <div style={{ paddingTop: "7px" }}>{peperonis} Peperonis</div>
           </div>
           <div
             style={{
               width: "60%",
               float: "right",
               paddingRight: "5%",
-              paddingBottom: "20px"
+              paddingBottom: "20px",
             }}
           >
             <form className={classes.form} onSubmit={handleSubmit}>
@@ -162,7 +170,7 @@ const ProfilePage = props => {
                 variant="outlined"
                 value={username}
                 style={{ width: "100%", paddingBottom: "5px" }}
-                onInput={e => setUsername(e.target.value)}
+                onInput={(e) => setUsername(e.target.value)}
                 required
               />
               <Typography variant="h6">About</Typography>
@@ -170,7 +178,7 @@ const ProfilePage = props => {
                 variant="outlined"
                 value={about}
                 style={{ width: "100%", paddingBottom: "5px" }}
-                onInput={e => setAbout(e.target.value)}
+                onInput={(e) => setAbout(e.target.value)}
                 required
               />
               <Typography variant="h6">Display Picture</Typography>
@@ -178,14 +186,14 @@ const ProfilePage = props => {
                 variant="outlined"
                 type="file"
                 style={{ width: "100%", paddingBottom: "5px" }}
-                onChange={e => updateDisplayPicture(e)}
+                onChange={(e) => updateDisplayPicture(e)}
               />
               <Typography variant="h6">Display Name</Typography>
               <TextField
                 variant="outlined"
                 value={displayName}
                 style={{ width: "100%", paddingBottom: "5px" }}
-                onInput={e => setDisplayName(e.target.value)}
+                onInput={(e) => setDisplayName(e.target.value)}
                 required
               />
               <Typography variant="h6">Website</Typography>
@@ -193,7 +201,7 @@ const ProfilePage = props => {
                 variant="outlined"
                 value={website}
                 style={{ width: "100%", paddingBottom: "5px" }}
-                onInput={e => setWebsite(e.target.value)}
+                onInput={(e) => setWebsite(e.target.value)}
                 required
               />
               <Button

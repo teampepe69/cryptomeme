@@ -47,6 +47,7 @@ class App extends Component {
       web3: null,
       account: "",
       memeketPlaceNetwork: null,
+      pepeCoinNetwork: null,
       deployedMemeketPlaceNetworkData: null,
       memeNetwork: null,
       userNetwork: null,
@@ -103,6 +104,7 @@ class App extends Component {
           PepeCoin.abi,
           deployedPepeCoinNetworkData.address
         );
+        this.setState({ pepeCoinNetwork: pepeCoinNetwork });
         this.setGlobal({ pepeCoinNetwork: pepeCoinNetwork });
         //this.setGlobal(userNetwork => userNetwork);
       }

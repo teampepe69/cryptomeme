@@ -85,6 +85,11 @@ contract User {
     event UserDeactivated(address userWallet);
     event UserNewAdmin(address userWallet);
 
+    modifier uniqueUser(address _userWallet) {
+        require(!userExists[_userWallet], "User already exists!");
+        _;
+    }
+
     constructor() public {
         //Create admin user
         createUser(
@@ -105,7 +110,7 @@ contract User {
         string memory _displayPictureHash,
         string memory _displayName,
         string memory _website
-    ) public {
+    ) public uniqueUser(_userWallet) {
         user memory newUser = user(
             numberOfUsers,
             _userWallet,

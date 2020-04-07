@@ -1,4 +1,5 @@
 pragma solidity ^0.5.0;
+pragma experimental ABIEncoderV2;
 import "../node_modules/@openzeppelin/contracts/token/ERC721/ERC721.sol";
 
 contract Meme is ERC721 {
@@ -66,6 +67,14 @@ contract Meme is ERC721 {
         return _memeId;
     }
 
+    function getNumberMemes() public view returns (uint256){
+        return numberOfMemes;
+    }
+
+    function getMeme(uint256 _memeId) public view returns (Meme memory){
+        return memes[_memeId];
+    }
+    
     function getMemeOwner(uint256 _memeId) public view returns (address){
         return memes[_memeId].memeOwner;
     }

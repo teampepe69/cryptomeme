@@ -53,15 +53,11 @@ const EditUser = (props) => {
     console.log("before activation isActive:", isActive)
     await userNetwork.methods.setUserAsActive(userAddress).send({from : result[0]});
     let isActive2  =await userNetwork.methods.checkUserIsActive(userAddress).call({from : result[0]});
-    console.log("after activation isActive:", isActive2)
+    console.log("after activation isActive:", isActive2);
+    
+    // Close Modal
+    handleClose();
   };
-
-  /* const handleActivate = (user) => {
-    console.log(user)
-    let userExists = await props.userNetwork.methods
-      .checkUserExists(eWallet)
-      .call({ from: eWallet });
-  }; */
 
   async function  handlePromote  (user) {
     console.log(user)
@@ -76,6 +72,9 @@ const EditUser = (props) => {
     await userNetwork.methods.setUserAsAdmin(userAddress).send({from : result[0]});
     let isAdmin2  =await userNetwork.methods.checkUserIsAdmin(userAddress).call({from : result[0]});
     console.log("after promotion isActive:", isAdmin2)
+    
+     // Close Modal
+    handleClose();
   };
 
   async function  handleDeactivate (user) {
@@ -91,6 +90,8 @@ const EditUser = (props) => {
     let isActive2  =await userNetwork.methods.checkUserIsActive(userAddress).call({from : result[0]});
     console.log("before desactivation isActive:", isActive2)
     
+     // Close Modal
+    handleClose();
   };
 
     return (
@@ -115,6 +116,11 @@ const EditUser = (props) => {
                             {userInfo.state}
                         </Button>
                     }
+                    {(userInfo.state === 'Pending' || userInfo.state == 1) && 
+                        <Button disabled fullWidth style={{backgroundColor:'#cca677ff', color:'white'}}>
+                            {userInfo.state}
+                        </Button>
+                    }
                     {(userInfo.state === 'Deactivated' || userInfo.state == 3) && 
                         <Button disabled fullWidth style={{backgroundColor:'#cca677ff', color:'white'}}>
                             {userInfo.state}
@@ -133,10 +139,10 @@ const EditUser = (props) => {
                 </Typography>
                 <br />
                 <Typography variant="p" gutterBottom>
-                    Email: {userInfo.email}
+                    User Wallet: {userInfo.userWallet}
                 </Typography>
             </div>
-            {(userInfo.state === 'Active' || userInfo.state == 0) &&
+            {(userInfo.state === 'Active') &&
                 <div style={{position:'relative', height:'220px', paddingTop:'10px'}}>
                     <div style={{ width: "45%", float: "left"}}>
                         <CardMedia
@@ -160,7 +166,7 @@ const EditUser = (props) => {
                     </div>
                 </div>
             }
-            {(userInfo.state === 'Deactivated' || userInfo.state == 3) &&
+            {(userInfo.state === 'Deactivated' || userInfo.state === 'Pending') &&
                 <div style={{position:'relative', height:'220px', paddingTop:'10px'}}>
                   <CardMedia
                       component="img"
@@ -173,7 +179,7 @@ const EditUser = (props) => {
                   </Button>
                 </div>
             }
-            {(userInfo.state === 'Admin' || userInfo.state == 2) &&
+            {(userInfo.state === 'Admin') &&
                 <div style={{position:'relative', height:'220px', paddingTop:'10px'}}>
                   <CardMedia
                       component="img"

@@ -34,10 +34,23 @@ const Login = (props) => {
   const [eWallet, setEwallet] = React.useState("");
 
   const handleOpen = () => {
-    web3.eth.getAccounts().then((result) => {
-      setEwallet(result[0]);
-      setOpen(true);
-    });
+    try {
+      web3.eth.getAccounts().then((result) => {
+        setEwallet(result[0]);
+        setOpen(true);
+      });
+    } catch (error) {
+      Swal.fire({
+        title: "No MetaMask detected. You will need MetaMask to login",
+        icon: "warning",
+        confirmButtonText: "What's this MetaMask you speak of?",
+        showCancelButton: true,
+      }).then((result) => {
+        if (result.value) {
+          window.open("https://metamask.io/download.html", "_blank");
+        }
+      });
+    }
   };
 
   const handleClose = () => {

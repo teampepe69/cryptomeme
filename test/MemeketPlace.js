@@ -63,7 +63,7 @@ contract("MemeketPlace.sol", function (accounts) {
     it("Should upload meme", async() => {
         try {
             await memeketPlaceInstance.uploadMeme(
-                meme1Owner,
+                memeOwner1,
                 meme1Path,
                 meme1Title,
                 meme1Desc
@@ -75,7 +75,9 @@ contract("MemeketPlace.sol", function (accounts) {
         assert.strictEqual(likeStatus.toNumber(), 0, "Should return 0 but got " + likeStatus)
     });
 
-    it("Should like meme" , async() => {
+    it("Should like meme and reward Meme owner" , async() => {
+
+        let numberOfPepeCoinsUser1 = await pepeCoinInstance.balanceOf(memeOwner1)
         try {
             await memeketPlaceInstance.likeMeme(meme1Id, {from:liker1});
         } catch (error) {
@@ -83,7 +85,14 @@ contract("MemeketPlace.sol", function (accounts) {
         }
         let likeStatus = await memeketPlaceInstance.getLikes(meme1Id,liker1);
         assert.strictEqual(likeStatus.toNumber(), 1, "Should return 1 but got " + likeStatus)
+        let numberOfPepeCoinsUser1After = await pepeCoinInstance.balanceOf(memeOwner1)
+
+        assert.strictEqual(numberOfPepeCoinsUser1.toNumber() + likeMemeReward, 
+            numberOfPepeCoinsUser1After.toNumber(), 
+            "Should return 11 but got " + numberOfPepeCoinsUser1After.toNumber())
     });
+
+    
 
     it("Should unlike meme if likeMeme is called again" , async() => {
         try {

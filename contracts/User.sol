@@ -84,7 +84,7 @@ contract User {
     event UserActivated(address userWallet);
     event UserDeactivated(address userWallet);
     event UserNewAdmin(address userWallet);
-    
+
     constructor() public {
         //Create admin user
         createUser(
@@ -190,17 +190,25 @@ contract User {
         return users[userIds[_userWallet]].state == userStates.active;
     }
 
-    function getUser(uint256 i) public view returns(user memory) {
+    function checkUserIsPending(address _userWallet)
+        public
+        view
+        returns (bool)
+    {
+        return users[userIds[_userWallet]].state == userStates.pending;
+    }
+
+    function getUser(uint256 i) public view returns (user memory) {
         //require(i < numberOfUsers);
         return users[i];
     }
 
-    function getNumberUsers() public view returns(uint256) {
+    function getNumberUsers() public view returns (uint256) {
         //require(i < numberOfUsers);
         return numberOfUsers;
     }
 
-    function getUserAddress(uint256 i) public view returns(address) {
+    function getUserAddress(uint256 i) public view returns (address) {
         //require(i < numberOfUsers);
         return users[i].userWallet;
     }

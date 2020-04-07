@@ -1,22 +1,26 @@
-var MemeketPlace = artifacts.require("MemeketPlace.sol");
 var User = artifacts.require("User.sol");
 var Meme = artifacts.require("Meme.sol");
+var PepeCoin = artifacts.require("PepeCoin.sol");
+var MemeketPlace = artifacts.require("MemeketPlace.sol");
 
-contract("MemeketPlace.sol", function(accounts) {
+contract("MemeketPlace.sol", function (accounts) {
   let userInstance;
   let memeInstance;
+  let pepeCoinInstance;
   let memeketPlaceInstance;
+  let likeMemeReward = 1;
+  let createMemeReward = 50;
+  let createUserReward = 100;
   let memeOwner1 = accounts[1];
   let memeOwner2 = accounts[2];
   let memeOwner3 = accounts[3];
 
   before(async () => {
-    userInstance = await User.deployed();
-    memeInstance = await Meme.deployed();
-    memeketPlaceInstance = await MemeketPlace.new(memeInstance.address,userInstance.address);
+    pepeCoinInstance = await PepeCoin.deployed();
+    memeketPlaceInstance = await MemeketPlace.deployed();
   });
 
-  it("Should successfully deploy user instance", async () => {
+  it("Should successfully deploy MemeketPlace instance", async () => {
     assert.notEqual(memeketPlaceInstance.address, 0x0);
     assert.notEqual(memeketPlaceInstance.address, null);
     assert.notEqual(memeketPlaceInstance.address, undefined);
@@ -24,12 +28,27 @@ contract("MemeketPlace.sol", function(accounts) {
     assert.notEqual(memeketPlaceInstance.address, " ");
   });
 
-  it("Should getUser 0 : admin from userContract", async () => {
-    let res1 = await userInstance.getUser(0);
-    assert.strictEqual(
-        res1.userId,
-        "0",
-        "Should userId equal to 0"
-      );
+  it("Should create user 1", async () => {
+    let createUser1 = await memeketPlaceInstance.createUser(
+      memeOwner1,
+      "Meme Owner 1",
+      "Random About",
+      "Random Hash",
+      "Random Display Name",
+      "Random Website"
+    );
   });
-})
+
+  it("Should activate user 1", async () => {
+    let activateUser1 = await memeketPlaceInstance.activateUser(memeOwner1);
+  });
+
+  it("User 1 should have default created user pepecoins", async () => {
+    let numberOfPepeCoinsUser1 = await pepeCoinInstance.balanceOf(memeOwner1);
+    assert.strictEqual(
+      numberOfPepeCoinsUser1.toNumber(),
+      createUserReward,
+      "User 1 should have 100 Pepe Coins"
+    );
+  });
+});

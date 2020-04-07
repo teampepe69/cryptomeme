@@ -46,17 +46,25 @@ const Login = (props) => {
 
   async function handleLogin(event) {
     event.preventDefault();
+    //Check user exists
     let userExists = await userNetwork.methods
       .checkUserExists(eWallet)
       .call({ from: eWallet });
+
     if (userExists) {
+      //Check user is activated
       let userIsActivated = await userNetwork.methods
         .checkUserIsActive(eWallet)
         .call({ from: eWallet });
+      //Check user is admin
       let userIsAdmin = await userNetwork.methods
         .checkUserIsAdmin(eWallet)
         .call({ from: eWallet });
       if (userIsActivated || userIsAdmin) {
+        await web3.eth.personal.sign(
+          `Sign to confirm your login using metamask with the account ${eWallet}`,
+          eWallet
+        );
         sessionStorage.setItem("loggedIn", true);
         sessionStorage.setItem("account", eWallet);
         if (userIsAdmin) {

@@ -1,20 +1,38 @@
 pragma solidity ^0.5.0;
 import "./Meme.sol";
 import "./User.sol";
+import "./PepeCoin.sol";
 import "../node_modules/@openzeppelin/contracts/math/SafeMath.sol";
+
 
 contract MemeketPlace {
     using SafeMath for uint256;
 
     Meme memeContract;
     User userContract;
+    PepeCoin pepeCoinContract;
+
+    uint256 likeMemeRewardValue;
+    uint256 createMemeRewardValue;
+    uint256 createUserRewardValue;
 
     mapping(uint256 => mapping(address => uint256)) public likes; // 0 means no like or dislike, 1 means like, 2 means dislike
     mapping(uint256 => mapping(address => bool)) public flags;
 
-    constructor(Meme _memeContract, User _userContract) public {
+    constructor(
+        Meme _memeContract,
+        User _userContract,
+        PepeCoin _pepeCoinContract,
+        uint256 _likeMemeRewardValue,
+        uint256 _createMemeRewardValue,
+        uint256 _createUserRewardValue
+    ) public {
         memeContract = _memeContract;
         userContract = _userContract;
+        pepeCoinContract = _pepeCoinContract;
+        likeMemeRewardValue = _likeMemeRewardValue;
+        createMemeRewardValue = _createMemeRewardValue;
+        createUserRewardValue = _createUserRewardValue;
     }
 
     function uploadMeme(
@@ -29,6 +47,7 @@ contract MemeketPlace {
             _memeTitle,
             _memeDescription
         );
+        pepeCoinContract.mintPepeCoins(_memeOwner, createMemeRewardValue);
     }
 
     function likeMeme(uint256 _memeId) public {
@@ -57,8 +76,11 @@ contract MemeketPlace {
                 memeContract.getMemeLikes(_memeId).add(1)
             );
             likes[_memeId][msg.sender] = 1;
+            pepeCoinContract.mintPepeCoins(
+                memeContract.getMemeOwner(_memeId),
+                likeMemeRewardValue
+            );
         }
-
     }
 
     function dislikeMeme(uint256 _memeId) public {
@@ -92,30 +114,12 @@ contract MemeketPlace {
         }
     }
 
-    // function removeLike(uint256 _memeId) public {
-    //     require(likes[_memeId][msg.sender] == 1, "You have not liked this meme");
-    //     likes[_memeId][msg.sender] == 0;
-    //     memeContract.setMemeLikes(
-    //         _memeId,
-    //         memeContract.getMemeLikes(_memeId).sub(1)
-    //     );
-    // }
-
-    // function removeDislike(uint256 _memeId) public {
-    //     require(likes[_memeId][msg.sender] == 2, "You have not disliked this meme");
-    //     likes[_memeId][msg.sender] == 0;
-    //     memeContract.setMemeDislikes(
-    //         _memeId,
-    //         memeContract.getMemeLikes(_memeId).sub(1)
-    //     );
-    // }
-
     function flagMeme(uint256 _memeId) public {
         require(
             flags[_memeId][msg.sender] == false,
             "You have already flagged this meme"
         );
-        flags[_memeId][msg.sender] == true;
+        flags[_memeId][msg.sender] = true;
         memeContract.setMemeFlags(
             _memeId,
             memeContract.getMemeFlags(_memeId).add(1)
@@ -128,6 +132,14 @@ contract MemeketPlace {
         returns (uint256)
     {
         return likes[_memeId][user];
+    }
+
+    function getFlags(uint256 _memeId, address user)
+        public
+        view
+        returns (bool)
+    {
+        return flags[_memeId][user];
     }
 
     function createUser(
@@ -164,6 +176,9 @@ contract MemeketPlace {
     }
 
     function activateUser(address _userWallet) public {
+        if (userContract.checkUserIsPending(_userWallet)) {
+            pepeCoinContract.mintPepeCoins(_userWallet, createUserRewardValue);
+        }
         userContract.setUserAsActive(_userWallet);
     }
 

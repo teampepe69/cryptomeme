@@ -1,4 +1,5 @@
 pragma solidity ^0.5.0;
+pragma experimental ABIEncoderV2;
 import "../node_modules/@openzeppelin/contracts/token/ERC721/ERC721.sol";
 
 contract Meme is ERC721 {
@@ -11,6 +12,7 @@ contract Meme is ERC721 {
     enum memeStates {approved, rejected, pending}
 
     struct Meme {
+        address memeOwner;
         uint256 memeId;
         uint256 memeLikes;
         uint256 memeDislikes;
@@ -47,6 +49,7 @@ contract Meme is ERC721 {
         string memory _memeDescription
     ) public returns (uint256) {
         Meme memory _meme = Meme(
+            _memeOwner,
             numberOfMemes,
             0,
             0,
@@ -64,6 +67,17 @@ contract Meme is ERC721 {
         return _memeId;
     }
 
+    function getNumberMemes() public view returns (uint256){
+        return numberOfMemes;
+    }
+
+    function getMeme(uint256 _memeId) public view returns (Meme memory){
+        return memes[_memeId];
+    }
+    
+    function getMemeOwner(uint256 _memeId) public view returns (address){
+        return memes[_memeId].memeOwner;
+    }
 
     function getMemeLikes(uint256 _memeId) public view returns (uint256) {
         return memes[_memeId].memeLikes;

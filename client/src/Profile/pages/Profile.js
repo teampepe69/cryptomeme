@@ -1,146 +1,207 @@
-import * as React from 'react';
-import { Link } from 'react-router-dom';
-import { withStyles } from '@material-ui/core/styles';
+import React, { useGlobal, useEffect } from "reactn";
+import { Link } from "react-router-dom";
+import { withStyles } from "@material-ui/core/styles";
 import {
-  CardMedia, List, Card, AppBar, ListItemAvatar, Typography, Button,
-  ListItem, Toolbar, Badge, Avatar, ListItemText, CardHeader, TextField
-} from '@material-ui/core';
+  CardMedia,
+  List,
+  Card,
+  AppBar,
+  ListItemAvatar,
+  Typography,
+  Button,
+  ListItem,
+  Toolbar,
+  Badge,
+  Avatar,
+  ListItemText,
+  CardHeader,
+  TextField
+} from "@material-ui/core";
 import tempDP from "../../img/sadpepe.png";
 import peperoni from "../../img/peperoni.png";
-import Container from '@material-ui/core/Container';
+import Container from "@material-ui/core/Container";
+import ipfs from "../../ipfs";
+import Swal from "sweetalert2";
 
 const styles = theme => ({
   root: {
-    padding: '15px',
+    padding: "15px"
   },
   card: {
-    width: '90%',
-    paddingTop: '20px',
+    width: "90%",
+    paddingTop: "20px"
   },
   avatar: {
     width: theme.spacing(15),
-    height: theme.spacing(15),
+    height: theme.spacing(15)
   },
   displayButton: {
-    fontSize: 9,
-  },
-});
-const ProfilePage = (props) => {
-  const {
-    classes,
-  } = props;
-  const [name, setName] = React.useState('teampepe69');
-  const [email, setEmail] = React.useState('t34mp3p3@urlan.com');
-  const [usr, setUsr] = React.useState('teampepe69');
-  const [wallet, setWallet] = React.useState('g4nch4ch3s3d4p');
-  const [about, setAbout] = React.useState('IsThisR3alLyf3');
-  const [location, setLocation] = React.useState('Corona Land');
-  const [website, setWebsite] = React.useState('www.corona-cancelled-my-graduation-plans.com');
-
-  function handleSubmit(event) {
-    event.preventDefault();
-    console.log(email, name, usr, wallet, about, location, website);
-    // code to submit form to backend here...
+    fontSize: 9
   }
+});
+const ProfilePage = props => {
+  const { classes } = props;
+  const [userNetwork] = useGlobal("userNetwork");
+  const [memeketPlaceNetwork] = useGlobal("memeketPlaceNetwork");
+  const [web3] = useGlobal("web3");
+  const [userData, setUserData] = React.useState();
+  const [userId, setUserId] = React.useState(999);
+  const [userWallet, setUserWallet] = React.useState(
+    sessionStorage.getItem("account")
+  );
+  const [username, setUsername] = React.useState("username");
+  const [about, setAbout] = React.useState("about");
+  const [displayName, setDisplayName] = React.useState("displayName");
+  const [displayPictureHash, setDisplayPictureHash] = React.useState(
+    "displayPictureHash"
+  );
+  const [website, setWebsite] = React.useState("website");
+  useEffect(() => {
+    populateUserData()
+  }, []);
+  //------------Fetch User Properties-------------------------
+  async function populateUserData() {
+    var account = sessionStorage.getItem("account");
+    var userId = await userNetwork.methods
+      .userIds(account)
+      .call({ from: account });
+    var user = await userNetwork.methods.users(userId).call({ from: account });
+    setUserData(user);
+    setUserId(user[0]);
+    setUserWallet(user[1]);
+    setUsername(user[2]);
+    setAbout(user[3]);
+    setDisplayPictureHash(user[4]);
+    setDisplayName(user[5]);
+    setWebsite(user[6]);
+  }
+
+  async function handleSubmit(event) {
+    event.preventDefault();
+    await memeketPlaceNetwork.methods
+      .updateUserProfile(
+        userWallet,
+        username,
+        about,
+        displayPictureHash,
+        displayName,
+        website
+      )
+      .send({ from: userWallet });
+    Swal.fire({
+      title: "Update profile successful!",
+      icon: "success",
+      confirmButtonText: "Cool beans"
+    });
+    populateUserData();
+  }
+
+  function updateDisplayPicture(event) {
+    event.preventDefault();
+    var file = event.target.files[0];
+    var reader = new window.FileReader();
+    reader.readAsArrayBuffer(file);
+    reader.onloadend = () => {
+      ipfs.files.add(Buffer(reader.result), (error, result) => {
+        if (error) {
+          return;
+        }
+        const hash = result[0].hash;
+        setDisplayPictureHash(hash);
+        return hash;
+      });
+    };
+  }
+
   return (
     <Container>
       <div className={classes.root}>
-        <Typography variant="h4" style={{paddingBottom:'10px'}}>
+        <Typography variant="h4" style={{ paddingBottom: "10px" }}>
           Profile
         </Typography>
         <Card elevation={2} className={classes.card}>
-          <div style={{ width: '40%', float: 'left', paddingLeft: '5%' }}>
-            <Avatar src={tempDP} className={classes.avatar} />
-            <Button color="primary" className={classes.displayButton}>
-              Change Display Picture
-            </Button>
+          <div style={{ width: "40%", float: "left", paddingLeft: "5%" }}>
+            <Avatar
+              src={`https://ipfs.io/ipfs/${displayPictureHash}`}
+              className={classes.avatar}
+            />
             <br />
-            <Typography variant="h6">
-              Current Tokens
-            </Typography>
-            <div style={{ width: '20%', float: 'left' }}>
+            <Typography variant="h6">Current Tokens</Typography>
+            <div style={{ width: "20%", float: "left" }}>
               <Avatar src={peperoni} />
             </div>
-            <div style={{ paddingTop: '7px' }}>
-              50 Peperonis
-            </div>
+            <div style={{ paddingTop: "7px" }}>50 Peperonis</div>
           </div>
-          <div style={{ width: '60%', float: 'right', paddingRight: '5%', paddingBottom: '20px' }}>
+          <div
+            style={{
+              width: "60%",
+              float: "right",
+              paddingRight: "5%",
+              paddingBottom: "20px"
+            }}
+          >
             <form className={classes.form} onSubmit={handleSubmit}>
-              <Typography variant="h6">
-                Username
-              </Typography>
+              <Typography variant="h6">User ID</Typography>
               <TextField
                 variant="outlined"
-                defaultValue={usr}
-                style={{ width: '100%', paddingBottom: '5px' }}
-                onInput={e => setUsr(e.target.value)}
+                disabled="true"
+                value={userId}
+                style={{ width: "100%", paddingBottom: "5px" }}
                 required
               />
-              <Typography variant="h6">
-                About
-              </Typography>
+              <Typography variant="h6">User Wallet</Typography>
               <TextField
                 variant="outlined"
-                defaultValue={about}
-                style={{ width: '100%', paddingBottom: '5px' }}
+                disabled="true"
+                value={userWallet}
+                style={{ width: "100%", paddingBottom: "5px" }}
+                required
+              />
+              <Typography variant="h6">Username</Typography>
+              <TextField
+                variant="outlined"
+                value={username}
+                style={{ width: "100%", paddingBottom: "5px" }}
+                onInput={e => setUsername(e.target.value)}
+                required
+              />
+              <Typography variant="h6">About</Typography>
+              <TextField
+                variant="outlined"
+                value={about}
+                style={{ width: "100%", paddingBottom: "5px" }}
                 onInput={e => setAbout(e.target.value)}
                 required
               />
-              <Typography variant="h6">
-                Email
-              </Typography>
+              <Typography variant="h6">Display Picture</Typography>
               <TextField
                 variant="outlined"
-                defaultValue={email}
-                style={{ width: '100%', paddingBottom: '5px' }}
-                onInput={e => setEmail(e.target.value)}
+                type="file"
+                style={{ width: "100%", paddingBottom: "5px" }}
+                onChange={e => updateDisplayPicture(e)}
+              />
+              <Typography variant="h6">Display Name</Typography>
+              <TextField
+                variant="outlined"
+                value={displayName}
+                style={{ width: "100%", paddingBottom: "5px" }}
+                onInput={e => setDisplayName(e.target.value)}
                 required
               />
-              <Typography variant="h6">
-                Display Name
-              </Typography>
+              <Typography variant="h6">Website</Typography>
               <TextField
                 variant="outlined"
-                defaultValue={name}
-                style={{ width: '100%', paddingBottom: '5px' }}
-                onInput={e => setName(e.target.value)}
-                required
-              />
-              <Typography variant="h6">
-                Wallet Address
-              </Typography>
-              <TextField
-                variant="outlined"
-                defaultValue={wallet}
-                style={{ width: '100%', paddingBottom: '5px' }}
-                onInput={e => setWallet(e.target.value)}
-                required
-              />
-              <Typography variant="h6">
-                Location
-              </Typography>
-              <TextField
-                variant="outlined"
-                defaultValue={location}
-                style={{ width: '100%', paddingBottom: '5px' }}
-                onInput={e => setLocation(e.target.value)}
-                required
-              />
-              <Typography variant="h6">
-                Website
-              </Typography>
-              <TextField
-                variant="outlined"
-                defaultValue={website}
-                style={{ width: '100%', paddingBottom: '5px' }}
+                value={website}
+                style={{ width: "100%", paddingBottom: "5px" }}
                 onInput={e => setWebsite(e.target.value)}
                 required
               />
-              <Button color='primary' fullWidth>
-                Change Password
-              </Button>
-              <Button type="submit" color='primary' variant='contained' fullWidth>
+              <Button
+                type="submit"
+                color="primary"
+                variant="contained"
+                fullWidth
+              >
                 update profile
               </Button>
             </form>
@@ -150,6 +211,5 @@ const ProfilePage = (props) => {
     </Container>
   );
 };
-
 
 export default withStyles(styles, { withTheme: true })(ProfilePage);

@@ -53,6 +53,7 @@ const Navbar = (props) => {
   const [displayPictureHash, setDisplayPictureHash] = React.useState(
     "displayPictureHash"
   );
+  const [username, setUsername] = React.useState("username");
 
   useEffect(() => {
     console.log(userNetwork)
@@ -70,6 +71,7 @@ const Navbar = (props) => {
       const user = await userNetwork.methods.users(userId).call({ from: account });
       console.log(user.displayPictureHash)
       setUser(user)
+      setUsername(user[2]);
       setDisplayPictureHash(user[4]);
     }
     else{
@@ -120,7 +122,7 @@ const Navbar = (props) => {
                 : <Avatar/>}
                 </ListItemAvatar>
                 <ListItemText
-                  primary="teampepe69"
+                  primary={username}
                   className={classes.profileName}
                 />
               </ListItem>

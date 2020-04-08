@@ -61,27 +61,35 @@ const ProfilePage = (props) => {
 
   useEffect(() => {
     populateUserData();
-  }, []);
+  }, [userNetwork, pepeCoinNetwork]);
   //------------Fetch User Properties-------------------------
   async function populateUserData() {
     var account = sessionStorage.getItem("account");
-    var userId = await userNetwork.methods
-      .userIds(account)
-      .call({ from: account });
-    var user = await userNetwork.methods.users(userId).call({ from: account });
-    setUserData(user);
-    setUserId(user[0]);
-    setUserWallet(user[1]);
-    setUsername(user[2]);
-    setAbout(user[3]);
-    setDisplayPictureHash(user[4]);
-    setDisplayName(user[5]);
-    setWebsite(user[6]);
-    var userPepeRonis = await pepeCoinNetwork.methods
-      .balanceOf(userWallet)
-      .call({ from: account });
-    console.log("userPepeRonis", userPepeRonis);
-    setPeperonis(userPepeRonis);
+    if (account && userNetwork && pepeCoinNetwork) {
+      var userId = await userNetwork.methods
+        .userIds(account)
+        .call({ from: account });
+      var user = await userNetwork.methods.users(userId).call({ from: account });
+      setUserData(user);
+      setUserId(user[0]);
+      setUserWallet(user[1]);
+      setUsername(user[2]);
+      setAbout(user[3]);
+      setDisplayPictureHash(user[4]);
+      setDisplayName(user[5]);
+      setWebsite(user[6]);
+      var userPepeRonis = await pepeCoinNetwork.methods
+        .balanceOf(userWallet)
+        .call({ from: account });
+      console.log("userPepeRonis", userPepeRonis);
+      setPeperonis(userPepeRonis);
+    }
+    else{
+      console.log("account: ", account)
+      console.log("network: ", userNetwork)
+      console.log("peperonis: ", userPepeRonis)
+      // console.log("user network issue")
+    }
   }
 
   async function handleSubmit(event) {
@@ -100,8 +108,10 @@ const ProfilePage = (props) => {
       title: "Update profile successful!",
       icon: "success",
       confirmButtonText: "Cool beans",
+    }).then(function(){
+      window.location.reload()
     });
-    populateUserData();
+    // populateUserData();
   }
 
   function updateDisplayPicture(event) {
@@ -119,6 +129,7 @@ const ProfilePage = (props) => {
         return hash;
       });
     };
+    console.log(displayPictureHash)
   }
 
   return (

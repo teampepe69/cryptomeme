@@ -61,11 +61,11 @@ const ProfilePage = (props) => {
 
   useEffect(() => {
     populateUserData();
-  }, []);
+  }, [userNetwork, pepeCoinNetwork]);
   //------------Fetch User Properties-------------------------
   async function populateUserData() {
-    if(userNetwork!=null){
-      var account = sessionStorage.getItem("account");
+    var account = sessionStorage.getItem("account");
+    if (account && userNetwork && pepeCoinNetwork) {
       var userId = await userNetwork.methods
         .userIds(account)
         .call({ from: account });
@@ -83,6 +83,12 @@ const ProfilePage = (props) => {
         .call({ from: account });
       console.log("userPepeRonis", userPepeRonis);
       setPeperonis(userPepeRonis);
+    }
+    else{
+      console.log("account: ", account)
+      console.log("network: ", userNetwork)
+      console.log("peperonis: ", userPepeRonis)
+      // console.log("user network issue")
     }
   }
 
@@ -102,8 +108,10 @@ const ProfilePage = (props) => {
       title: "Update profile successful!",
       icon: "success",
       confirmButtonText: "Cool beans",
+    }).then(function(){
+      window.location.reload()
     });
-    populateUserData();
+    // populateUserData();
   }
 
   function updateDisplayPicture(event) {
@@ -121,6 +129,7 @@ const ProfilePage = (props) => {
         return hash;
       });
     };
+    console.log(displayPictureHash)
   }
 
   return (

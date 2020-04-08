@@ -43,94 +43,94 @@ const styles = theme => ({
 });
 
 const Navbar = (props) => {
-    const { classes } = props;
-    const [displayPictureHash, setDisplayPictureHash] = React.useState(
-      "displayPictureHash"
-    );
-    const [userNetwork] = useGlobal("userNetwork");
-    console.log("userNetwork", userNetwork);
-    var loggedIn = JSON.parse(sessionStorage.getItem("loggedIn"));
-    console.log("loggedIn", loggedIn);
-    
-    useEffect(() => {
-      getAvatar();
-    }, []);
-    async function getAvatar() {
-      if(loggedIn && userNetwork!=null){
-        var account = sessionStorage.getItem("account");
-        console.log("userNetwork11111", userNetwork);
-        var userId = await userNetwork.methods
-          .userIds(account)
-          .call({ from: account });
-        var user = await userNetwork.methods.users(userId).call({ from: account });
-        setDisplayPictureHash(user[4]);
-      }
-    }
+  const { classes } = props;
+  var loggedIn = JSON.parse(sessionStorage.getItem("loggedIn"));
+  const [userNetwork] = useGlobal("userNetwork");
+  const [pepeCoinNetwork] = useGlobal("pepeCoinNetwork");
+  const [memeketPlaceNetwork] = useGlobal("memeketPlaceNetwork");
+  const [web3] = useGlobal("web3");
+  const [user, setUser] = React.useState(null)
+  const [displayPictureHash, setDisplayPictureHash] = React.useState(
+    "displayPictureHash"
+  );
 
-    return (
-      <div>
-        <AppBar position="static" className={classes.appBar}>
-          <Toolbar>
-            <Card
-              elevation={0}
-              className={classes.card}
-              component={Link}
-              to="/"
-            >
-              <CardMedia
-                component="img"
-                className={classes.media}
-                image={require("../../img/HappyPepe.png")}
-                title="Logo"
-                style={{ maxWidth: "70%", height: "auto" }}
-              />
-            </Card>
-            <Typography
-              variant="h6"
-              className={classes.title}
-              component={Link}
-              to="/"
-            >
-              Cryptomeme
-            </Typography>
-            <div className={classes.grow} />
-            {!loggedIn && (
-              <Login
-                web3={props.web3}
-                deployedMemeketPlaceNetworkData={
-                  props.deployedMemeketPlaceNetworkData
-                }
-                memeketPlaceNetwork={props.memeketPlaceNetwork}
-                userNetwork={props.userNetwork}
-              />
-            )}
-            {!loggedIn && (
-              <Register
-                web3={props.web3}
-                deployedMemeketPlaceNetworkData={
-                  props.deployedMemeketPlaceNetworkData
-                }
-                memeketPlaceNetwork={props.memeketPlaceNetwork}
-                userNetwork={props.userNetwork}
-              />
-            )}
-            {loggedIn && (
-              <List className={classes.list} component={Link} to="/profile">
-                <ListItem button>
-                  <ListItemAvatar>
-                    <Avatar src={`https://ipfs.io/ipfs/${displayPictureHash}`} />
-                  </ListItemAvatar>
-                  <ListItemText
-                    primary="teampepe69"
-                    className={classes.profileName}
-                  />
-                </ListItem>
-              </List>
-            )}
-            {loggedIn && <Logout />}
-          </Toolbar>
-        </AppBar>
-      </div>
-    );
+  useEffect(() => {
+    console.log(userNetwork)
+    getUserData();
+  }, [userNetwork]);
+
+
+  async function getUserData() {
+    var account = sessionStorage.getItem("account");
+    console.log(account)
+    if (userNetwork && account) {
+      var userId = await userNetwork.methods
+        .userIds(account)
+        .call({ from: account });
+      const user = await userNetwork.methods.users(userId).call({ from: account });
+      console.log(user.displayPictureHash)
+      setUser(user)
+      setDisplayPictureHash(user[4]);
+    }
+    else{
+      console.log("null networks")
+    }
+    
   }
+
+  return (
+    <div>
+      <AppBar position="static" className={classes.appBar}>
+        <Toolbar>
+          <Card
+            elevation={0}
+            className={classes.card}
+            component={Link}
+            to="/"
+          >
+            <CardMedia
+              component="img"
+              className={classes.media}
+              image={require("../../img/HappyPepe.png")}
+              title="Logo"
+              style={{ maxWidth: "70%", height: "auto" }}
+            />
+          </Card>
+          <Typography
+            variant="h6"
+            className={classes.title}
+            component={Link}
+            to="/"
+          >
+            Cryptomeme
+          </Typography>
+          <div className={classes.grow} />
+          {!loggedIn && (
+            <Login/>
+          )}
+          {!loggedIn && (
+            <Register/>
+          )}
+          {loggedIn && (
+            <List className={classes.list} component={Link} to="/profile">
+              <ListItem button>
+                <ListItemAvatar>
+                {user!== null ?
+                  <Avatar src={`https://ipfs.io/ipfs/${user.displayPictureHash}`} />
+                : <Avatar/>}
+                </ListItemAvatar>
+                <ListItemText
+                  primary="teampepe69"
+                  className={classes.profileName}
+                />
+              </ListItem>
+            </List>
+          )}
+          {loggedIn && <Logout />}
+        </Toolbar>
+      </AppBar>
+    </div>
+  );
+}
+
 export default withStyles(styles, { withTheme: true })(Navbar);

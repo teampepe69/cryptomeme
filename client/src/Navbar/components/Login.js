@@ -60,6 +60,7 @@ const Login = (props) => {
   async function handleLogin(event) {
     event.preventDefault();
     //Check user exists
+
     let userExists = await userNetwork.methods
       .checkUserExists(eWallet)
       .call({ from: eWallet });

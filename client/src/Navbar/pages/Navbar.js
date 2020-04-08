@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useGlobal, useEffect } from "reactn";
 import Login from "../components/Login.js";
 import Register from "../components/Register.js";
 import Logout from "../components/Logout.js";
@@ -42,11 +42,29 @@ const styles = theme => ({
   }
 });
 
-class Navbar extends React.Component {
-  render() {
-    const { classes } = this.props;
+const Navbar = (props) => {
+    const { classes } = props;
+    const [displayPictureHash, setDisplayPictureHash] = React.useState(
+      "displayPictureHash"
+    );
+    const [userNetwork] = useGlobal("userNetwork");
+    console.log("userNetwork", userNetwork);
     var loggedIn = JSON.parse(sessionStorage.getItem("loggedIn"));
     console.log("loggedIn", loggedIn);
+    
+    useEffect(() => {
+      if (loggedIn){
+        getAvatar();
+      }
+    }, []);
+    async function getAvatar() {
+      var account = sessionStorage.getItem("account");
+      var userId = await userNetwork.methods
+        .userIds(account)
+        .call({ from: account });
+      var user = await userNetwork.methods.users(userId).call({ from: account });
+      setDisplayPictureHash(user[4]);
+    }
 
     return (
       <div>
@@ -61,7 +79,7 @@ class Navbar extends React.Component {
               <CardMedia
                 component="img"
                 className={classes.media}
-                image={require("../../img/HappyPepe.png")}
+                src={`https://ipfs.io/ipfs/${displayPictureHash}`}
                 title="Logo"
                 style={{ maxWidth: "70%", height: "auto" }}
               />
@@ -77,22 +95,22 @@ class Navbar extends React.Component {
             <div className={classes.grow} />
             {!loggedIn && (
               <Login
-                web3={this.props.web3}
+                web3={props.web3}
                 deployedMemeketPlaceNetworkData={
-                  this.props.deployedMemeketPlaceNetworkData
+                  props.deployedMemeketPlaceNetworkData
                 }
-                memeketPlaceNetwork={this.props.memeketPlaceNetwork}
-                userNetwork={this.props.userNetwork}
+                memeketPlaceNetwork={props.memeketPlaceNetwork}
+                userNetwork={props.userNetwork}
               />
             )}
             {!loggedIn && (
               <Register
-                web3={this.props.web3}
+                web3={props.web3}
                 deployedMemeketPlaceNetworkData={
-                  this.props.deployedMemeketPlaceNetworkData
+                  props.deployedMemeketPlaceNetworkData
                 }
-                memeketPlaceNetwork={this.props.memeketPlaceNetwork}
-                userNetwork={this.props.userNetwork}
+                memeketPlaceNetwork={props.memeketPlaceNetwork}
+                userNetwork={props.userNetwork}
               />
             )}
             {loggedIn && (
@@ -114,6 +132,4 @@ class Navbar extends React.Component {
       </div>
     );
   }
-}
-
 export default withStyles(styles, { withTheme: true })(Navbar);

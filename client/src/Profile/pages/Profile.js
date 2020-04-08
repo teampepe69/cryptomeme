@@ -130,13 +130,13 @@ const ProfilePage = (props) => {
         <Card elevation={2} className={classes.card}>
           <div style={{ width: "40%", float: "left", paddingLeft: "5%" }}>
             <Avatar
-              src={`https://ipfs.io/ipfs/${displayPictureHash}`}
+              img={require('../../img/HappyPepe.png')}
               className={classes.avatar}
             />
             <br />
             <Typography variant="h6">Current Tokens</Typography>
             <div style={{ width: "20%", float: "left" }}>
-              <Avatar src={peperoni} />
+              <Avatar src={`https://ipfs.io/ipfs/${displayPictureHash}`} />
             </div>
             <div style={{ paddingTop: "7px" }}>{peperonis} Peperonis</div>
           </div>

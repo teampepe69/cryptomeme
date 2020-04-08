@@ -173,25 +173,30 @@ const MemeFeed = (props) => {
         const result = await memeNetwork.methods.numberOfMemes().call();
         for (var i = 0; i < result; i++) {
           const meme = await memeNetwork.methods.memes(i).call();
-          arr = arr.concat(meme);
+          console.log(memeIsApproved(meme));
+          if (memeIsApproved(meme)) {
+            arr = arr.concat(meme);
 
-          //for every meme, retrieve the getStatus to see if user has liked this before
-          await getStatus(meme.memeId);
+            //for every meme, retrieve the getStatus to see if user has liked this before
+            await getStatus(meme.memeId);
 
-          //retrieve the meme creator's address to get his userId
-          const address = meme.memeOwner;
-          const userId = await userNetwork.methods.userIds(address).call();
+            //retrieve the meme creator's address to get his userId
+            const address = meme.memeOwner;
+            const userId = await userNetwork.methods.userIds(address).call();
 
-          //retrieve meme creator object
-          const _memeOwner = await userNetwork.methods
-            .users(userId)
-            .call({ from: acc });
+            //retrieve meme creator object
+            const _memeOwner = await userNetwork.methods
+              .users(userId)
+              .call({ from: acc });
 
-          _memeOwners = _memeOwners.concat(_memeOwner);
+            _memeOwners = _memeOwners.concat(_memeOwner);
 
-          setMemes(arr);
-          setMemeOwners(_memeOwners);
-          console.log(_memeOwners);
+            setMemes(arr);
+            setMemeOwners(_memeOwners);
+            console.log(_memeOwners);
+          } else {
+            console.log(`{meme} is not approved`);
+          }
         }
       } else {
         console.log("Null networks");
@@ -199,6 +204,28 @@ const MemeFeed = (props) => {
     } catch (err) {
       console.log(err);
     }
+  }
+
+  function mapMemeStatus(statusInt) {
+    if (statusInt == 0) {
+      return "Approved";
+    } else if (statusInt == 1) {
+      return "Rejected";
+    } else if (statusInt == 2) {
+      return "Pending";
+    }
+  }
+
+  /**
+   *
+   * @param {*} meme
+   */
+  function memeIsApproved(meme) {
+    console.log(meme);
+    if (mapMemeStatus(meme[9]) === "Approved") {
+      return true;
+    }
+    return false;
   }
 
   //----------------CREATE MEME-------------
@@ -404,7 +431,7 @@ const MemeFeed = (props) => {
 
                       <TextField
                         // id="memeTitle"
-                        label="memeTitle"
+                        label="Insert a superb title for your Meme"
                         variant="outlined"
                         style={{ width: "100%", paddingBottom: "10px" }}
                         // inputRef={input => {
@@ -419,7 +446,7 @@ const MemeFeed = (props) => {
                       />
                       <TextField
                         // id="memeDescription"
-                        label="memeDescription"
+                        label="Insert some description about your Meme"
                         variant="outlined"
                         style={{ width: "100%", paddingBottom: "10px" }}
                         // inputRef={input => {

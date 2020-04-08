@@ -19,6 +19,7 @@ import LandingPage from "./Landing/pages/LandingPage.js";
 import ProfilePage from "./Profile/pages/Profile.js";
 import Navbar from "./Navbar/pages/Navbar.js";
 import AdminPage from "./Admin/pages/Admin.js";
+import LeaderBoardPage from "./LeaderBoard/pages/LeaderBoard.js";
 import SideDrawer from "./Subbar/components/SideDrawer";
 
 setGlobal({
@@ -174,6 +175,7 @@ class App extends Component {
                   />
                 )}
               />
+              <PrivateRoute exact path="/leaderBoard" component={LeaderBoardPage} />
               <PrivateRoute exact path="/profile" component={ProfilePage} />
               <PrivateRoute exact path="/admin" component={AdminPage} />
             </div>

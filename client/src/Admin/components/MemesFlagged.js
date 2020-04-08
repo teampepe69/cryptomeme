@@ -83,7 +83,7 @@ function stableSort(array, comparator) {
 }
 
 const MemesFlagged = (props) => {
-  const { value, index, peopleParent,stopFlags, classes, ...other } = props;
+  const { value, index, peopleParent, stopFlags, classes, ...other } = props;
   const [rows, setRows] = React.useState([]);
   const [people, setPeople] = React.useState(peopleParent);
   const [disobedientRows, setDisobedientRows] = React.useState([]);
@@ -130,13 +130,12 @@ const MemesFlagged = (props) => {
     setOpen(true);
   };
 
-  async function closeModal () {
-    console.log("Meme Should be close")
+  async function closeModal() {
+    console.log("Meme Should be close");
     await fetchMemes();
     setOpen(false);
     // When we close a modal -> Check for fetching data in case of change
-    
-  };
+  }
 
   // Function for populate data : it's called to modify rows / disobidentrows states
   async function fetchMemes() {
@@ -144,7 +143,11 @@ const MemesFlagged = (props) => {
     const resMemesFlagged = [];
     const resMemesDisobediend = [];
     const resMemesApproved = [];
-    async function fetchDataMemeInside(resMemesFlagged, resMemesDisobediend,resMemesApproved) {
+    async function fetchDataMemeInside(
+      resMemesFlagged,
+      resMemesDisobediend,
+      resMemesApproved
+    ) {
       // Use try / catch to prevent error when network is not loaded (when you go directly to admin page in dev mode) -> Thus global constatns are not set
 
       try {
@@ -157,7 +160,7 @@ const MemesFlagged = (props) => {
         const numOfElements = await memeNetwork.methods
           .getNumberMemes()
           .call({ from: result[0] });
-        console.log("Number of memes:",numOfElements);
+        console.log("Number of memes:", numOfElements);
         // Set Rows empty
         //setRows([]);
         //setDisobedientRows([]);
@@ -166,12 +169,15 @@ const MemesFlagged = (props) => {
         for (let i = 0; i < numOfElements; i++) {
           // Current user
           const elem = await memeNetwork.methods
-            .getMeme(i)
+            .memes(i)
             .call({ from: result[0] });
-          console.log("This is a meme:",elem);
+          console.log("This is a meme:", elem);
 
-          // If pending or if approved and memeFlags > 0 
-          if (elem.memeState == 2 | (elem.memeState == 0 & elem.memeFlags > 0)) {
+          // If pending or if approved and memeFlags > 0
+          if (
+            (elem.memeState == 2) |
+            ((elem.memeState == 0) & (elem.memeFlags > 0))
+          ) {
             console.log("meme should be rejected / approved", elem);
             resMemesFlagged.push(
               createDataMeme(
@@ -182,10 +188,10 @@ const MemesFlagged = (props) => {
                 elem.memeFlags,
                 mapStatusMeme(elem.memeState)
               )
-            ); 
+            );
           }
           // If meme is rejected
-          else if (elem.memeState == 1){
+          else if (elem.memeState == 1) {
             console.log("meme is already rejected", elem);
             resMemesDisobediend.push(
               createDataMeme(
@@ -196,9 +202,8 @@ const MemesFlagged = (props) => {
                 elem.memeFlags,
                 mapStatusMeme(elem.memeState)
               )
-            ); 
-          }
-          else {
+            );
+          } else {
             console.log("meme is approved", elem);
             resMemesApproved.push(
               createDataMeme(
@@ -209,7 +214,7 @@ const MemesFlagged = (props) => {
                 elem.memeFlags,
                 mapStatusMeme(elem.memeState)
               )
-            ); 
+            );
           }
         }
       } catch (e) {
@@ -218,15 +223,16 @@ const MemesFlagged = (props) => {
     }
 
     // Do something with the results : await for fetch and update state
-    await fetchDataMemeInside(resMemesFlagged, resMemesDisobediend,resMemesApproved);
+    await fetchDataMemeInside(
+      resMemesFlagged,
+      resMemesDisobediend,
+      resMemesApproved
+    );
     if (index == 2) {
-     
       setPeople(resMemesFlagged);
     } else if (index == 3) {
-      
       setPeople(resMemesDisobediend);
     } else if (index == 4) {
-      
       setPeople(resMemesApproved);
     }
   }
@@ -238,7 +244,7 @@ const MemesFlagged = (props) => {
       return "Rejected";
     } else if (statusInt == 2) {
       return "Pending";
-    } 
+    }
   }
 
   useEffect(() => {
@@ -249,8 +255,15 @@ const MemesFlagged = (props) => {
     );
   }, [peopleParent]);
 
-  function createDataMeme(memeId, memeTitle, memeOwner, memePath,memeFlags,memeStatus) {
-    return { memeId, memeTitle, memeOwner, memePath,memeFlags,memeStatus };
+  function createDataMeme(
+    memeId,
+    memeTitle,
+    memeOwner,
+    memePath,
+    memeFlags,
+    memeStatus
+  ) {
+    return { memeId, memeTitle, memeOwner, memePath, memeFlags, memeStatus };
   }
 
   const emptyRows =
@@ -343,7 +356,7 @@ const MemesFlagged = (props) => {
             modalState={open}
             handleClose={closeModal}
             memeInfo={selectedMeme}
-            stopFlags = {stopFlags}
+            stopFlags={stopFlags}
           />
         </div>
       )}

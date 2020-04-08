@@ -53,17 +53,18 @@ const Navbar = (props) => {
     console.log("loggedIn", loggedIn);
     
     useEffect(() => {
-      if (loggedIn){
-        getAvatar();
-      }
+      getAvatar();
     }, []);
     async function getAvatar() {
-      var account = sessionStorage.getItem("account");
-      var userId = await userNetwork.methods
-        .userIds(account)
-        .call({ from: account });
-      var user = await userNetwork.methods.users(userId).call({ from: account });
-      setDisplayPictureHash(user[4]);
+      if(loggedIn && userNetwork!=null){
+        var account = sessionStorage.getItem("account");
+        console.log("userNetwork11111", userNetwork);
+        var userId = await userNetwork.methods
+          .userIds(account)
+          .call({ from: account });
+        var user = await userNetwork.methods.users(userId).call({ from: account });
+        setDisplayPictureHash(user[4]);
+      }
     }
 
     return (
@@ -79,7 +80,7 @@ const Navbar = (props) => {
               <CardMedia
                 component="img"
                 className={classes.media}
-                src={`https://ipfs.io/ipfs/${displayPictureHash}`}
+                image={require("../../img/HappyPepe.png")}
                 title="Logo"
                 style={{ maxWidth: "70%", height: "auto" }}
               />
@@ -117,7 +118,7 @@ const Navbar = (props) => {
               <List className={classes.list} component={Link} to="/profile">
                 <ListItem button>
                   <ListItemAvatar>
-                    <Avatar src={tempDP} />
+                    <Avatar src={`https://ipfs.io/ipfs/${displayPictureHash}`} />
                   </ListItemAvatar>
                   <ListItemText
                     primary="teampepe69"

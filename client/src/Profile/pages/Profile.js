@@ -64,24 +64,26 @@ const ProfilePage = (props) => {
   }, []);
   //------------Fetch User Properties-------------------------
   async function populateUserData() {
-    var account = sessionStorage.getItem("account");
-    var userId = await userNetwork.methods
-      .userIds(account)
-      .call({ from: account });
-    var user = await userNetwork.methods.users(userId).call({ from: account });
-    setUserData(user);
-    setUserId(user[0]);
-    setUserWallet(user[1]);
-    setUsername(user[2]);
-    setAbout(user[3]);
-    setDisplayPictureHash(user[4]);
-    setDisplayName(user[5]);
-    setWebsite(user[6]);
-    var userPepeRonis = await pepeCoinNetwork.methods
-      .balanceOf(userWallet)
-      .call({ from: account });
-    console.log("userPepeRonis", userPepeRonis);
-    setPeperonis(userPepeRonis);
+    if(userNetwork!=null){
+      var account = sessionStorage.getItem("account");
+      var userId = await userNetwork.methods
+        .userIds(account)
+        .call({ from: account });
+      var user = await userNetwork.methods.users(userId).call({ from: account });
+      setUserData(user);
+      setUserId(user[0]);
+      setUserWallet(user[1]);
+      setUsername(user[2]);
+      setAbout(user[3]);
+      setDisplayPictureHash(user[4]);
+      setDisplayName(user[5]);
+      setWebsite(user[6]);
+      var userPepeRonis = await pepeCoinNetwork.methods
+        .balanceOf(userWallet)
+        .call({ from: account });
+      console.log("userPepeRonis", userPepeRonis);
+      setPeperonis(userPepeRonis);
+    }
   }
 
   async function handleSubmit(event) {

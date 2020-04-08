@@ -65,6 +65,9 @@ const EditUser = (props) => {
       .checkUserIsActive(userAddress)
       .call({ from: result[0] });
     console.log("after activation isActive:", isActive2);
+
+    // Close Modal
+    handleClose();
   }
 
   async function handlePromote(user) {
@@ -88,6 +91,9 @@ const EditUser = (props) => {
       .checkUserIsAdmin(userAddress)
       .call({ from: result[0] });
     console.log("after promotion isActive:", isAdmin2);
+
+    // Close Modal
+    handleClose();
   }
 
   async function handleDeactivate(user) {

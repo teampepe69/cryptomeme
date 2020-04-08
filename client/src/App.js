@@ -80,7 +80,7 @@ class App extends Component {
         );
         this.setState({ memeNetwork: memeNetwork });
         this.setGlobal({ memeNetwork: memeNetwork });
-        //this.setGlobal(memeNetwork => memeNetwork);
+        
       }
 
       // Get User instance and all the Memes

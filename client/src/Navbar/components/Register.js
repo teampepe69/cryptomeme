@@ -77,7 +77,9 @@ const Register = (props) => {
     event.preventDefault();
     // once below code is okay, just copy these two line
     handleClose();
-    var userExists = await userNetwork.methods.userExists(eWallet).call();
+
+    var userExists = await userNetwork.methods.checkUserExists(eWallet).call();
+
     if (userExists) {
       Swal.fire({
         confirmButtonText: "I sOrRy I dIdN't KnOw",

@@ -69,7 +69,9 @@ const ProfilePage = (props) => {
       var userId = await userNetwork.methods
         .userIds(account)
         .call({ from: account });
-      var user = await userNetwork.methods.users(userId).call({ from: account });
+      var user = await userNetwork.methods
+        .users(userId)
+        .call({ from: account });
       setUserData(user);
       setUserId(user[0]);
       setUserWallet(user[1]);
@@ -83,11 +85,10 @@ const ProfilePage = (props) => {
         .call({ from: account });
       console.log("userPepeRonis", userPepeRonis);
       setPeperonis(userPepeRonis);
-    }
-    else{
-      console.log("account: ", account)
-      console.log("network: ", userNetwork)
-      console.log("peperonis: ", userPepeRonis)
+    } else {
+      console.log("account: ", account);
+      console.log("network: ", userNetwork);
+      console.log("peperonis: ", userPepeRonis);
       // console.log("user network issue")
     }
   }
@@ -108,8 +109,8 @@ const ProfilePage = (props) => {
       title: "Update profile successful!",
       icon: "success",
       confirmButtonText: "Cool beans",
-    }).then(function(){
-      window.location.reload()
+    }).then(function () {
+      window.location.reload();
     });
     // populateUserData();
   }
@@ -129,7 +130,7 @@ const ProfilePage = (props) => {
         return hash;
       });
     };
-    console.log(displayPictureHash)
+    console.log(displayPictureHash);
   }
 
   return (
@@ -141,13 +142,13 @@ const ProfilePage = (props) => {
         <Card elevation={2} className={classes.card}>
           <div style={{ width: "40%", float: "left", paddingLeft: "5%" }}>
             <Avatar
-              img={require('../../img/HappyPepe.png')}
+              src={`https://ipfs.io/ipfs/${displayPictureHash}`}
               className={classes.avatar}
             />
             <br />
             <Typography variant="h6">Current Tokens</Typography>
             <div style={{ width: "20%", float: "left" }}>
-              <Avatar src={`https://ipfs.io/ipfs/${displayPictureHash}`} />
+              <Avatar src={peperoni} />
             </div>
             <div style={{ paddingTop: "7px" }}>{peperonis} Peperonis</div>
           </div>

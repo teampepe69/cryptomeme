@@ -1,5 +1,4 @@
 pragma solidity ^0.5.0;
-pragma experimental ABIEncoderV2;
 import "../node_modules/@openzeppelin/contracts/math/SafeMath.sol";
 
 
@@ -201,11 +200,6 @@ contract User {
         returns (bool)
     {
         return users[userIds[_userWallet]].state == userStates.pending;
-    }
-
-    function getUser(uint256 i) public view returns (user memory) {
-        //require(i < numberOfUsers);
-        return users[i];
     }
 
     function getNumberUsers() public view returns (uint256) {

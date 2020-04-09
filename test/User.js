@@ -19,15 +19,15 @@ contract("User.sol", function (accounts) {
     assert.notEqual(userInstance.address, " ");
   });
 
-  it("Should add one user and return it", async () => {
-    let res1 = await userInstance.getUser(0);
+  it("Should have already added one (admin) user and return it", async () => {
+    let res1 = await userInstance.users.call(0);
     let address1 = await userInstance.getUserAddress(0);
     assert.strictEqual(
       address1.toString(),
       memeOwner0,
-      "Should userId equal to 0"
+      "User Address should be contract owner address"
     );
-    assert.strictEqual(res1.userId, "0", "Should userId equal to 0");
+    assert.strictEqual(res1.userId.toNumber(), 0, "Should userId equal to 0");
   });
 
   it("Should activate user", async () => {

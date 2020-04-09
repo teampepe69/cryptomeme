@@ -11,7 +11,6 @@ function a11yProps(index) {
   };
 }
 
-
 const styles = (theme) => ({
   appBar: {
     backgroundColor: "transparent",
@@ -34,7 +33,7 @@ const LeaderBoardPage = (props) => {
     fetchData();
   }, []);
   //------------Fetch User Properties-------------------------
-  
+
   // Function for populate data : it's called to modify rows / disobidentrows states
   async function fetchData() {
     // fetch the data from contracts to have current users status
@@ -52,27 +51,23 @@ const LeaderBoardPage = (props) => {
         const numOfElements = await userNetwork.methods
           .getNumberUsers()
           .call({ from: result[0] });
-        
+
         // Maybe there is a proper way however i do not find how to return dynamic array in solidity
         for (let i = 0; i < numOfElements; i++) {
           // Current user
           const elem = await userNetwork.methods
             .getUser(i)
             .call({ from: result[0] });
-          
-          const pepeCoinsNb = await pepeCoinNetwork.methods.balanceOf(elem.userWallet).call();
-            // If user is disobedient : bad guy
-              usersArray.push(
-                createDataPepe(
-                pepeCoinsNb,
-                elem.userId,
-                elem.displayName,
-              )
-            );
-          }
-          // If user is clean : good guy
-          
-        
+
+          const pepeCoinsNb = await pepeCoinNetwork.methods
+            .balanceOf(elem.userWallet)
+            .call();
+          // If user is disobedient : bad guy
+          usersArray.push(
+            createDataPepe(pepeCoinsNb, elem.userId, elem.displayName)
+          );
+        }
+        // If user is clean : good guy
       } catch (e) {
         console.log("Error in the process");
       }
@@ -83,15 +78,13 @@ const LeaderBoardPage = (props) => {
     setPeopleParent(usersArray);
   }
 
-  function createDataPepe(pepeCoins, uid, username ) {
-    return { pepeCoins, uid, username };
+  function createDataPepe(pepeCoins, uid, displayName) {
+    return { pepeCoins, uid, displayName };
   }
 
   async function handleChange(event, newValue) {
     setValue(newValue);
-  
   }
-
 
   return (
     <div style={{ paddingRight: "20px" }}>
@@ -103,16 +96,9 @@ const LeaderBoardPage = (props) => {
           TabIndicatorProps={{ style: { background: "black" } }}
         >
           <Tab label="Leader Board" {...a11yProps(0)} />
-          
         </Tabs>
       </AppBar>
-      <Rankings
-        value={0}
-        index={0}
-        peopleParent={peopleParent}
-      />
-
-
+      <Rankings value={0} index={0} peopleParent={peopleParent} />
     </div>
   );
 };

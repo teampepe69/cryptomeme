@@ -146,7 +146,6 @@ contract MemeketPlace {
 
     function createUser(
         address _userWallet,
-        string memory _username,
         string memory _about,
         string memory _displayPictureHash,
         string memory _diplayName,
@@ -154,7 +153,6 @@ contract MemeketPlace {
     ) public {
         userContract.createUser(
             _userWallet,
-            _username,
             _about,
             _displayPictureHash,
             _diplayName,
@@ -164,13 +162,11 @@ contract MemeketPlace {
 
     function updateUserProfile(
         address _userWallet,
-        string memory _username,
         string memory _about,
         string memory _displayPictureHash,
         string memory _displayName,
         string memory _website
     ) public {
-        userContract.setUsername(_userWallet, _username);
         userContract.setUserAbout(_userWallet, _about);
         userContract.setUserDisplayPicture(_userWallet, _displayPictureHash);
         userContract.setUserDisplayName(_userWallet, _displayName);

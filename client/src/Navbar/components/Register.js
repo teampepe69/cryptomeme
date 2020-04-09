@@ -40,7 +40,6 @@ const Register = (props) => {
   const [userNetwork] = useGlobal("userNetwork");
   const [memeketPlaceNetwork] = useGlobal("memeketPlaceNetwork");
   const [open, setOpen] = React.useState(false);
-  const [username, setUsername] = React.useState("");
   const [about, setAbout] = React.useState("");
   const [displayPictureHash, setDisplayPictureHash] = React.useState(
     "QmP1KdPrFV9wKbDy5WvCDKd3YcyTBbFvqfvBCzjGrDiVLZ"
@@ -88,14 +87,7 @@ const Register = (props) => {
       });
     } else {
       memeketPlaceNetwork.methods
-        .createUser(
-          eWallet,
-          username,
-          about,
-          displayPictureHash,
-          displayName,
-          website
-        )
+        .createUser(eWallet, about, displayPictureHash, displayName, website)
         .send({
           from: eWallet,
         })
@@ -131,13 +123,6 @@ const Register = (props) => {
           <h2 id="simple-modal-title">Register</h2>
           <div style={{ width: "60%", float: "left" }}>
             <form className={classes.root} onSubmit={handleRegister}>
-              <TextField
-                label="Username"
-                variant="outlined"
-                style={{ width: "100%", paddingBottom: "10px" }}
-                onInput={(e) => setUsername(e.target.value)}
-                required
-              />
               <TextField
                 label="About"
                 variant="outlined"

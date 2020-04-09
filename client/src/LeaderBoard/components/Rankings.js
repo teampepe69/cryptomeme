@@ -19,7 +19,6 @@ import {
 import EditIcon from "@material-ui/icons/Edit";
 import { withStyles } from "@material-ui/core/styles";
 
-
 const styles = (theme) => ({
   table: {
     backgroundColor: "white",
@@ -39,12 +38,10 @@ const columnData = [
     label: "User Id",
   },
   {
-    id: "username",
-    label: "username",
+    id: "displayName",
+    label: "Display Name",
   },
-  
 ];
-
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -73,15 +70,14 @@ function stableSort(array, comparator) {
 }
 
 const Rankings = (props) => {
-  const { value, index, peopleParent,stopFlags, classes, ...other } = props;
+  const { value, index, peopleParent, stopFlags, classes, ...other } = props;
   const [people, setPeople] = React.useState(peopleParent);
 
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("calories");
-  
-    
+
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
     setOrder(isAsc ? "desc" : "asc");
@@ -101,18 +97,19 @@ const Rankings = (props) => {
     handleRequestSort(event, property);
   };
 
-  
   const emptyRows =
     rowsPerPage - Math.min(rowsPerPage, people.length - page * rowsPerPage);
 
   useEffect(() => {
-    setPeople(peopleParent.sort((a, b) => a.pepeCoins < b.pepeCoins ? 1 : -1));
+    setPeople(
+      peopleParent.sort((a, b) => (a.pepeCoins < b.pepeCoins ? 1 : -1))
+    );
     console.log(
       "People parent have change -> We update people for printing",
       peopleParent
     );
   }, [peopleParent]);
-  
+
   return (
     <Typography
       component="div"
@@ -151,7 +148,6 @@ const Rankings = (props) => {
                   ),
                   this
                 )}
-                
               </TableRow>
             </TableHead>
             <TableBody>
@@ -161,7 +157,7 @@ const Rankings = (props) => {
                   <TableRow hover tabIndex={0} key={n.rk}>
                     <TableCell>{n.pepeCoins}</TableCell>
                     <TableCell>{n.uid}</TableCell>
-                    <TableCell>{n.username}</TableCell>
+                    <TableCell>{n.displayName}</TableCell>
                   </TableRow>
                 ))}
               {emptyRows > 0 && (
@@ -185,11 +181,10 @@ const Rankings = (props) => {
             onChangePage={handleChangePage}
             onChangeRowsPerPage={handleChangeRowsPerPage}
           />
-          
         </div>
       )}
     </Typography>
   );
 };
-  
+
 export default withStyles(styles, { withTheme: true })(Rankings);

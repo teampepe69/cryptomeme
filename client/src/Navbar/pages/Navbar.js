@@ -15,31 +15,31 @@ import {
   Toolbar,
   Badge,
   Avatar,
-  ListItemText
+  ListItemText,
 } from "@material-ui/core";
 import tempDP from "../../img/sadpepe.png";
 
-const styles = theme => ({
+const styles = (theme) => ({
   appBar: {
     position: "fixed",
     height: 70,
-    backgroundColor: "#ffffffff"
+    backgroundColor: "#ffffffff",
   },
   grow: {
-    flexGrow: 1
+    flexGrow: 1,
   },
   card: {
     backgroundColor: "transparent",
     width: 100,
-    paddingTop: 4
+    paddingTop: 4,
   },
   title: {
     color: "#434343",
-    paddingTop: 10
+    paddingTop: 10,
   },
   profileName: {
-    color: "#434343"
-  }
+    color: "#434343",
+  },
 });
 
 const Navbar = (props) => {
@@ -49,47 +49,41 @@ const Navbar = (props) => {
   const [pepeCoinNetwork] = useGlobal("pepeCoinNetwork");
   const [memeketPlaceNetwork] = useGlobal("memeketPlaceNetwork");
   const [web3] = useGlobal("web3");
-  const [user, setUser] = React.useState(null)
+  const [user, setUser] = React.useState(null);
   const [displayPictureHash, setDisplayPictureHash] = React.useState(
     "displayPictureHash"
   );
-  const [username, setUsername] = React.useState("username");
+  const [displayName, setDisplayName] = React.useState("displayName");
 
   useEffect(() => {
-    console.log(userNetwork)
+    console.log(userNetwork);
     getUserData();
   }, [userNetwork]);
 
-
   async function getUserData() {
     var account = sessionStorage.getItem("account");
-    console.log(account)
+    console.log(account);
     if (userNetwork && account) {
       var userId = await userNetwork.methods
         .userIds(account)
         .call({ from: account });
-      const user = await userNetwork.methods.users(userId).call({ from: account });
-      console.log(user.displayPictureHash)
-      setUser(user)
-      setUsername(user[2]);
-      setDisplayPictureHash(user[4]);
+      const user = await userNetwork.methods
+        .users(userId)
+        .call({ from: account });
+      console.log(user.displayPictureHash);
+      setUser(user);
+      setDisplayName(user[4]);
+      setDisplayPictureHash(user[3]);
+    } else {
+      console.log("null networks");
     }
-    else{
-      console.log("null networks")
-    }
-    
   }
 
   return (
     <div>
       <AppBar position="static" className={classes.appBar}>
         <Toolbar>
-          <Card
-            elevation={0}
-            className={classes.card}
-            component={Link}
-            to="/"
-          >
+          <Card elevation={0} className={classes.card} component={Link} to="/">
             <CardMedia
               component="img"
               className={classes.media}
@@ -107,22 +101,22 @@ const Navbar = (props) => {
             Cryptomeme
           </Typography>
           <div className={classes.grow} />
-          {!loggedIn && (
-            <Login/>
-          )}
-          {!loggedIn && (
-            <Register/>
-          )}
+          {!loggedIn && <Login />}
+          {!loggedIn && <Register />}
           {loggedIn && (
             <List className={classes.list} component={Link} to="/profile">
               <ListItem button>
                 <ListItemAvatar>
-                {user!== null ?
-                  <Avatar src={`https://ipfs.io/ipfs/${user.displayPictureHash}`} />
-                : <Avatar/>}
+                  {user !== null ? (
+                    <Avatar
+                      src={`https://ipfs.io/ipfs/${user.displayPictureHash}`}
+                    />
+                  ) : (
+                    <Avatar />
+                  )}
                 </ListItemAvatar>
                 <ListItemText
-                  primary={username}
+                  primary={displayName}
                   className={classes.profileName}
                 />
               </ListItem>
@@ -133,6 +127,6 @@ const Navbar = (props) => {
       </AppBar>
     </div>
   );
-}
+};
 
 export default withStyles(styles, { withTheme: true })(Navbar);

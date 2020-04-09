@@ -50,7 +50,6 @@ const ProfilePage = (props) => {
   const [userWallet, setUserWallet] = React.useState(
     sessionStorage.getItem("account")
   );
-  const [username, setUsername] = React.useState("username");
   const [about, setAbout] = React.useState("about");
   const [displayName, setDisplayName] = React.useState("displayName");
   const [displayPictureHash, setDisplayPictureHash] = React.useState(
@@ -75,11 +74,10 @@ const ProfilePage = (props) => {
       setUserData(user);
       setUserId(user[0]);
       setUserWallet(user[1]);
-      setUsername(user[2]);
-      setAbout(user[3]);
-      setDisplayPictureHash(user[4]);
-      setDisplayName(user[5]);
-      setWebsite(user[6]);
+      setAbout(user[2]);
+      setDisplayPictureHash(user[3]);
+      setDisplayName(user[4]);
+      setWebsite(user[5]);
       var userPepeRonis = await pepeCoinNetwork.methods
         .balanceOf(userWallet)
         .call({ from: account });
@@ -98,7 +96,6 @@ const ProfilePage = (props) => {
     await memeketPlaceNetwork.methods
       .updateUserProfile(
         userWallet,
-        username,
         about,
         displayPictureHash,
         displayName,
@@ -175,14 +172,6 @@ const ProfilePage = (props) => {
                 disabled="true"
                 value={userWallet}
                 style={{ width: "100%", paddingBottom: "5px" }}
-                required
-              />
-              <Typography variant="h6">Username</Typography>
-              <TextField
-                variant="outlined"
-                value={username}
-                style={{ width: "100%", paddingBottom: "5px" }}
-                onInput={(e) => setUsername(e.target.value)}
                 required
               />
               <Typography variant="h6">About</Typography>

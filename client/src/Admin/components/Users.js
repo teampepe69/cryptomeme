@@ -35,8 +35,8 @@ const columnData = [
     label: "UID",
   },
   {
-    id: "username",
-    label: "Username",
+    id: "displayName",
+    label: "Display Name",
   },
   {
     id: "userWallet",
@@ -86,7 +86,7 @@ const Users = (props) => {
   const [open, setOpen] = React.useState(false);
   const [selectedUser, setUser] = React.useState({
     uid: 69,
-    username: "test",
+    displayName: "test",
     userWallet: "my",
     state: "code",
   });
@@ -116,7 +116,7 @@ const Users = (props) => {
   const openModal = (user) => {
     const targetUser = {
       uid: user.uid,
-      username: user.username,
+      displayName: user.displayName,
       userWallet: user.userWallet,
       state: user.state,
     };
@@ -125,13 +125,10 @@ const Users = (props) => {
   };
 
   async function closeModal() {
-    
     // When we close a modal -> Check for fetching data in case of change
     await fetchData();
     setOpen(false);
-  };
-
-  
+  }
 
   async function mapStatus(statusInt) {
     if (statusInt == 0) {
@@ -144,7 +141,6 @@ const Users = (props) => {
       return "Admin";
     }
   }
-
 
   // Function to fetch data when only User state change
   async function fetchData() {
@@ -204,16 +200,13 @@ const Users = (props) => {
 
     // Do something with the results : await for fetch and update state
     await fetchDataInside(resObedients, resDisobedients);
-    
+
     if (index === 0) {
       setPeople(resObedients);
-    } else if (index === 1){
+    } else if (index === 1) {
       setPeople(resDisobedients);
-
     }
-    
   }
-
 
   useEffect(() => {
     setPeople(peopleParent);
@@ -223,8 +216,8 @@ const Users = (props) => {
     );
   }, [peopleParent]);
 
-  function createData(uid, username, userWallet, state) {
-    return { uid, username, userWallet, state };
+  function createData(uid, displayName, userWallet, state) {
+    return { uid, displayName, userWallet, state };
   }
 
   const emptyRows =
@@ -277,7 +270,7 @@ const Users = (props) => {
                 .map((n) => (
                   <TableRow hover tabIndex={0} key={n.uid}>
                     <TableCell>{n.uid}</TableCell>
-                    <TableCell>{n.username}</TableCell>
+                    <TableCell>{n.displayName}</TableCell>
                     <TableCell>{n.userWallet}</TableCell>
                     <TableCell>{n.state}</TableCell>
                     <TableCell>

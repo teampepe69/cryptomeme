@@ -134,7 +134,7 @@ const EditUser = (props) => {
           <div style={{ position: "static", minHeight: "65px" }}>
             <div style={{ width: "75%", float: "left" }}>
               <Typography variant="h4" gutterBottom>
-                {userInfo.username}
+                {userInfo.displayName}
               </Typography>
             </div>
             <div style={{ width: "25%", float: "right" }}>

@@ -33,7 +33,6 @@ contract("User.sol", function (accounts) {
   it("Should activate user", async () => {
     await userInstance.createUser(
       memeOwner1,
-      "_username",
       "_about",
       "_displayPictureHash",
       "_displayName",

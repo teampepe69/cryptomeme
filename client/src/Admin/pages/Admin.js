@@ -17,8 +17,8 @@ const styles = (theme) => ({
     backgroundColor: "transparent",
   },
 });
-function createData(uid, username, userWallet, state) {
-  return { uid, username, userWallet, state };
+function createData(uid, displayName, userWallet, state) {
+  return { uid, displayName, userWallet, state };
 }
 
 function createDataMeme(
@@ -116,7 +116,7 @@ const AdminPage = (props) => {
         for (let i = 0; i < numOfElements; i++) {
           // Current user
           const elem = await userNetwork.methods
-            .getUser(i)
+            .users(i)
             .call({ from: result[0] });
           // If user is disobedient : bad guy
           if (elem.state == 2) {

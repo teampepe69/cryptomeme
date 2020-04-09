@@ -139,6 +139,7 @@ const MemeFeed = (props) => {
   const [userId, setUserId] = React.useState(null);
   const loggedIn = JSON.parse(sessionStorage.getItem("loggedIn"));
   const [memeOwners, setMemeOwners] = React.useState([]);
+  const [memeDates, setMemeDates] = React.useState([]);
   const [likeStatus, setLikeStatus] = React.useState([]);
   const [userAddress, setUserAddress] = React.useState(
     sessionStorage.getItem("account")
@@ -163,8 +164,9 @@ const MemeFeed = (props) => {
   async function populateMeme() {
     const acc = sessionStorage.getItem("account");
     setUserAddress(acc);
-    let arr = [];
+    let memeArray = [];
     let _memeOwners = [];
+    let _memeDates = [];
     let likeStatus = [];
 
     try {
@@ -173,25 +175,33 @@ const MemeFeed = (props) => {
         const result = await memeNetwork.methods.numberOfMemes().call();
         for (var i = 0; i < result; i++) {
           const meme = await memeNetwork.methods.memes(i).call();
-          arr = arr.concat(meme);
+          console.log(memeIsApproved(meme));
+          if (memeIsApproved(meme)) {
+            memeArray = memeArray.concat(meme);
 
-          //for every meme, retrieve the getStatus to see if user has liked this before
-          await getStatus(meme.memeId);
+            //for every meme, retrieve the getStatus to see if user has liked this before
+            await getStatus(meme.memeId);
 
-          //retrieve the meme creator's address to get his userId
-          const address = meme.memeOwner;
-          const userId = await userNetwork.methods.userIds(address).call();
+            //retrieve the meme creator's address to get his userId
+            const address = meme.memeOwner;
+            const userId = await userNetwork.methods.userIds(address).call();
 
-          //retrieve meme creator object
-          const _memeOwner = await userNetwork.methods
-            .users(userId)
-            .call({ from: acc });
+            //retrieve meme creator object
+            const _memeOwner = await userNetwork.methods
+              .users(userId)
+              .call({ from: acc });
 
-          _memeOwners = _memeOwners.concat(_memeOwner);
+            _memeOwners = _memeOwners.concat(_memeOwner);
 
-          setMemes(arr);
-          setMemeOwners(_memeOwners);
-          console.log(_memeOwners);
+            console.log("original memedate", meme.memeDate);
+            let _memeDate = new Date(meme.memeDate * 1000).toLocaleString();
+            console.log("memedate", _memeDate);
+            _memeDates = _memeDates.concat(_memeDate);
+
+            setMemes(memeArray);
+            setMemeDates(_memeDates);
+            setMemeOwners(_memeOwners);
+          }
         }
       } else {
         console.log("Null networks");
@@ -201,48 +211,72 @@ const MemeFeed = (props) => {
     }
   }
 
+  function mapMemeStatus(statusInt) {
+    if (statusInt == 0) {
+      return "Approved";
+    } else if (statusInt == 1) {
+      return "Rejected";
+    } else if (statusInt == 2) {
+      return "Pending";
+    }
+  }
+
+  /**
+   *
+   * @param {*} meme
+   */
+  function memeIsApproved(meme) {
+    console.log(meme);
+    if (mapMemeStatus(meme[10]) === "Approved") {
+      return true;
+    }
+    return false;
+  }
+
   //----------------CREATE MEME-------------
   async function createMeme(memePath, memeTitle, memeDescription) {
     const acc = sessionStorage.getItem("account");
     console.log(acc);
+    const memeDate = Math.floor(new Date().getTime() / 1000);
+    console.log(memeDate);
     await memeketPlaceNetwork.methods
-      .uploadMeme(acc, memePath, memeTitle, memeDescription)
+      .uploadMeme(acc, memeDate, memePath, memeTitle, memeDescription)
       .send({
         from: acc,
       });
-    updateMeme();
+    //updateMeme();
     handleClose("create");
   }
 
   //----------Update the meme feed when meme is created-------
   //This is called by createMeme() function
-  async function updateMeme() {
-    const acc = sessionStorage.getItem("account");
-    var arr = memes;
-    var arr_owner = memeOwners;
+  // async function updateMeme() {
+  //   const acc = sessionStorage.getItem("account");
+  //   var arr = memes;
+  //   var arr_owner = memeOwners;
 
-    const numOfMemes = await memeNetwork.methods
-      .numberOfMemes()
-      .call({ from: acc });
-    const newMeme = await memeNetwork.methods
-      .memes(numOfMemes - 1)
-      .call({ from: acc });
+  //   const numOfMemes = await memeNetwork.methods
+  //     .numberOfMemes()
+  //     .call({ from: acc });
+  //   const newMeme = await memeNetwork.methods
+  //     .memes(numOfMemes - 1)
+  //     .call({ from: acc });
 
-    arr = arr.concat(newMeme);
-    const address = newMeme.memeOwner;
+  //   arr = arr.concat(newMeme);
+  //   const address = newMeme.memeOwner;
 
-    const userId = await userNetwork.methods
-      .userIds(address)
-      .call({ from: acc });
+  //   const userId = await userNetwork.methods
+  //     .userIds(address)
+  //     .call({ from: acc });
 
-    const user = await userNetwork.methods.users(userId).call({ from: acc });
+  //   const user = await userNetwork.methods.users(userId).call({ from: acc });
 
-    // console.log(user);
+  //   // console.log(user);
 
-    arr_owner = arr_owner.concat(user);
-    setMemes(arr);
-    setMemeOwners(arr_owner);
-  }
+  //   arr_owner = arr_owner.concat(user);
+  //   setMemes(arr);
+  //   setMemeOwners(arr_owner);
+  // }
 
   //------------LIKE MEMES--------------
   async function likeMeme(memeId) {
@@ -404,7 +438,7 @@ const MemeFeed = (props) => {
 
                       <TextField
                         // id="memeTitle"
-                        label="memeTitle"
+                        label="Insert a superb title for your Meme"
                         variant="outlined"
                         style={{ width: "100%", paddingBottom: "10px" }}
                         // inputRef={input => {
@@ -419,7 +453,7 @@ const MemeFeed = (props) => {
                       />
                       <TextField
                         // id="memeDescription"
-                        label="memeDescription"
+                        label="Insert some description about your Meme"
                         variant="outlined"
                         style={{ width: "100%", paddingBottom: "10px" }}
                         // inputRef={input => {
@@ -462,10 +496,14 @@ const MemeFeed = (props) => {
                         src={`https://ipfs.io/ipfs/${memeOwners[key].displayPictureHash}`}
                       />
                     }
-                    // title={Promise.resolve(userNetwork.methods.users(userNetwork.methods.userIds(meme.memeOwner).call()).call().displayName)}
                     title={
                       memeOwners.length > 0 && memeOwners[key]
                         ? memeOwners[key].displayName
+                        : ""
+                    }
+                    subheader={
+                      memeDates.length > 0 && memeDates[key]
+                        ? memeDates[key]
                         : ""
                     }
                     // title="User1231"

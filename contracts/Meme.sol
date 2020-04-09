@@ -1,6 +1,6 @@
 pragma solidity ^0.5.0;
-pragma experimental ABIEncoderV2;
 import "../node_modules/@openzeppelin/contracts/token/ERC721/ERC721.sol";
+
 
 contract Meme is ERC721 {
     using SafeMath for uint256;
@@ -18,6 +18,7 @@ contract Meme is ERC721 {
         uint256 memeDislikes;
         uint256 memeFlags;
         uint256 memeValue;
+        uint256 memeDate;
         string memePath;
         string memeTitle;
         string memeDescription;
@@ -28,6 +29,7 @@ contract Meme is ERC721 {
 
     event MemeCreated(
         uint256 memeId,
+        uint256 memeDate,
         string memePath,
         string memeTitle,
         string memeDescription
@@ -35,15 +37,17 @@ contract Meme is ERC721 {
     event MemeLiked(uint256 memeId, uint256 memeLikes);
     event MemeDisliked(uint256 memeId, uint256 memeDislikes);
     event MemeFlagged(uint256 memeId, uint256 memeFlags);
-    event MemeApproved(uint256 memeId);
-    event MemeRejected(uint256 memeId);
+    event MemeApproved(uint256 memeId, uint256 memeDate);
+    event MemeRejected(uint256 memeId, uint256 memeDate);
     event MemeValueChanged(uint256 memeId, uint256 memeValue);
+    event MemeDateChanged(uint256 memeId, uint256 memeDate);
     event MemePathChanged(uint256 memeId, string memePath);
     event MemeTitleChanged(uint256 memeId, string memeTitle);
     event MemeDescriptionChanged(uint256 memeId, string memeDescription);
 
     function createMeme(
         address _memeOwner,
+        uint256 _memeDate,
         string memory _memePath,
         string memory _memeTitle,
         string memory _memeDescription
@@ -55,6 +59,7 @@ contract Meme is ERC721 {
             0,
             0,
             0,
+            _memeDate,
             _memePath,
             _memeTitle,
             _memeDescription,
@@ -63,19 +68,21 @@ contract Meme is ERC721 {
         uint256 _memeId = memes.push(_meme).sub(1);
         _mint(_memeOwner, _memeId);
         numberOfMemes = numberOfMemes.add(1);
-        emit MemeCreated(_memeId, _memePath, _memeTitle, _memeDescription);
+        emit MemeCreated(
+            _memeId,
+            _memeDate,
+            _memePath,
+            _memeTitle,
+            _memeDescription
+        );
         return _memeId;
     }
 
-    function getNumberMemes() public view returns (uint256){
+    function getNumberMemes() public view returns (uint256) {
         return numberOfMemes;
     }
 
-    function getMeme(uint256 _memeId) public view returns (meme memory){
-        return memes[_memeId];
-    }
-
-    function getMemeOwner(uint256 _memeId) public view returns (address){
+    function getMemeOwner(uint256 _memeId) public view returns (address) {
         return memes[_memeId].memeOwner;
     }
 
@@ -97,6 +104,10 @@ contract Meme is ERC721 {
 
     function getMemeState(uint256 _memeId) public view returns (memeStates) {
         return memes[_memeId].memeState;
+    }
+
+    function getMemeDate(uint256 _memeId) public view returns (uint256) {
+        return memes[_memeId].memeDate;
     }
 
     function getMemePath(uint256 _memeId) public view returns (string memory) {
@@ -135,14 +146,21 @@ contract Meme is ERC721 {
         emit MemeValueChanged(_memeId, _memeValue);
     }
 
-    function approveMeme(uint256 _memeId) public {
+    function approveMeme(uint256 _memeId, uint256 _newDate) public {
         memes[_memeId].memeState = memeStates.approved;
-        emit MemeApproved(_memeId);
+        memes[_memeId].memeDate = _newDate;
+        emit MemeApproved(_memeId, _newDate);
     }
 
-    function rejectMeme(uint256 _memeId) public {
+    function rejectMeme(uint256 _memeId, uint256 _newDate) public {
         memes[_memeId].memeState = memeStates.rejected;
-        emit MemeRejected(_memeId);
+        memes[_memeId].memeDate = _newDate;
+        emit MemeRejected(_memeId, _newDate);
+    }
+
+    function setMemeDate(uint256 _memeId, uint256 _memeDate) public {
+        memes[_memeId].memeDate = _memeDate;
+        emit MemeDateChanged(_memeId, _memeDate);
     }
 
     function setMemePath(uint256 _memeId, string memory _memePath) public {
@@ -161,5 +179,4 @@ contract Meme is ERC721 {
         memes[_memeId].memeDescription = _memeDescription;
         emit MemeDescriptionChanged(_memeId, _memeDescription);
     }
-
 }

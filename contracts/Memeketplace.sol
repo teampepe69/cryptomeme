@@ -37,12 +37,14 @@ contract MemeketPlace {
 
     function uploadMeme(
         address _memeOwner,
+        uint256 _memeDate,
         string memory _memePath,
         string memory _memeTitle,
         string memory _memeDescription
     ) public {
         memeContract.createMeme(
             _memeOwner,
+            _memeDate,
             _memePath,
             _memeTitle,
             _memeDescription

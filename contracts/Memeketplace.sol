@@ -16,9 +16,10 @@ contract MemeketPlace {
     uint256 createMemeRewardValue;
     uint256 createUserRewardValue;
 
-    uint256 private default = 0;
-    uint256 private like = 1;
-    uint256 private dislike = 2;
+    // Uint value representations of default/like/dislike
+    uint256 private defaultVal = 0;
+    uint256 private likeVal = 1;
+    uint256 private dislikeVal = 2;
 
     mapping(uint256 => mapping(address => uint256)) public likes; // 0 means no like or dislike, 1 means like, 2 means dislike
     mapping(uint256 => mapping(address => bool)) public flags;
@@ -57,14 +58,14 @@ contract MemeketPlace {
     }
 
     function likeMeme(uint256 _memeId) public {
-        if (likes[_memeId][msg.sender] == 1) {
+        if (likes[_memeId][msg.sender] == likeVal) {
             //This meme has already been liked before, so when they like again, it will unlike.
             memeContract.setMemeLikes(
                 _memeId,
                 memeContract.getMemeLikes(_memeId).sub(1)
             );
             likes[_memeId][msg.sender] = 0;
-        } else if (likes[_memeId][msg.sender] == 2) {
+        } else if (likes[_memeId][msg.sender] == dislikeVal) {
             //This meme was intially dislike, so when they like, dislike should subtract
             memeContract.setMemeDislikes(
                 _memeId,
@@ -93,14 +94,14 @@ contract MemeketPlace {
     function dislikeMeme(uint256 _memeId) public {
         // require(likes[_memeId][msg.sender] != 2, "You have already disliked this meme");
 
-        if (likes[_memeId][msg.sender] == dislke) {
+        if (likes[_memeId][msg.sender] == dislikeVal) {
             //This meme has already been disliked before, so when they like again, it will undislike.
             memeContract.setMemeDislikes(
                 _memeId,
                 memeContract.getMemeDislikes(_memeId).sub(1)
             );
             likes[_memeId][msg.sender] = 0;
-        } else if (likes[_memeId][msg.sender] == like) {
+        } else if (likes[_memeId][msg.sender] == likeVal) {
             //This meme was intially liked, so when they dislike, like should subtract
             memeContract.setMemeLikes(
                 _memeId,

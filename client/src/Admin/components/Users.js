@@ -166,7 +166,7 @@ const Users = (props) => {
         for (let i = 0; i < numOfElements; i++) {
           // Current user
           const elem = await userNetwork.methods
-            .getUser(i)
+            .users(i)
             .call({ from: result[0] });
           // If user is disobedient : bad guy
           if (elem.state == 2) {

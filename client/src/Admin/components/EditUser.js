@@ -9,6 +9,7 @@ import {
   Typography,
 } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
+import Swal from "sweetalert2";
 
 const styles = (theme) => ({
   modal: {
@@ -46,79 +47,120 @@ const EditUser = (props) => {
   const [memeketPlaceNetwork] = useGlobal("memeketPlaceNetwork");
   const [web3] = useGlobal("web3");
 
+  async function checkMetaMaskAccount() {
+    let accounts = await web3.eth.getAccounts();
+    let currentAccount = sessionStorage.getItem("account");
+    if (accounts[0] != currentAccount) {
+      Swal.fire({
+        title:
+          "Something went terribly wrong. Did you switch your MetaMask account?",
+        imageUrl: require("../../img/policeApu.png"),
+        confirmButtonText: "Sadkek",
+      });
+    }
+  }
+
+  async function checkMetaMaskAccount() {
+    let accounts = await web3.eth.getAccounts();
+    let currentAccount = sessionStorage.getItem("account");
+    if (accounts[0] != currentAccount) {
+      Swal.fire({
+        title:
+          "Something went terribly wrong. Did you switch your MetaMask account?",
+        imageUrl: require("../../img/policeApu.png"),
+        confirmButtonText: "Sadkek",
+      });
+    }
+  }
+
   async function handleActivate(user) {
     // Set sender
-    let result = await web3.eth.getAccounts();
+    let currentAdmin = sessionStorage.getItem("account");
     // Find user address
     let userAddress = await userNetwork.methods
       .getUserAddress(user.uid)
-      .call({ from: result[0] });
-    // Activate user
-    let isActive = await userNetwork.methods
-      .checkUserIsActive(userAddress)
-      .call({ from: result[0] });
-    console.log("before activation isActive:", isActive);
-    await memeketPlaceNetwork.methods
-      .activateUser(userAddress)
-      .send({ from: result[0] });
-    let isActive2 = await userNetwork.methods
-      .checkUserIsActive(userAddress)
-      .call({ from: result[0] });
-    console.log("after activation isActive:", isActive2);
+      .call({ from: currentAdmin });
+    try {
+      // Activate user
+      let isActive = await userNetwork.methods
+        .checkUserIsActive(userAddress)
+        .call({ from: currentAdmin });
+      console.log("before activation isActive:", isActive);
+      await memeketPlaceNetwork.methods
+        .activateUser(userAddress)
+        .send({ from: currentAdmin });
+      let isActive2 = await userNetwork.methods
+        .checkUserIsActive(userAddress)
+        .call({ from: currentAdmin });
+      console.log("after activation isActive:", isActive2);
 
-    // Close Modal
-    handleClose();
+      // Close Modal
+      handleClose();
+    } catch (error) {
+      handleClose();
+      checkMetaMaskAccount();
+    }
   }
 
   async function handlePromote(user) {
     console.log(user);
     // Set sender
-    let result = await web3.eth.getAccounts();
+    let currentAdmin = sessionStorage.getItem("account");
     // Find user address
     let userAddress = await userNetwork.methods
       .getUserAddress(user.uid)
-      .call({ from: result[0] });
-    //let userAddress = "0xBB336C1C31e7151437C077aaF94F7FE272b38CAa"
-    // Activate user
-    let isAdmin = await userNetwork.methods
-      .checkUserIsAdmin(userAddress)
-      .call({ from: result[0] });
-    console.log("before promotion isActive:", isAdmin);
-    await userNetwork.methods
-      .setUserAsAdmin(userAddress)
-      .send({ from: result[0] });
-    let isAdmin2 = await userNetwork.methods
-      .checkUserIsAdmin(userAddress)
-      .call({ from: result[0] });
-    console.log("after promotion isActive:", isAdmin2);
+      .call({ from: currentAdmin });
 
-    // Close Modal
-    handleClose();
+    // Activate user
+    try {
+      let isAdmin = await userNetwork.methods
+        .checkUserIsAdmin(userAddress)
+        .call({ from: currentAdmin });
+      console.log("before promotion isActive:", isAdmin);
+      await userNetwork.methods
+        .setUserAsAdmin(userAddress)
+        .send({ from: currentAdmin });
+      let isAdmin2 = await userNetwork.methods
+        .checkUserIsAdmin(userAddress)
+        .call({ from: currentAdmin });
+      console.log("after promotion isActive:", isAdmin2);
+
+      // Close Modal
+      handleClose();
+    } catch (error) {
+      handleClose();
+      checkMetaMaskAccount();
+    }
   }
 
   async function handleDeactivate(user) {
     // Set sender
-    let result = await web3.eth.getAccounts();
+    let currentAdmin = sessionStorage.getItem("account");
     // Find user address
     let userAddress = await userNetwork.methods
       .getUserAddress(user.uid)
-      .call({ from: result[0] });
-    //let userAddress = "0xBB336C1C31e7151437C077aaF94F7FE272b38CAa"
-    // Activate user
-    let isActive = await userNetwork.methods
-      .checkUserIsActive(userAddress)
-      .call({ from: result[0] });
-    console.log("before desactivation isActive:", isActive);
-    await userNetwork.methods
-      .setUserAsDeactivated(userAddress)
-      .send({ from: result[0] });
-    let isActive2 = await userNetwork.methods
-      .checkUserIsActive(userAddress)
-      .call({ from: result[0] });
-    console.log("before desactivation isActive:", isActive2);
+      .call({ from: currentAdmin });
 
-    // Close Modal
-    handleClose();
+    try {
+      // Activate user
+      let isActive = await userNetwork.methods
+        .checkUserIsActive(userAddress)
+        .call({ from: currentAdmin });
+      console.log("before desactivation isActive:", isActive);
+      await userNetwork.methods
+        .setUserAsDeactivated(userAddress)
+        .send({ from: currentAdmin });
+      let isActive2 = await userNetwork.methods
+        .checkUserIsActive(userAddress)
+        .call({ from: currentAdmin });
+      console.log("before desactivation isActive:", isActive2);
+
+      // Close Modal
+      handleClose();
+    } catch (error) {
+      handleClose();
+      checkMetaMaskAccount();
+    }
   }
 
   return (

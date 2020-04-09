@@ -154,6 +154,7 @@ const Login = (props) => {
                 style={{ width: "100%", paddingBottom: "10px" }}
                 onInput={(e) => setEwallet(e.target.value)}
                 defaultValue={eWallet}
+                disabled="true"
                 required
               />
               <Button type="submit" className={classes.button} fullWidth>

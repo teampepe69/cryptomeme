@@ -93,22 +93,34 @@ const ProfilePage = (props) => {
 
   async function handleSubmit(event) {
     event.preventDefault();
-    await memeketPlaceNetwork.methods
-      .updateUserProfile(
-        userWallet,
-        about,
-        displayPictureHash,
-        displayName,
-        website
-      )
-      .send({ from: userWallet });
-    Swal.fire({
-      title: "Update profile successful!",
-      icon: "success",
-      confirmButtonText: "Cool beans",
-    }).then(function () {
-      window.location.reload();
-    });
+    try {
+      await memeketPlaceNetwork.methods
+        .updateUserProfile(
+          userWallet,
+          about,
+          displayPictureHash,
+          displayName,
+          website
+        )
+        .send({ from: userWallet });
+      Swal.fire({
+        title: "Update profile successful!",
+        icon: "success",
+        confirmButtonText: "Cool beans",
+      }).then(function () {
+        window.location.reload();
+      });
+    } catch (error) {
+      let accounts = await web3.eth.getAccounts();
+      if (accounts[0] != userWallet) {
+        Swal.fire({
+          title:
+            "Something went terribly wrong. Did you switch your MetaMask account",
+          imageUrl: require("../../img/policeApu.png"),
+          confirmButtonText: "Sadkek",
+        });
+      }
+    }
     // populateUserData();
   }
 
@@ -174,12 +186,12 @@ const ProfilePage = (props) => {
                 style={{ width: "100%", paddingBottom: "5px" }}
                 required
               />
-              <Typography variant="h6">About</Typography>
+              <Typography variant="h6">Display Name</Typography>
               <TextField
                 variant="outlined"
-                value={about}
+                value={displayName}
                 style={{ width: "100%", paddingBottom: "5px" }}
-                onInput={(e) => setAbout(e.target.value)}
+                onInput={(e) => setDisplayName(e.target.value)}
                 required
               />
               <Typography variant="h6">Display Picture</Typography>
@@ -189,12 +201,12 @@ const ProfilePage = (props) => {
                 style={{ width: "100%", paddingBottom: "5px" }}
                 onChange={(e) => updateDisplayPicture(e)}
               />
-              <Typography variant="h6">Display Name</Typography>
+              <Typography variant="h6">About</Typography>
               <TextField
                 variant="outlined"
-                value={displayName}
+                value={about}
                 style={{ width: "100%", paddingBottom: "5px" }}
-                onInput={(e) => setDisplayName(e.target.value)}
+                onInput={(e) => setAbout(e.target.value)}
                 required
               />
               <Typography variant="h6">Website</Typography>

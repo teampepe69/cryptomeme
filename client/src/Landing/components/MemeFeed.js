@@ -226,26 +226,41 @@ const MemeFeed = (props) => {
    * @param {*} meme
    */
   function memeIsApproved(meme) {
-    console.log(meme);
     if (mapMemeStatus(meme[10]) === "Approved") {
       return true;
     }
     return false;
   }
 
+  async function checkMetaMaskAccount() {
+    let accounts = await web3.eth.getAccounts();
+    let currentAccount = sessionStorage.getItem("account");
+    if (accounts[0] != currentAccount) {
+      Swal.fire({
+        title:
+          "Something went terribly wrong. Did you switch your MetaMask account?",
+        imageUrl: require("../../img/policeApu.png"),
+        confirmButtonText: "Sadkek",
+      });
+    }
+  }
+
   //----------------CREATE MEME-------------
   async function createMeme(memePath, memeTitle, memeDescription) {
     const acc = sessionStorage.getItem("account");
-    console.log(acc);
     const memeDate = Math.floor(new Date().getTime() / 1000);
-    console.log(memeDate);
-    await memeketPlaceNetwork.methods
-      .uploadMeme(acc, memeDate, memePath, memeTitle, memeDescription)
-      .send({
-        from: acc,
-      });
-    //updateMeme();
-    handleClose("create");
+    try {
+      await memeketPlaceNetwork.methods
+        .uploadMeme(acc, memeDate, memePath, memeTitle, memeDescription)
+        .send({
+          from: acc,
+        });
+      //updateMeme();
+      handleClose("create");
+    } catch (error) {
+      handleClose("create");
+      checkMetaMaskAccount();
+    }
   }
 
   //----------Update the meme feed when meme is created-------
@@ -283,26 +298,34 @@ const MemeFeed = (props) => {
     const acc = sessionStorage.getItem("account");
     var arr = memes;
     // console.log(memeId);
-    await memeketPlaceNetwork.methods.likeMeme(memeId).send({ from: acc });
+    try {
+      await memeketPlaceNetwork.methods.likeMeme(memeId).send({ from: acc });
 
-    const updateMeme = await memeNetwork.methods.memes(memeId).call();
+      const updateMeme = await memeNetwork.methods.memes(memeId).call();
 
-    const state = arr.map((meme) => (meme[1] === memeId ? updateMeme : meme));
-    await getStatus(memeId);
-    setMemes(state);
+      const state = arr.map((meme) => (meme[1] === memeId ? updateMeme : meme));
+      await getStatus(memeId);
+      setMemes(state);
+    } catch (error) {
+      checkMetaMaskAccount();
+    }
   }
 
   //------------DISLIKE MEMES--------------
   async function dislikeMeme(memeId) {
     const acc = sessionStorage.getItem("account");
     var arr = memes;
-    await memeketPlaceNetwork.methods.dislikeMeme(memeId).send({ from: acc });
+    try {
+      await memeketPlaceNetwork.methods.dislikeMeme(memeId).send({ from: acc });
 
-    const updateMeme = await memeNetwork.methods.memes(memeId).call();
+      const updateMeme = await memeNetwork.methods.memes(memeId).call();
 
-    const state = arr.map((meme) => (meme[1] === memeId ? updateMeme : meme));
-    await getStatus(memeId);
-    setMemes(state);
+      const state = arr.map((meme) => (meme[1] === memeId ? updateMeme : meme));
+      await getStatus(memeId);
+      setMemes(state);
+    } catch (error) {
+      checkMetaMaskAccount();
+    }
   }
 
   //-------------USER LIKE STATUS--------------------
@@ -328,13 +351,18 @@ const MemeFeed = (props) => {
       .getFlags(memeId, acc)
       .call();
     if (!isFlagged) {
-      await memeketPlaceNetwork.methods.flagMeme(memeId).send({ from: acc });
-      handleClose("flag");
-      Swal.fire({
-        title: "Flag successful!",
-        icon: "success",
-        confirmButtonText: "Cool beans",
-      });
+      try {
+        await memeketPlaceNetwork.methods.flagMeme(memeId).send({ from: acc });
+        handleClose("flag");
+        Swal.fire({
+          title: "Flag successful!",
+          icon: "success",
+          confirmButtonText: "Cool beans",
+        });
+      } catch (error) {
+        handleClose("flag");
+        checkMetaMaskAccount();
+      }
     } else {
       handleClose("flag");
       Swal.fire({
@@ -350,17 +378,21 @@ const MemeFeed = (props) => {
     event.preventDefault();
     const file = event.target.files[0];
     const reader = new window.FileReader();
-    reader.readAsArrayBuffer(file);
-    reader.onloadend = () => {
-      ipfs.files.add(Buffer(reader.result), (error, result) => {
-        if (error) {
-          return;
-        }
-        const hash = result[0].hash;
-        setBuffer(hash);
-        return hash;
-      });
-    };
+    try {
+      reader.readAsArrayBuffer(file);
+      reader.onloadend = () => {
+        ipfs.files.add(Buffer(reader.result), (error, result) => {
+          if (error) {
+            return;
+          }
+          const hash = result[0].hash;
+          setBuffer(hash);
+          return hash;
+        });
+      };
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   //------------SUBMIT FORM-------------------

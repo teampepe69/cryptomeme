@@ -124,23 +124,11 @@ const Register = (props) => {
           <div style={{ width: "60%", float: "left" }}>
             <form className={classes.root} onSubmit={handleRegister}>
               <TextField
-                label="About"
-                variant="outlined"
-                style={{ width: "100%", paddingBottom: "10px" }}
-                onInput={(e) => setAbout(e.target.value)}
-              />
-              <TextField
-                label="DisplayName"
+                label="Display Name"
                 variant="outlined"
                 style={{ width: "100%", paddingBottom: "10px" }}
                 onInput={(e) => setDisplayName(e.target.value)}
                 required
-              />
-              <TextField
-                label="Website"
-                variant="outlined"
-                style={{ width: "100%", paddingBottom: "10px" }}
-                onInput={(e) => setWebsite(e.target.value)}
               />
               <TextField
                 label="Wallet"
@@ -148,7 +136,20 @@ const Register = (props) => {
                 style={{ width: "100%", paddingBottom: "10px" }}
                 onInput={(e) => setEwallet(e.target.value)}
                 defaultValue={eWallet}
+                disabled="true"
                 required
+              />
+              <TextField
+                label="Tell us a bit about yourself"
+                variant="outlined"
+                style={{ width: "100%", paddingBottom: "10px" }}
+                onInput={(e) => setAbout(e.target.value)}
+              />
+              <TextField
+                label="Give us your website"
+                variant="outlined"
+                style={{ width: "100%", paddingBottom: "10px" }}
+                onInput={(e) => setWebsite(e.target.value)}
               />
               <Button type="submit" className={classes.button} fullWidth>
                 JOIN THE FIGHT

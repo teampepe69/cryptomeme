@@ -139,16 +139,7 @@ class App extends Component {
         }}
       >
         <Router>
-          <Navbar
-            web3={this.state.web3}
-            account={this.state.account}
-            deployedMemeketPlaceNetworkData={
-              this.state.deployedMemeketPlaceNetworkData
-            }
-            memeNetwork={this.state.memeNetwork}
-            userNetwork={this.state.userNetwork}
-            memeketPlaceNetwork={this.state.memeketPlaceNetwork}
-          />
+          <Navbar />
           <div style={{ paddingTop: "100px" }}>
             <div style={{ paddingLeft: "20px", width: "120px" }}>
               <SideDrawer />
@@ -157,15 +148,7 @@ class App extends Component {
               <Route
                 exact
                 path="/"
-                render={(routeProps) => (
-                  <LandingPage
-                    {...routeProps}
-                    account={this.state.account}
-                    memeNetwork={this.state.memeNetwork}
-                    userNetwork={this.state.userNetwork}
-                    memeketPlaceNetwork={this.state.memeketPlaceNetwork}
-                  />
-                )}
+                render={(routeProps) => <LandingPage {...routeProps} />}
               />
               <PrivateRoute
                 exact

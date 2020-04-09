@@ -79,9 +79,7 @@ class App extends Component {
           Meme.abi,
           deployedMemeNetworkData.address
         );
-        this.setState({ memeNetwork: memeNetwork });
         this.setGlobal({ memeNetwork: memeNetwork });
-        
       }
 
       // Get User instance and all the Memes
@@ -92,7 +90,6 @@ class App extends Component {
           User.abi,
           deployedUserNetworkData.address
         );
-        this.setState({ userNetwork: userNetwork });
         this.setGlobal({ userNetwork: userNetwork });
         //this.setGlobal(userNetwork => userNetwork);
       }
@@ -105,7 +102,6 @@ class App extends Component {
           PepeCoin.abi,
           deployedPepeCoinNetworkData.address
         );
-        this.setState({ pepeCoinNetwork: pepeCoinNetwork });
         this.setGlobal({ pepeCoinNetwork: pepeCoinNetwork });
         //this.setGlobal(userNetwork => userNetwork);
       }
@@ -117,10 +113,6 @@ class App extends Component {
           MemeketPlace.abi,
           deployedMemeketPlaceNetworkData.address
         );
-        this.setState({ memeketPlaceNetwork: memeketPlaceNetwork });
-        this.setState({
-          deployedMemeketPlaceNetworkData: deployedMemeketPlaceNetworkData,
-        });
         this.setGlobal({ memeketPlaceNetwork: memeketPlaceNetwork });
         //this.setGlobal(memeketPlaceNetwork => memeketPlaceNetwork);
       }
@@ -175,7 +167,11 @@ class App extends Component {
                   />
                 )}
               />
-              <PrivateRoute exact path="/leaderBoard" component={LeaderBoardPage} />
+              <PrivateRoute
+                exact
+                path="/leaderBoard"
+                component={LeaderBoardPage}
+              />
               <PrivateRoute exact path="/profile" component={ProfilePage} />
               <PrivateRoute exact path="/admin" component={AdminPage} />
             </div>

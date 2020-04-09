@@ -280,33 +280,13 @@ const AdminPage = (props) => {
           <Tab label="Memes Approved" {...a11yProps(4)} />
         </Tabs>
       </AppBar>
-      <Users
-        value={value}
-        index={0}
-        peopleParent={rows}
-        web3={props.web3}
-        deployedMemeketPlaceNetworkData={props.deployedMemeketPlaceNetworkData}
-        memeketPlaceNetwork={props.memeketPlaceNetwork}
-        userNetwork={props.userNetwork}
-      />
-      <Users
-        value={value}
-        index={1}
-        peopleParent={disobidentrows}
-        web3={props.web3}
-        deployedMemeketPlaceNetworkData={props.deployedMemeketPlaceNetworkData}
-        memeketPlaceNetwork={props.memeketPlaceNetwork}
-        userNetwork={props.userNetwork}
-      />
+      <Users value={value} index={0} peopleParent={rows} />
+      <Users value={value} index={1} peopleParent={disobidentrows} />
 
       <MemesFlagged
         value={value}
         index={2}
         peopleParent={memesRows}
-        web3={props.web3}
-        deployedMemeketPlaceNetworkData={props.deployedMemeketPlaceNetworkData}
-        memeketPlaceNetwork={props.memeketPlaceNetwork}
-        userNetwork={props.userNetwork}
         stopFlags={stopFlags}
       />
 
@@ -314,10 +294,6 @@ const AdminPage = (props) => {
         value={value}
         index={3}
         peopleParent={memesRejectedRows}
-        web3={props.web3}
-        deployedMemeketPlaceNetworkData={props.deployedMemeketPlaceNetworkData}
-        memeketPlaceNetwork={props.memeketPlaceNetwork}
-        userNetwork={props.userNetwork}
         stopFlags={stopFlags}
       />
 
@@ -325,10 +301,6 @@ const AdminPage = (props) => {
         value={value}
         index={4}
         peopleParent={memesApprovedRows}
-        web3={props.web3}
-        deployedMemeketPlaceNetworkData={props.deployedMemeketPlaceNetworkData}
-        memeketPlaceNetwork={props.memeketPlaceNetwork}
-        userNetwork={props.userNetwork}
         stopFlags={stopFlags}
       />
     </div>

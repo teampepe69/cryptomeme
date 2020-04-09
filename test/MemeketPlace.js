@@ -37,7 +37,7 @@ contract("MemeketPlace.sol", function (accounts) {
     assert.notEqual(memeketPlaceInstance.address, " ");
   });
 
-  it("Should create user 1", async () => {
+  it("Should create user 1, user 2, user 3", async () => {
     let createUser1 = await memeketPlaceInstance.createUser(
       memeOwner1,
       "Random About",
@@ -45,10 +45,26 @@ contract("MemeketPlace.sol", function (accounts) {
       "Random Display Name",
       "Random Website"
     );
+    let createUser2 = await memeketPlaceInstance.createUser(
+      memeOwner2,
+      "Random About",
+      "Random Hash",
+      "Random Display Name",
+      "Random Website"
+    );
+    let createUser3 = await memeketPlaceInstance.createUser(
+      memeOwner3,
+      "Random About",
+      "Random Hash",
+      "Random Display Name",
+      "Random Website"
+    );
   });
 
-  it("Should activate user 1", async () => {
+  it("Should activate user 1, user 2, user 3", async () => {
     let activateUser1 = await memeketPlaceInstance.activateUser(memeOwner1);
+    let activateUser2 = await memeketPlaceInstance.activateUser(memeOwner2);
+    let activateUser3 = await memeketPlaceInstance.activateUser(memeOwner3);
   });
 
   it("User 1 should have default created user pepecoins", async () => {

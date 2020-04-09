@@ -40,7 +40,6 @@ contract("MemeketPlace.sol", function (accounts) {
   it("Should create user 1", async () => {
     let createUser1 = await memeketPlaceInstance.createUser(
       memeOwner1,
-      "Meme Owner 1",
       "Random About",
       "Random Hash",
       "Random Display Name",

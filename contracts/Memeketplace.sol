@@ -225,4 +225,8 @@ contract MemeketPlace {
             createMemeRewardValue
         );
     }
+
+    function rejectMeme(uint256 _memeId, uint256 _newDate) public {
+        memeContract.rejectMeme(_memeId, _newDate);
+    }
 }

@@ -208,8 +208,8 @@ contract("Meme.sol", function (accounts) {
     );
   });
 
-  it("Should like meme 1 1 time", async () => {
-    let setMeme1Likes = await memeInstance.setMemeLikes(0, 1);
+  it("Should like meme 1 3 time", async () => {
+    let setMeme1Likes = await memeInstance.setMemeLikes(0, 3);
     let getMeme1Likes = await memeInstance.getMemeLikes.call(0);
 
     assert.strictEqual(

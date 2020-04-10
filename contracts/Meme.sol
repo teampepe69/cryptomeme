@@ -2,7 +2,6 @@ pragma solidity ^0.5.0;
 import "../node_modules/@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "./User.sol";
 
-
 contract Meme is ERC721 {
     using SafeMath for uint256;
 
@@ -47,6 +46,21 @@ contract Meme is ERC721 {
     event MemeTitleChanged(uint256 memeId, string memeTitle);
     event MemeDescriptionChanged(uint256 memeId, string memeDescription);
 
+    modifier isMemeOwner(_memeId) {
+        require(getMemeOwner(_memeId) == tx.origin, "Ensure that you're the Meme Owner");
+        _;
+    }
+
+    modifier isActiveUser() {
+        require(userContract.checkUserIsActive(tx.origin) || userContract.checkUserIsAdmin(tx.origin), "You must be an active user");
+        _;
+    }
+
+    modifier isAdminUser() {
+        require(userContract.checkUserIsAdmin(tx.origin), "You must be an admin user");
+        _;
+    }
+
     constructor(User _userContract) public {
         userContract = _userContract;
     }
@@ -56,12 +70,12 @@ contract Meme is ERC721 {
         uint256 _memeDate,
         string memory _memePath,
         string memory _memeTitle,
-        string memory _memeDescription
+        string memory _memeDescription,
     ) public returns (uint256) {
+        require(_memeOwner == tx.origin, "You can't create a meme for someone else");
         meme memory _meme = meme(
             _memeOwner,
             numberOfMemes,
-            0,
             0,
             0,
             0,
@@ -132,96 +146,57 @@ contract Meme is ERC721 {
         return memes[_memeId].memeDescription;
     }
 
-    function setMemeLikes(uint256 _memeId, uint256 _memeLikes) public {
-        require(
-            getMemeState(_memeId) == memeStates.approved,
-            "Meme is not approved"
-        );
+    function setMemeLikes(uint256 _memeId, uint256 _memeLikes) public isActiveUser() {
         memes[_memeId].memeLikes = _memeLikes;
         emit MemeLiked(_memeId, _memeLikes);
     }
 
-    function setMemeDislikes(uint256 _memeId, uint256 _memeDislikes) public {
-        require(
-            userContract.checkUserIsActive(tx.origin),
-            "You're not an active user of this platform"
-        );
+    function setMemeDislikes(uint256 _memeId, uint256 _memeDislikes) public isActiveUser() {
         memes[_memeId].memeDislikes = _memeDislikes;
         emit MemeDisliked(_memeId, _memeDislikes);
     }
 
-    function setMemeFlags(uint256 _memeId, uint256 _memeFlags) public {
-        require(
-            userContract.checkUserIsActive(tx.origin),
-            "You're not an active user of this platform"
-        );
+    function setMemeFlags(uint256 _memeId, uint256 _memeFlags) public isActiveUser() {
         memes[_memeId].memeFlags = _memeFlags;
         emit MemeFlagged(_memeId, _memeFlags);
     }
 
     function setMemeValue(uint256 _memeId, uint256 _memeValue) public {
-        require(
-            userContract.checkUserIsActive(tx.origin),
-            "You're not an active user of this platform"
-        );
         memes[_memeId].memeValue = _memeValue;
         emit MemeValueChanged(_memeId, _memeValue);
     }
 
-    function approveMeme(uint256 _memeId, uint256 _newDate) public {
-        require(
-            userContract.checkUserIsAdmin(tx.origin),
-            "You're not an admin"
-        );
+    function approveMeme(uint256 _memeId, uint256 _newDate) public isAdminUser() {
         memes[_memeId].memeState = memeStates.approved;
         memes[_memeId].memeDate = _newDate;
         emit MemeApproved(_memeId, _newDate);
     }
 
-    function rejectMeme(uint256 _memeId, uint256 _newDate) public {
-        require(
-            userContract.checkUserIsAdmin(tx.origin),
-            "You're not an admin"
-        );
+    function rejectMeme(uint256 _memeId, uint256 _newDate) public isActiveUser() {
         memes[_memeId].memeState = memeStates.rejected;
         memes[_memeId].memeDate = _newDate;
         emit MemeRejected(_memeId, _newDate);
     }
 
     function setMemeDate(uint256 _memeId, uint256 _memeDate) public {
-        require(
-            userContract.checkUserIsActive(tx.origin),
-            "You're not an active user of this platform"
-        );
+        require(getMemeOwner(_memeId) == tx.origin || userContract.checkUserIsAdmin(tx.origin), "You must be the Meme owner or an admin");
         memes[_memeId].memeDate = _memeDate;
         emit MemeDateChanged(_memeId, _memeDate);
     }
 
-    function setMemePath(uint256 _memeId, string memory _memePath) public {
-        require(
-            tx.origin == memes[_memeId].memeOwner,
-            "You're not the owner of this meme"
-        );
+    function setMemePath(uint256 _memeId, string memory _memePath) public isMemeOwner({
         memes[_memeId].memePath = _memePath;
         emit MemePathChanged(_memeId, _memePath);
     }
 
-    function setMemeTitle(uint256 _memeId, string memory _memeTitle) public {
-        require(
-            tx.origin == memes[_memeId].memeOwner,
-            "You're not the owner of this meme"
-        );
+    function setMemeTitle(uint256 _memeId, string memory _memeTitle) public isMemeOwner(_memeId) {
         memes[_memeId].memeTitle = _memeTitle;
         emit MemeTitleChanged(_memeId, _memeTitle);
     }
 
     function setMemeDescription(uint256 _memeId, string memory _memeDescription)
-        public
+        public isMemeOwner(_memeId)
     {
-        require(
-            tx.origin == memes[_memeId].memeOwner,
-            "You're not the owner of this meme"
-        );
         memes[_memeId].memeDescription = _memeDescription;
         emit MemeDescriptionChanged(_memeId, _memeDescription);
     }

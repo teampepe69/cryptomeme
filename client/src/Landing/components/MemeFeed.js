@@ -14,7 +14,6 @@ import {
   TextField,
   Modal,
   Divider,
-  CircularProgress,
   IconButton,
 } from "@material-ui/core";
 // import logo from "../../img/goodjob_pepe.png";
@@ -257,6 +256,11 @@ const MemeFeed = (props) => {
         });
       //updateMeme();
       handleClose("create");
+      Swal.fire({
+        title: "Creation successful! Please wait for your meme to be approved.",
+        icon: "success",
+        confirmButtonText: "Cool beans",
+      });
     } catch (error) {
       handleClose("create");
       checkMetaMaskAccount();
@@ -488,6 +492,7 @@ const MemeFeed = (props) => {
                         label="Insert some description about your Meme"
                         variant="outlined"
                         style={{ width: "100%", paddingBottom: "10px" }}
+                        multiline
                         // inputRef={input => {
                         //   this.memeDescription = input;
                         // }}

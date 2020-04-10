@@ -256,7 +256,9 @@ contract("Meme.sol", function (accounts) {
 
   it("Should change meme path of meme 1", async () => {
     let meme1NewPath = "/newpath/meme/1";
-    let setMeme1Path = await memeInstance.setMemePath(0, meme1NewPath);
+    let setMeme1Path = await memeInstance.setMemePath(0, meme1NewPath, {
+      from: memeOwner1,
+    });
     let getMeme1Path = await memeInstance.getMemePath(0);
 
     assert.strictEqual(

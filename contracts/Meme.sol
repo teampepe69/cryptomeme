@@ -83,10 +83,6 @@ contract Meme is ERC721 {
         string memory _memeTitle,
         string memory _memeDescription
     ) public returns (uint256) {
-        require(
-            _memeOwner == tx.origin,
-            "You can't create a meme for someone else"
-        );
         meme memory _meme = meme(
             _memeOwner,
             numberOfMemes,

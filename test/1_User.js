@@ -36,7 +36,8 @@ contract("User.sol", function (accounts) {
       "_about",
       "_displayPictureHash",
       "_displayName",
-      "_website"
+      "_website",
+      { from: memeOwner1 }
     );
     let user1Status = await userInstance.checkUserIsPending(memeOwner1);
     assert.strictEqual(
@@ -49,7 +50,8 @@ contract("User.sol", function (accounts) {
       "_about",
       "_displayPictureHash",
       "_displayName",
-      "_website"
+      "_website",
+      { from: memeOwner2 }
     );
     let user2Status = await userInstance.checkUserIsPending(memeOwner2);
     assert.strictEqual(
@@ -62,7 +64,8 @@ contract("User.sol", function (accounts) {
       "_about",
       "_displayPictureHash",
       "_displayName",
-      "_website"
+      "_website",
+      { from: memeOwner3 }
     );
     let user3Status = await userInstance.checkUserIsPending(memeOwner3);
     assert.strictEqual(

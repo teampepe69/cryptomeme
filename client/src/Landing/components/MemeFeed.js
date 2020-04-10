@@ -18,6 +18,7 @@ import {
 } from "@material-ui/core";
 // import logo from "../../img/goodjob_pepe.png";
 import hurt from "../../img/sadpepe.png";
+import peperoni from "../../img/peperoni.png";
 import CloudUploadIcon from "@material-ui/icons/CloudUpload";
 // import ThumbUpAltIcon from "@material-ui/icons/ThumbUpAlt";
 import ThumbDownAltOutlinedIcon from "@material-ui/icons/ThumbDownAltOutlined";
@@ -27,6 +28,7 @@ import ThumbDownRoundedIcon from "@material-ui/icons/ThumbDownRounded";
 import ipfs from "../../ipfs";
 import FlagIcon from "@material-ui/icons/Flag";
 import Swal from "sweetalert2";
+import StarsIcon from '@material-ui/icons/Stars';
 
 const styles = (theme) => ({
   root: {
@@ -128,10 +130,12 @@ const MemeFeed = (props) => {
   const [userNetwork] = useGlobal("userNetwork");
   const [memeketPlaceNetwork] = useGlobal("memeketPlaceNetwork");
   const [memeNetwork] = useGlobal("memeNetwork");
+  const [pepeCoinNetwork] = useGlobal("pepeCoinNetwork");
   const [web3] = useGlobal("web3");
   const [memes, setMemes] = React.useState([]);
   const [open, setOpen] = React.useState(false);
   const [openFlag, setOpenFlag] = React.useState(false);
+  const [openPin, setOpenPin] = React.useState(false);
   const [memeTitle, setMemeTitle] = React.useState("");
   const [memeDescription, setMemeDescription] = React.useState("");
   const [buffer, setBuffer] = React.useState("");
@@ -143,6 +147,8 @@ const MemeFeed = (props) => {
   const [userAddress, setUserAddress] = React.useState(
     sessionStorage.getItem("account")
   );
+  const [peperonis, setPeperonis] = React.useState(0);
+
 
   useEffect(() => {
     console.log(memeNetwork);
@@ -204,6 +210,13 @@ const MemeFeed = (props) => {
         }
       } else {
         console.log("Null networks");
+      }
+      if (loggedIn) {
+        var userPepeRonis = await pepeCoinNetwork.methods
+          .balanceOf(userAddress)
+          .call({ from: acc });
+        console.log("userPepeRonis", userPepeRonis);
+        setPeperonis(userPepeRonis);
       }
     } catch (err) {
       console.log(err);
@@ -473,36 +486,63 @@ const MemeFeed = (props) => {
                       />
 
                       <TextField
-                        // id="memeTitle"
                         label="Insert a superb title for your Meme"
                         variant="outlined"
                         style={{ width: "100%", paddingBottom: "10px" }}
-                        // inputRef={input => {
-                        //   this.memeTitle = input;
-                        // }}
                         value={memeTitle}
                         onChange={(e) => {
                           setMemeTitle(e.target.value);
-                          // this.setState({ memeTitle: e.target.value });
                         }}
                         required
                       />
                       <TextField
-                        // id="memeDescription"
                         label="Insert some description about your Meme"
                         variant="outlined"
                         style={{ width: "100%", paddingBottom: "10px" }}
                         multiline
-                        // inputRef={input => {
-                        //   this.memeDescription = input;
-                        // }}
                         value={memeDescription}
                         onChange={(e) => {
                           setMemeDescription(e.target.value);
-                          // this.setState({ memeDescription: e.target.value });
                         }}
                         required
                       />
+                      <Grid container item xs={12} style={{ alignItems: "center" }}>
+                        <Typography
+                          variant="body1"
+                          color="textPrimary"
+                          component="p"
+                          style={{ textAlign: "justify" }}
+                        >
+                          You have {peperonis} Peperonis
+                        </Typography>
+                        <Avatar src={peperoni} className={classes.avatar} />
+                      </Grid>
+
+                      <Typography
+                        variant="body1"
+                        color="textSecondary"
+                        component="p"
+                        style={{ textAlign: "justify" }}
+                      >
+                        Do you want to pin your meme? More peperonis donated, more likely your meme will stay at the top
+                      </Typography>
+                      <Grid container item xs={12} style={{ alignItems: "center", paddingBottom: "10px" }}>
+                        <TextField
+                          type="number"
+                          value={0}
+                          variant="outlined"
+                          style={{ width: "10%" }}
+                          inputProps={{
+                            style: { textAlign: "right" }
+                          }}
+                          // onChange={(e) => {
+                          //   setMemeDescription(e.target.value);
+                          // }}
+                          size="small"
+                          required
+                        />
+                        <Avatar src={peperoni} className={classes.avatar} />
+                      </Grid>
                       <Button
                         type="submit"
                         className={classes.button}
@@ -528,7 +568,7 @@ const MemeFeed = (props) => {
                     className={classes.head}
                     avatar={
                       <Avatar
-                        aria-label="recipe"
+                        aria-label="displayPicture"
                         className={classes.avatar}
                         src={`https://ipfs.io/ipfs/${memeOwners[key].displayPictureHash}`}
                       />
@@ -543,7 +583,7 @@ const MemeFeed = (props) => {
                         ? memeDates[key]
                         : ""
                     }
-                    // title="User1231"
+                  // title="User1231"
                   />
                 ) : null}
                 <div className={classes.body}>
@@ -581,8 +621,8 @@ const MemeFeed = (props) => {
                             // startIcon={<ThumbUpAltOutlinedIcon />}
                             disabled={
                               loggedIn &&
-                              memeOwners[key] &&
-                              memeOwners[key].userWallet !== userAddress
+                                memeOwners[key] &&
+                                memeOwners[key].userWallet !== userAddress
                                 ? false
                                 : true
                             }
@@ -596,8 +636,8 @@ const MemeFeed = (props) => {
                             {likeStatus[meme.memeId] == 1 ? (
                               <ThumbUpAltRoundedIcon />
                             ) : (
-                              <ThumbUpAltOutlinedIcon />
-                            )}
+                                <ThumbUpAltOutlinedIcon />
+                              )}
                           </IconButton>
                           <Typography
                             variant="button"
@@ -613,8 +653,8 @@ const MemeFeed = (props) => {
                             style={{ minWidth: "10px" }}
                             disabled={
                               loggedIn &&
-                              memeOwners[key] &&
-                              memeOwners[key].userWallet !== userAddress
+                                memeOwners[key] &&
+                                memeOwners[key].userWallet !== userAddress
                                 ? false
                                 : true
                             }
@@ -627,8 +667,8 @@ const MemeFeed = (props) => {
                             {likeStatus[meme.memeId] == 2 ? (
                               <ThumbDownRoundedIcon />
                             ) : (
-                              <ThumbDownAltOutlinedIcon />
-                            )}
+                                <ThumbDownAltOutlinedIcon />
+                              )}
                           </IconButton>
 
                           <Typography
@@ -642,90 +682,160 @@ const MemeFeed = (props) => {
                         </Grid>
                       </Grid>
 
-                      {/*--------------------------- FLAG BUTTON--------------------- */}
+                      {/*--------------------------- FLAG & STAR BUTTON--------------------- */}
                       <Grid container item xs={4} justify="flex-end">
-                        <IconButton
-                          style={{ minWidth: "12px" }}
-                          size="small"
-                          disabled={
-                            loggedIn &&
-                            memeOwners[key] &&
-                            memeOwners[key].userWallet !== userAddress
-                              ? false
-                              : true
-                          }
-                          onClick={() => handleOpen("flag")}
-                        >
-                          <FlagIcon color="secondary" />
-                        </IconButton>
-                        <Modal
-                          aria-labelledby="simple-modal-title"
-                          aria-describedby="simple-modal-description"
-                          open={openFlag}
-                          onClose={() => handleClose("flag")}
-                          className={classes.modal}
-                        >
-                          <Card className={classes.paper}>
-                            <div style={{ padding: "10px 5px 20px 5px" }}>
-                              <Typography
-                                variant="h4"
-                                align="center"
-                                style={{ fontWeight: "bold" }}
-                              >
-                                Hurt? We're here to help.
-                              </Typography>
-                            </div>
+                        {loggedIn && memeOwners[key] && memeOwners[key].userWallet === userAddress ? (
+                          <React.Fragment>
+                            <IconButton
+                              style={{ minWidth: "12px" }}
+                              size="small"
+                              onClick={() => handleOpen("pin")}
+                            >
+                              <StarsIcon style={{ color: "#FFD700" }} />
+                            </IconButton>
 
-                            <CardContent>
-                              <div
-                                style={{
-                                  width: "60%",
-                                  float: "left",
-                                  paddingRight: "10px",
-                                }}
-                              >
-                                <div style={{ paddingBottom: "20px" }}>
-                                  <Typography paragraph>
-                                    We're truly sorry that this meme has hurt
-                                    you.
-                                  </Typography>
-                                  <Typography paragraph>
-                                    We are here to protecc our readers
-                                  </Typography>
-                                  <Typography paragraph>
-                                    We shall reflect and do better
-                                  </Typography>
-                                  <Typography paragraph>
-                                    Click button to flag post as{" "}
-                                    {
-                                      <b style={{ color: "red" }}>
-                                        inappropriate
-                                      </b>
-                                    }
-                                  </Typography>
-                                </div>
+                            <Modal
+                              aria-labelledby="simple-modal-title"
+                              aria-describedby="simple-modal-description"
+                              open={openPin}
+                              onClose={() => handleClose("pin")}
+                              className={classes.modal}
+                            >
+                              <Card className={classes.paper}>
+                                <Grid container item xs={12} style={{ alignItems: "center" }}>
+                                  <Typography
+                                    variant="body1"
+                                    color="textPrimary"
+                                    component="p"
+                                    style={{ textAlign: "justify" }}
+                                  >
+                                    You have {peperonis} Peperonis
+                        </Typography>
+                                  <Avatar src={peperoni} className={classes.avatar} />
+                                </Grid>
+
+                                <Typography
+                                  variant="body1"
+                                  color="textSecondary"
+                                  component="p"
+                                  style={{ textAlign: "justify" }}
+                                >
+                                  Do you want to pin your meme? More peperonis donated, more likely your meme will stay at the top
+                      </Typography>
+                                <Grid container item xs={12} style={{ alignItems: "center", paddingBottom: "10px" }}>
+                                  <TextField
+                                    type="number"
+                                    value={0}
+                                    variant="outlined"
+                                    style={{ width: "10%" }}
+                                    inputProps={{
+                                      style: { textAlign: "right" }
+                                    }}
+                                    // onChange={(e) => {
+                                    //   setMemeDescription(e.target.value);
+                                    // }}
+                                    size="small"
+                                    required
+                                  />
+                                  <Avatar src={peperoni} className={classes.avatar} />
+                                </Grid>
                                 <Button
                                   type="submit"
-                                  color="secondary"
-                                  className={classes.flagButton}
-                                  onClick={(e) => {
-                                    flagMeme(meme.memeId);
-                                  }}
+                                  className={classes.button}
                                   fullWidth
                                 >
-                                  SAY NO TO TROLLS!
+                                  What is life anyway?
+                                  </Button>
+                              </Card>
+                            </Modal>
+
+                          </React.Fragment>) : null}
+                        {loggedIn && memeOwners[key] && memeOwners[key].userWallet !== userAddress ? (
+                          <React.Fragment>
+                            <IconButton
+                              style={{ minWidth: "12px" }}
+                              size="small"
+                              // disabled={
+                              //   loggedIn &&
+                              //     memeOwners[key] &&
+                              //     memeOwners[key].userWallet !== userAddress
+                              //     ? false
+                              //     : true
+                              // }
+                              onClick={() => handleOpen("flag")}
+                            >
+                              <FlagIcon color="secondary" />
+                            </IconButton>
+                            <Modal
+                              aria-labelledby="simple-modal-title"
+                              aria-describedby="simple-modal-description"
+                              open={openFlag}
+                              onClose={() => handleClose("flag")}
+                              className={classes.modal}
+                            >
+                              <Card className={classes.paper}>
+                                <div style={{ padding: "10px 5px 20px 5px" }}>
+                                  <Typography
+                                    variant="h4"
+                                    align="center"
+                                    style={{ fontWeight: "bold" }}
+                                  >
+                                    Hurt? We're here to help.
+                              </Typography>
+                                </div>
+
+                                <CardContent>
+                                  <div
+                                    style={{
+                                      width: "60%",
+                                      float: "left",
+                                      paddingRight: "10px",
+                                    }}
+                                  >
+                                    <div style={{ paddingBottom: "20px" }}>
+                                      <Typography paragraph>
+                                        We're truly sorry that this meme has hurt
+                                        you.
+                                  </Typography>
+                                      <Typography paragraph>
+                                        We are here to protecc our readers
+                                  </Typography>
+                                      <Typography paragraph>
+                                        We shall reflect and do better
+                                  </Typography>
+                                      <Typography paragraph>
+                                        Click button to flag post as{" "}
+                                        {
+                                          <b style={{ color: "red" }}>
+                                            inappropriate
+                                      </b>
+                                        }
+                                      </Typography>
+                                    </div>
+                                    <Button
+                                      type="submit"
+                                      color="secondary"
+                                      className={classes.flagButton}
+                                      onClick={(e) => {
+                                        flagMeme(meme.memeId);
+                                      }}
+                                      fullWidth
+                                    >
+                                      SAY NO TO TROLLS!
                                 </Button>
-                              </div>
-                              <div style={{ width: "40%", float: "right" }}>
-                                <CardMedia
-                                  component="img"
-                                  image={hurt}
-                                  title="Join Pepe"
-                                />
-                              </div>
-                            </CardContent>
-                          </Card>
-                        </Modal>
+                                  </div>
+                                  <div style={{ width: "40%", float: "right" }}>
+                                    <CardMedia
+                                      component="img"
+                                      image={hurt}
+                                      title="Join Pepe"
+                                    />
+                                  </div>
+                                </CardContent>
+                              </Card>
+                            </Modal>
+                          </React.Fragment>)
+                          : null}
                       </Grid>
                     </Grid>
                   </CardContent>
@@ -734,10 +844,10 @@ const MemeFeed = (props) => {
             );
           })
         ) : (
-          <div>
-            <p>Nothing</p>
-          </div>
-        )}
+            <div>
+              <p>Nothing</p>
+            </div>
+          )}
       </div>
     </div>
   );

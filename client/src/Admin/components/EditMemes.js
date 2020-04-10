@@ -52,7 +52,7 @@ const EditMemes = (props) => {
     let result = await web3.eth.getAccounts();
     // Approve meme of memeId
     const newDate = Math.floor(new Date().getTime() / 1000);
-    await memeNetwork.methods
+    await memeketPlaceNetwork.methods
       .approveMeme(meme.memeId, newDate)
       .send({ from: result[0] });
 

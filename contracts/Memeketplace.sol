@@ -58,6 +58,10 @@ contract MemeketPlace {
     }
 
     function likeMeme(uint256 _memeId) public {
+        require(
+            memeContract.getMemeOwner(_memeId) != msg.sender,
+            "You cannot like your own meme"
+        );
         if (likes[_memeId][msg.sender] == likeVal) {
             //This meme has already been liked before, so when they like again, it will unlike.
             memeContract.setMemeLikes(
@@ -92,8 +96,10 @@ contract MemeketPlace {
     }
 
     function dislikeMeme(uint256 _memeId) public {
-        // require(likes[_memeId][msg.sender] != 2, "You have already disliked this meme");
-
+        require(
+            memeContract.getMemeOwner(_memeId) != msg.sender,
+            "You cannot dislike your own meme"
+        );
         if (likes[_memeId][msg.sender] == dislikeVal) {
             //This meme has already been disliked before, so when they like again, it will undislike.
             memeContract.setMemeDislikes(
@@ -123,6 +129,10 @@ contract MemeketPlace {
     }
 
     function flagMeme(uint256 _memeId) public {
+        require(
+            memeContract.getMemeOwner(_memeId) != msg.sender,
+            "You cannot flag your own meme"
+        );
         require(
             flags[_memeId][msg.sender] == false,
             "You have already flagged this meme"
@@ -173,6 +183,10 @@ contract MemeketPlace {
         string memory _displayName,
         string memory _website
     ) public {
+        require(
+            msg.sender == _userWallet,
+            "You can only update your own profile"
+        );
         userContract.setUserAbout(_userWallet, _about);
         userContract.setUserDisplayPicture(_userWallet, _displayPictureHash);
         userContract.setUserDisplayName(_userWallet, _displayName);
@@ -180,6 +194,10 @@ contract MemeketPlace {
     }
 
     function activateUser(address _userWallet) public {
+        require(
+            userContract.checkUserIsAdmin(msg.sender),
+            "Only an admin can activate users"
+        );
         if (userContract.checkUserIsPending(_userWallet)) {
             pepeCoinContract.mintPepeCoins(_userWallet, createUserRewardValue);
         }
@@ -187,6 +205,10 @@ contract MemeketPlace {
     }
 
     function deactivateUser(address _userWallet) public {
+        require(
+            userContract.checkUserIsAdmin(msg.sender),
+            "Only an admin can deactivate users"
+        );
         userContract.setUserAsDeactivated(_userWallet);
     }
 }

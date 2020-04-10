@@ -7,8 +7,8 @@ var createMemeReward = 50;
 var createUserReward = 100;
 
 module.exports = async function (deployer) {
-  await deployer.deploy(Meme);
   await deployer.deploy(User);
+  await deployer.deploy(Meme, User.address);
   await deployer.deploy(PepeCoin, User.address);
   await deployer.deploy(
     MemeketPlace,

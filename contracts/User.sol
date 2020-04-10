@@ -156,16 +156,19 @@ contract User {
     }
 
     function setUserAsDeactivated(address _userWallet) public {
+        require(checkUserIsAdmin(tx.origin), "You're not an admin");
         users[userIds[_userWallet]].state = userStates.deactivated;
         emit UserDeactivated(_userWallet);
     }
 
     function setUserAsActive(address _userWallet) public {
+        require(checkUserIsAdmin(tx.origin), "You're not an admin");
         users[userIds[_userWallet]].state = userStates.active;
         emit UserActivated(_userWallet);
     }
 
     function setUserAsAdmin(address _userWallet) public {
+        require(checkUserIsAdmin(tx.origin), "You're not an admin");
         users[userIds[_userWallet]].state = userStates.admin;
         emit UserNewAdmin(_userWallet);
     }
@@ -191,67 +194,11 @@ contract User {
     }
 
     function getNumberUsers() public view returns (uint256) {
-        //require(i < numberOfUsers);
         return numberOfUsers;
     }
 
     function getUserAddress(uint256 i) public view returns (address) {
-        //require(i < numberOfUsers);
+        require(i < numberOfUsers, "Not a valid User ID");
         return users[i].userWallet;
     }
-
-    /*
-    function getUserRole(address userAd) public view returns (string memory) {
-        return getRoleKeyByValue(registered_Users[userAd].role);
-    }
-
-    function getRoleKeyByValue(userRoles r)
-        internal
-        pure
-        returns (string memory)
-    {
-        // Error handling for input
-        require(uint8(r) <= 3);
-
-        // Loop through possible options
-        if (userRoles.viewer == r) return "viewer";
-        if (userRoles.contentCreator == r) return "contentCreator";
-        if (userRoles.moderator == r) return "moderator";
-    }
-    
-
-    function getUserStatus(address userAd) public view returns (string memory) {
-        return getStatusKeyByValue(registered_Users[userAd].state);
-    }
-
-    function getStatusKeyByValue(userStates s)
-        internal
-        pure
-        returns (string memory)
-    {
-        // Error handling for input
-        require(uint8(s) <= 2);
-
-        // Loop through possible options
-        if (userStates.unregistered == s) return "unregistered";
-        if (userStates.registered == s) return "registered";
-    }
-
-    function followUser(address userAd)
-        public
-        registeredUsersOnly
-        alreadyFollowed(userAd)
-    {
-        alreadyFollowing[msg.sender][userAd] = true;
-        following[msg.sender].push(userAd);
-    }
-
-    function getUserFollowing(address userAd)
-        public
-        view
-        returns (address[] memory)
-    {
-        return following[userAd];
-    }
-    */
 }

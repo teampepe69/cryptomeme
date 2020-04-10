@@ -17,6 +17,9 @@ contract("Meme.sol", function (accounts) {
   let meme1Description = "This is Meme 1";
   let meme2Description = "This is Meme 2";
   let meme3Description = "This is Meme 3";
+  let meme1Value = 1;
+  let meme2Value = 2;
+  let meme3Value = 3;
   let approved = 0;
   let rejected = 1;
   let pending = 2;
@@ -40,6 +43,7 @@ contract("Meme.sol", function (accounts) {
       meme1Path,
       meme1Title,
       meme1Description,
+      meme1Value,
       { from: memeOwner1 }
     );
     let meme2Result = await memeInstance.createMeme(
@@ -48,6 +52,7 @@ contract("Meme.sol", function (accounts) {
       meme2Path,
       meme2Title,
       meme2Description,
+      meme2Value,
       { from: memeOwner1 }
     );
     let meme3Result = await memeInstance.createMeme(
@@ -56,6 +61,7 @@ contract("Meme.sol", function (accounts) {
       meme3Path,
       meme3Title,
       meme3Description,
+      meme3Value,
       { from: memeOwner1 }
     );
 
@@ -281,7 +287,9 @@ contract("Meme.sol", function (accounts) {
   });
 
   it("Should change value of meme 2 to 50", async () => {
-    let setMeme2Value = await memeInstance.setMemeValue(1, 50);
+    let setMeme2Value = await memeInstance.setMemeValue(1, 50, {
+      from: memeOwner2,
+    });
     let getMeme2Value = await memeInstance.getMemeValue(1);
 
     assert.strictEqual(

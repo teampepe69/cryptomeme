@@ -2,6 +2,7 @@ var Meme = artifacts.require("Meme.sol");
 
 contract("Meme.sol", function (accounts) {
   let memeInstance;
+  let userInstance;
   let memeOwner1 = accounts[1];
   let memeOwner2 = accounts[2];
   let memeOwner3 = accounts[3];
@@ -38,21 +39,24 @@ contract("Meme.sol", function (accounts) {
       memeDate,
       meme1Path,
       meme1Title,
-      meme1Description
+      meme1Description,
+      { from: memeOwner1 }
     );
     let meme2Result = await memeInstance.createMeme(
       memeOwner2,
       memeDate,
       meme2Path,
       meme2Title,
-      meme2Description
+      meme2Description,
+      { from: memeOwner1 }
     );
     let meme3Result = await memeInstance.createMeme(
       memeOwner3,
       memeDate,
       meme3Path,
       meme3Title,
-      meme3Description
+      meme3Description,
+      { from: memeOwner1 }
     );
 
     //Meme 1
@@ -204,7 +208,7 @@ contract("Meme.sol", function (accounts) {
     );
   });
 
-  it("Should like meme 1 three times", async () => {
+  it("Should like meme 1 3 time", async () => {
     let setMeme1Likes = await memeInstance.setMemeLikes(0, 3);
     let getMeme1Likes = await memeInstance.getMemeLikes.call(0);
 
@@ -252,7 +256,9 @@ contract("Meme.sol", function (accounts) {
 
   it("Should change meme path of meme 1", async () => {
     let meme1NewPath = "/newpath/meme/1";
-    let setMeme1Path = await memeInstance.setMemePath(0, meme1NewPath);
+    let setMeme1Path = await memeInstance.setMemePath(0, meme1NewPath, {
+      from: memeOwner1,
+    });
     let getMeme1Path = await memeInstance.getMemePath(0);
 
     assert.strictEqual(

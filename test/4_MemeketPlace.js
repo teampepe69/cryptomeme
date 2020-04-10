@@ -43,21 +43,24 @@ contract("MemeketPlace.sol", function (accounts) {
       "Random About",
       "Random Hash",
       "Random Display Name",
-      "Random Website"
+      "Random Website",
+      { from: memeOwner1 }
     );
     let createUser2 = await memeketPlaceInstance.createUser(
       memeOwner2,
       "Random About",
       "Random Hash",
       "Random Display Name",
-      "Random Website"
+      "Random Website",
+      { from: memeOwner2 }
     );
     let createUser3 = await memeketPlaceInstance.createUser(
       memeOwner3,
       "Random About",
       "Random Hash",
       "Random Display Name",
-      "Random Website"
+      "Random Website",
+      { from: memeOwner3 }
     );
   });
 

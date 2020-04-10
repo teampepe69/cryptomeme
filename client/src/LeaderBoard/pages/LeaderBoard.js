@@ -4,17 +4,8 @@ import { withStyles } from "@material-ui/core/styles";
 import { AppBar, Tabs, Tab } from "@material-ui/core";
 import Rankings from "../components/Rankings";
 
-function a11yProps(index) {
-  return {
-    id: `simple-tab-${index}`,
-    "aria-controls": `simple-tabpanel-${index}`,
-  };
-}
-
 const styles = (theme) => ({
-  appBar: {
-    backgroundColor: "transparent",
-  },
+
 });
 const LeaderBoardPage = (props) => {
   const { classes } = props;
@@ -64,7 +55,7 @@ const LeaderBoardPage = (props) => {
             .call();
           // If user is disobedient : bad guy
           usersArray.push(
-            createDataPepe(pepeCoinsNb, elem.userId, elem.displayName)
+            createDataPepe(pepeCoinsNb, elem.userId, elem.displayName, elem.displayPictureHash)
           );
         }
         // If user is clean : good guy
@@ -78,8 +69,8 @@ const LeaderBoardPage = (props) => {
     setPeopleParent(usersArray);
   }
 
-  function createDataPepe(pepeCoins, uid, displayName) {
-    return { pepeCoins, uid, displayName };
+  function createDataPepe(pepeCoins, uid, displayName, displayPictureHash) {
+    return { pepeCoins, uid, displayName, displayPictureHash};
   }
 
   async function handleChange(event, newValue) {
@@ -88,17 +79,7 @@ const LeaderBoardPage = (props) => {
 
   return (
     <div style={{ paddingRight: "20px" }}>
-      <AppBar position="static" className={classes.appBar} elevation={0}>
-        <Tabs
-          value={value}
-          onChange={handleChange}
-          textColor="secondary"
-          TabIndicatorProps={{ style: { background: "black" } }}
-        >
-          <Tab label="Leader Board" {...a11yProps(0)} />
-        </Tabs>
-      </AppBar>
-      <Rankings value={0} index={0} peopleParent={peopleParent} />
+      <Rankings value={0} peopleParent={peopleParent} />
     </div>
   );
 };

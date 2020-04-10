@@ -5,11 +5,15 @@ import "./User.sol";
 
 contract PepeCoin is ERC20 {
     using SafeMath for uint256;
-    address public contractOwner = msg.sender;
+    address contractOwner = msg.sender;
     User userContract;
 
     constructor(User _userContract) public {
         userContract = _userContract;
+    }
+
+    function getContractOwner() public returns (address) {
+        return contractOwner;
     }
 
     function mintPepeCoins(address _address, uint256 _amountToMint) public {

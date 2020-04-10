@@ -58,7 +58,7 @@ contract MemeketPlace {
         );
         pepeCoinContract.transferPepeCoins(
             msg.sender,
-            pepeCoinContract.ContractOwner,
+            pepeCoinContract.getContractOwner(),
             _memeValue
         );
     }
@@ -244,7 +244,7 @@ contract MemeketPlace {
         );
         pepeCoinContract.transferPepeCoins(
             msg.sender,
-            pepeCoinContract.contractOwner,
+            pepeCoinContract.getContractOwner(),
             _newValue
         );
     }

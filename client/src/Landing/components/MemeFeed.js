@@ -422,10 +422,23 @@ const MemeFeed = (props) => {
   }
 
   //------------Update Meme Value-------------------
-  async function handleUpdateMemeValue(event) {
-    event.preventDefault();
-    console.log("memeValue", memeValue);
-    console.log("event", event);
+  async function handleUpdateMemeValue(memeId) {
+    const account = sessionStorage.getItem("account");
+    try {
+      await memeketPlaceNetwork.methods
+        .updateMemeValue(memeId, memeValue)
+        .send({
+          from: account,
+        });
+      handleClose("pin");
+      Swal.fire({
+        title: "Your Meme has more value now!",
+        icon: "success",
+        confirmButtonText: "Cool beans",
+      });
+    } catch (error) {
+      checkMetaMaskAccount();
+    }
     //await memeketPlaceNetwork.updateMemeValue();
   }
   //------------SUBMIT FORM-------------------
@@ -754,58 +767,54 @@ const MemeFeed = (props) => {
                                     className={classes.avatar}
                                   />
                                 </Grid>
-                                <div>
-                                  <form
-                                    onSubmit={(e) => handleUpdateMemeValue(e)}
-                                    style={{ paddingTop: "50px" }}
-                                  >
-                                    <Typography
-                                      variant="body1"
-                                      color="textSecondary"
-                                      component="p"
-                                      style={{ textAlign: "justify" }}
-                                    >
-                                      Do you want to pin your meme? More
-                                      peperonis donated, more likely your meme
-                                      will stay at the top
-                                    </Typography>
-                                    <Grid
-                                      container
-                                      item
-                                      xs={12}
-                                      style={{
-                                        alignItems: "center",
-                                        paddingBottom: "10px",
-                                      }}
-                                    >
-                                      <TextField
-                                        type="number"
-                                        value={memeValue}
-                                        variant="outlined"
-                                        style={{ width: "10%" }}
-                                        inputProps={{
-                                          style: { textAlign: "right" },
-                                        }}
-                                        onChange={(e) => {
-                                          setMemeValue(e.target.value);
-                                        }}
-                                        size="small"
-                                        required
-                                      />
-                                      <Avatar
-                                        src={peperoni}
-                                        className={classes.avatar}
-                                      />
-                                    </Grid>
-                                    <Button
-                                      type="submit"
-                                      className={classes.button}
-                                      fullWidth
-                                    >
-                                      What is life anyway?
-                                    </Button>
-                                  </form>
-                                </div>
+                                <Typography
+                                  variant="body1"
+                                  color="textSecondary"
+                                  component="p"
+                                  style={{ textAlign: "justify" }}
+                                >
+                                  Do you want to pin your meme? More peperonis
+                                  donated, more likely your meme will stay at
+                                  the top
+                                </Typography>
+                                <Grid
+                                  container
+                                  item
+                                  xs={12}
+                                  style={{
+                                    alignItems: "center",
+                                    paddingBottom: "10px",
+                                  }}
+                                >
+                                  <TextField
+                                    type="number"
+                                    value={memeValue}
+                                    variant="outlined"
+                                    style={{ width: "10%" }}
+                                    inputProps={{
+                                      style: { textAlign: "right" },
+                                    }}
+                                    onChange={(e) => {
+                                      setMemeValue(e.target.value);
+                                    }}
+                                    size="small"
+                                    required
+                                  />
+                                  <Avatar
+                                    src={peperoni}
+                                    className={classes.avatar}
+                                  />
+                                </Grid>
+                                <Button
+                                  type="submit"
+                                  className={classes.button}
+                                  onClick={(e) =>
+                                    handleUpdateMemeValue(meme.memeId)
+                                  }
+                                  fullWidth
+                                >
+                                  What is life anyway?
+                                </Button>
                               </Card>
                             </Modal>
                           </React.Fragment>

@@ -28,7 +28,7 @@ import ThumbDownRoundedIcon from "@material-ui/icons/ThumbDownRounded";
 import ipfs from "../../ipfs";
 import FlagIcon from "@material-ui/icons/Flag";
 import Swal from "sweetalert2";
-import StarsIcon from '@material-ui/icons/Stars';
+import StarsIcon from "@material-ui/icons/Stars";
 
 const styles = (theme) => ({
   root: {
@@ -138,6 +138,7 @@ const MemeFeed = (props) => {
   const [openPin, setOpenPin] = React.useState(false);
   const [memeTitle, setMemeTitle] = React.useState("");
   const [memeDescription, setMemeDescription] = React.useState("");
+  const [memeValue, setMemeValue] = React.useState(0);
   const [buffer, setBuffer] = React.useState("");
   const [userId, setUserId] = React.useState(null);
   const loggedIn = JSON.parse(sessionStorage.getItem("loggedIn"));
@@ -148,7 +149,6 @@ const MemeFeed = (props) => {
     sessionStorage.getItem("account")
   );
   const [peperonis, setPeperonis] = React.useState(0);
-
 
   useEffect(() => {
     console.log(memeNetwork);
@@ -258,12 +258,20 @@ const MemeFeed = (props) => {
   }
 
   //----------------CREATE MEME-------------
-  async function createMeme(memePath, memeTitle, memeDescription) {
+  async function createMeme(memePath, memeTitle, memeDescription, memeValue) {
+    console.log(memePath, memeTitle, memeDescription, memeValue);
     const acc = sessionStorage.getItem("account");
     const memeDate = Math.floor(new Date().getTime() / 1000);
     try {
       await memeketPlaceNetwork.methods
-        .uploadMeme(acc, memeDate, memePath, memeTitle, memeDescription)
+        .uploadMeme(
+          acc,
+          memeDate,
+          memePath,
+          memeTitle,
+          memeDescription,
+          memeValue
+        )
         .send({
           from: acc,
         });
@@ -276,6 +284,7 @@ const MemeFeed = (props) => {
       });
     } catch (error) {
       handleClose("create");
+      alert(error);
       checkMetaMaskAccount();
     }
   }
@@ -412,16 +421,25 @@ const MemeFeed = (props) => {
     }
   }
 
+  //------------Update Meme Value-------------------
+  async function handleUpdateMemeValue(event) {
+    event.preventDefault();
+    console.log("memeValue", memeValue);
+    console.log("event", event);
+    //await memeketPlaceNetwork.updateMemeValue();
+  }
   //------------SUBMIT FORM-------------------
   function handleSubmit(event) {
     event.preventDefault();
-    createMeme(buffer, memeTitle, memeDescription);
+    createMeme(buffer, memeTitle, memeDescription, memeValue);
   }
 
   const handleOpen = (type) => {
     console.log(type);
     if (type == "create") {
       setOpen(true);
+    } else if (type == "pin") {
+      setOpenPin(true);
     } else {
       setOpenFlag(true);
     }
@@ -431,6 +449,8 @@ const MemeFeed = (props) => {
     console.log(type);
     if (type === "create") {
       setOpen(false);
+    } else if (type == "pin") {
+      setOpenPin(false);
     } else {
       setOpenFlag(false);
     }
@@ -506,7 +526,12 @@ const MemeFeed = (props) => {
                         }}
                         required
                       />
-                      <Grid container item xs={12} style={{ alignItems: "center" }}>
+                      <Grid
+                        container
+                        item
+                        xs={12}
+                        style={{ alignItems: "center" }}
+                      >
                         <Typography
                           variant="body1"
                           color="textPrimary"
@@ -524,20 +549,26 @@ const MemeFeed = (props) => {
                         component="p"
                         style={{ textAlign: "justify" }}
                       >
-                        Do you want to pin your meme? More peperonis donated, more likely your meme will stay at the top
+                        Do you want to pin your meme? More peperonis donated,
+                        more likely your meme will stay at the top
                       </Typography>
-                      <Grid container item xs={12} style={{ alignItems: "center", paddingBottom: "10px" }}>
+                      <Grid
+                        container
+                        item
+                        xs={12}
+                        style={{ alignItems: "center", paddingBottom: "10px" }}
+                      >
                         <TextField
                           type="number"
-                          value={0}
+                          value={memeValue}
                           variant="outlined"
                           style={{ width: "10%" }}
                           inputProps={{
-                            style: { textAlign: "right" }
+                            style: { textAlign: "right" },
                           }}
-                          // onChange={(e) => {
-                          //   setMemeDescription(e.target.value);
-                          // }}
+                          onChange={(e) => {
+                            setMemeValue(e.target.value);
+                          }}
                           size="small"
                           required
                         />
@@ -583,7 +614,7 @@ const MemeFeed = (props) => {
                         ? memeDates[key]
                         : ""
                     }
-                  // title="User1231"
+                    // title="User1231"
                   />
                 ) : null}
                 <div className={classes.body}>
@@ -621,8 +652,8 @@ const MemeFeed = (props) => {
                             // startIcon={<ThumbUpAltOutlinedIcon />}
                             disabled={
                               loggedIn &&
-                                memeOwners[key] &&
-                                memeOwners[key].userWallet !== userAddress
+                              memeOwners[key] &&
+                              memeOwners[key].userWallet !== userAddress
                                 ? false
                                 : true
                             }
@@ -636,8 +667,8 @@ const MemeFeed = (props) => {
                             {likeStatus[meme.memeId] == 1 ? (
                               <ThumbUpAltRoundedIcon />
                             ) : (
-                                <ThumbUpAltOutlinedIcon />
-                              )}
+                              <ThumbUpAltOutlinedIcon />
+                            )}
                           </IconButton>
                           <Typography
                             variant="button"
@@ -653,8 +684,8 @@ const MemeFeed = (props) => {
                             style={{ minWidth: "10px" }}
                             disabled={
                               loggedIn &&
-                                memeOwners[key] &&
-                                memeOwners[key].userWallet !== userAddress
+                              memeOwners[key] &&
+                              memeOwners[key].userWallet !== userAddress
                                 ? false
                                 : true
                             }
@@ -667,8 +698,8 @@ const MemeFeed = (props) => {
                             {likeStatus[meme.memeId] == 2 ? (
                               <ThumbDownRoundedIcon />
                             ) : (
-                                <ThumbDownAltOutlinedIcon />
-                              )}
+                              <ThumbDownAltOutlinedIcon />
+                            )}
                           </IconButton>
 
                           <Typography
@@ -684,7 +715,9 @@ const MemeFeed = (props) => {
 
                       {/*--------------------------- FLAG & STAR BUTTON--------------------- */}
                       <Grid container item xs={4} justify="flex-end">
-                        {loggedIn && memeOwners[key] && memeOwners[key].userWallet === userAddress ? (
+                        {loggedIn &&
+                        memeOwners[key] &&
+                        memeOwners[key].userWallet === userAddress ? (
                           <React.Fragment>
                             <IconButton
                               style={{ minWidth: "12px" }}
@@ -702,7 +735,12 @@ const MemeFeed = (props) => {
                               className={classes.modal}
                             >
                               <Card className={classes.paper}>
-                                <Grid container item xs={12} style={{ alignItems: "center" }}>
+                                <Grid
+                                  container
+                                  item
+                                  xs={12}
+                                  style={{ alignItems: "center" }}
+                                >
                                   <Typography
                                     variant="body1"
                                     color="textPrimary"
@@ -710,47 +748,71 @@ const MemeFeed = (props) => {
                                     style={{ textAlign: "justify" }}
                                   >
                                     You have {peperonis} Peperonis
-                        </Typography>
-                                  <Avatar src={peperoni} className={classes.avatar} />
-                                </Grid>
-
-                                <Typography
-                                  variant="body1"
-                                  color="textSecondary"
-                                  component="p"
-                                  style={{ textAlign: "justify" }}
-                                >
-                                  Do you want to pin your meme? More peperonis donated, more likely your meme will stay at the top
-                      </Typography>
-                                <Grid container item xs={12} style={{ alignItems: "center", paddingBottom: "10px" }}>
-                                  <TextField
-                                    type="number"
-                                    value={0}
-                                    variant="outlined"
-                                    style={{ width: "10%" }}
-                                    inputProps={{
-                                      style: { textAlign: "right" }
-                                    }}
-                                    // onChange={(e) => {
-                                    //   setMemeDescription(e.target.value);
-                                    // }}
-                                    size="small"
-                                    required
+                                  </Typography>
+                                  <Avatar
+                                    src={peperoni}
+                                    className={classes.avatar}
                                   />
-                                  <Avatar src={peperoni} className={classes.avatar} />
                                 </Grid>
-                                <Button
-                                  type="submit"
-                                  className={classes.button}
-                                  fullWidth
-                                >
-                                  What is life anyway?
-                                  </Button>
+                                <div>
+                                  <form
+                                    onSubmit={(e) => handleUpdateMemeValue(e)}
+                                    style={{ paddingTop: "50px" }}
+                                  >
+                                    <Typography
+                                      variant="body1"
+                                      color="textSecondary"
+                                      component="p"
+                                      style={{ textAlign: "justify" }}
+                                    >
+                                      Do you want to pin your meme? More
+                                      peperonis donated, more likely your meme
+                                      will stay at the top
+                                    </Typography>
+                                    <Grid
+                                      container
+                                      item
+                                      xs={12}
+                                      style={{
+                                        alignItems: "center",
+                                        paddingBottom: "10px",
+                                      }}
+                                    >
+                                      <TextField
+                                        type="number"
+                                        value={memeValue}
+                                        variant="outlined"
+                                        style={{ width: "10%" }}
+                                        inputProps={{
+                                          style: { textAlign: "right" },
+                                        }}
+                                        onChange={(e) => {
+                                          setMemeValue(e.target.value);
+                                        }}
+                                        size="small"
+                                        required
+                                      />
+                                      <Avatar
+                                        src={peperoni}
+                                        className={classes.avatar}
+                                      />
+                                    </Grid>
+                                    <Button
+                                      type="submit"
+                                      className={classes.button}
+                                      fullWidth
+                                    >
+                                      What is life anyway?
+                                    </Button>
+                                  </form>
+                                </div>
                               </Card>
                             </Modal>
-
-                          </React.Fragment>) : null}
-                        {loggedIn && memeOwners[key] && memeOwners[key].userWallet !== userAddress ? (
+                          </React.Fragment>
+                        ) : null}
+                        {loggedIn &&
+                        memeOwners[key] &&
+                        memeOwners[key].userWallet !== userAddress ? (
                           <React.Fragment>
                             <IconButton
                               style={{ minWidth: "12px" }}
@@ -781,7 +843,7 @@ const MemeFeed = (props) => {
                                     style={{ fontWeight: "bold" }}
                                   >
                                     Hurt? We're here to help.
-                              </Typography>
+                                  </Typography>
                                 </div>
 
                                 <CardContent>
@@ -794,21 +856,21 @@ const MemeFeed = (props) => {
                                   >
                                     <div style={{ paddingBottom: "20px" }}>
                                       <Typography paragraph>
-                                        We're truly sorry that this meme has hurt
-                                        you.
-                                  </Typography>
+                                        We're truly sorry that this meme has
+                                        hurt you.
+                                      </Typography>
                                       <Typography paragraph>
                                         We are here to protecc our readers
-                                  </Typography>
+                                      </Typography>
                                       <Typography paragraph>
                                         We shall reflect and do better
-                                  </Typography>
+                                      </Typography>
                                       <Typography paragraph>
                                         Click button to flag post as{" "}
                                         {
                                           <b style={{ color: "red" }}>
                                             inappropriate
-                                      </b>
+                                          </b>
                                         }
                                       </Typography>
                                     </div>
@@ -822,7 +884,7 @@ const MemeFeed = (props) => {
                                       fullWidth
                                     >
                                       SAY NO TO TROLLS!
-                                </Button>
+                                    </Button>
                                   </div>
                                   <div style={{ width: "40%", float: "right" }}>
                                     <CardMedia
@@ -834,8 +896,8 @@ const MemeFeed = (props) => {
                                 </CardContent>
                               </Card>
                             </Modal>
-                          </React.Fragment>)
-                          : null}
+                          </React.Fragment>
+                        ) : null}
                       </Grid>
                     </Grid>
                   </CardContent>
@@ -844,10 +906,10 @@ const MemeFeed = (props) => {
             );
           })
         ) : (
-            <div>
-              <p>Nothing</p>
-            </div>
-          )}
+          <div>
+            <p>Nothing</p>
+          </div>
+        )}
       </div>
     </div>
   );

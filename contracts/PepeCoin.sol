@@ -5,7 +5,7 @@ import "./User.sol";
 
 contract PepeCoin is ERC20 {
     using SafeMath for uint256;
-    address contractOwner = msg.sender;
+    address public contractOwner = msg.sender;
     User userContract;
 
     constructor(User _userContract) public {

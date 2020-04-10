@@ -43,8 +43,8 @@ const columnData = [
     label: "Meme Author",
   },
   {
-    id: "memePath",
-    label: "Meme Path",
+    id: "memeValue",
+    label: "Meme Value",
   },
   {
     id: "memeFlags",
@@ -122,7 +122,7 @@ const MemesFlagged = (props) => {
       memeId: meme.memeId,
       memeTitle: meme.memeTitle,
       memeOwner: meme.memeOwner,
-      memePath: meme.memePath,
+      memeValue: meme.memeValue,
       memeFlags: meme.memeFlags,
       memeStatus: meme.memeStatus,
     };
@@ -184,7 +184,7 @@ const MemesFlagged = (props) => {
                 elem.memeId,
                 elem.memeTitle,
                 elem.memeOwner,
-                elem.memePath,
+                elem.memeValue,
                 elem.memeFlags,
                 mapStatusMeme(elem.memeState)
               )
@@ -198,7 +198,7 @@ const MemesFlagged = (props) => {
                 elem.memeId,
                 elem.memeTitle,
                 elem.memeOwner,
-                elem.memePath,
+                elem.memeValue,
                 elem.memeFlags,
                 mapStatusMeme(elem.memeState)
               )
@@ -210,7 +210,7 @@ const MemesFlagged = (props) => {
                 elem.memeId,
                 elem.memeTitle,
                 elem.memeOwner,
-                elem.memePath,
+                elem.memeValue,
                 elem.memeFlags,
                 mapStatusMeme(elem.memeState)
               )
@@ -259,11 +259,11 @@ const MemesFlagged = (props) => {
     memeId,
     memeTitle,
     memeOwner,
-    memePath,
+    memeValue,
     memeFlags,
     memeStatus
   ) {
-    return { memeId, memeTitle, memeOwner, memePath, memeFlags, memeStatus };
+    return { memeId, memeTitle, memeOwner, memeValue, memeFlags, memeStatus };
   }
 
   const emptyRows =
@@ -318,7 +318,7 @@ const MemesFlagged = (props) => {
                     <TableCell>{n.memeId}</TableCell>
                     <TableCell>{n.memeTitle}</TableCell>
                     <TableCell>{n.memeOwner}</TableCell>
-                    <TableCell>{n.memePath}</TableCell>
+                    <TableCell>{n.memeValue}</TableCell>
                     <TableCell>{n.memeFlags}</TableCell>
                     <TableCell>{n.memeStatus}</TableCell>
                     <TableCell>

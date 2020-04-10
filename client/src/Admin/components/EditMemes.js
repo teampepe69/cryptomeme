@@ -119,7 +119,7 @@ const EditMemes = (props) => {
             </Typography>
             <br />
             <Typography variant="p" gutterBottom>
-              Meme Path: {memeInfo.memePath}
+              Meme Value: {memeInfo.memeValue}
             </Typography>
           </div>
           {(memeInfo.memeStatus === "Rejected" ||

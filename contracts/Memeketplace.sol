@@ -45,14 +45,21 @@ contract MemeketPlace {
         uint256 _memeDate,
         string memory _memePath,
         string memory _memeTitle,
-        string memory _memeDescription
+        string memory _memeDescription,
+        uint256 _memeValue
     ) public {
         memeContract.createMeme(
             _memeOwner,
             _memeDate,
             _memePath,
             _memeTitle,
-            _memeDescription
+            _memeDescription,
+            _memeValue
+        );
+        pepeCoinContract.transferPepeCoins(
+            msg.sender,
+            pepeCoinContract.ContractOwner,
+            _memeValue
         );
     }
 
@@ -228,5 +235,17 @@ contract MemeketPlace {
 
     function rejectMeme(uint256 _memeId, uint256 _newDate) public {
         memeContract.rejectMeme(_memeId, _newDate);
+    }
+
+    function updateMemeValue(uint256 _memeId, uint256 _newValue) public {
+        memeContract.setMemeValue(
+            _memeId,
+            memeContract.getMemeValue(_memeId).add(_newValue)
+        );
+        pepeCoinContract.transferPepeCoins(
+            msg.sender,
+            pepeCoinContract.contractOwner,
+            _newValue
+        );
     }
 }

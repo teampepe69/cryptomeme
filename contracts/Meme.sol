@@ -81,7 +81,8 @@ contract Meme is ERC721 {
         uint256 _memeDate,
         string memory _memePath,
         string memory _memeTitle,
-        string memory _memeDescription
+        string memory _memeDescription,
+        uint256 _memeValue
     ) public returns (uint256) {
         meme memory _meme = meme(
             _memeOwner,
@@ -89,7 +90,7 @@ contract Meme is ERC721 {
             0,
             0,
             0,
-            0,
+            _memeValue,
             _memeDate,
             _memePath,
             _memeTitle,
@@ -181,7 +182,10 @@ contract Meme is ERC721 {
         emit MemeFlagged(_memeId, _memeFlags);
     }
 
-    function setMemeValue(uint256 _memeId, uint256 _memeValue) public {
+    function setMemeValue(uint256 _memeId, uint256 _memeValue)
+        public
+        isMemeOwner(_memeId)
+    {
         memes[_memeId].memeValue = _memeValue;
         emit MemeValueChanged(_memeId, _memeValue);
     }

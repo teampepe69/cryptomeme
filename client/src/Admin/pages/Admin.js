@@ -25,11 +25,11 @@ function createDataMeme(
   memeId,
   memeTitle,
   memeOwner,
-  memePath,
+  memeValue,
   memeFlags,
   memeStatus
 ) {
-  return { memeId, memeTitle, memeOwner, memePath, memeFlags, memeStatus };
+  return { memeId, memeTitle, memeOwner, memeValue, memeFlags, memeStatus };
 }
 
 const rows = [];
@@ -201,7 +201,7 @@ const AdminPage = (props) => {
                 elem.memeId,
                 elem.memeTitle,
                 elem.memeOwner,
-                elem.memePath,
+                elem.memeValue,
                 elem.memeFlags,
                 mapStatusMeme(elem.memeState)
               )
@@ -215,7 +215,7 @@ const AdminPage = (props) => {
                 elem.memeId,
                 elem.memeTitle,
                 elem.memeOwner,
-                elem.memePath,
+                elem.memeValue,
                 elem.memeFlags,
                 mapStatusMeme(elem.memeState)
               )
@@ -229,7 +229,7 @@ const AdminPage = (props) => {
                 elem.memeId,
                 elem.memeTitle,
                 elem.memeOwner,
-                elem.memePath,
+                elem.memeValue,
                 elem.memeFlags,
                 mapStatusMeme(elem.memeState)
               )

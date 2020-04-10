@@ -1,47 +1,25 @@
 import * as React from "react";
 import { useGlobal, useEffect } from "reactn";
 import {
-  Typography,
-  Grid,
-  Paper,
-  Table,
-  TableCell,
-  IconButton,
-  TableRow,
-  Tooltip,
-  TableHead,
-  TableSortLabel,
-  TableBody,
-  Button,
-  TablePagination,
-  TextField,
+  List, ListItem, ListItemAvatar, Avatar, ListItemText, Paper, AppBar,
+  Toolbar, IconButton, Typography
 } from "@material-ui/core";
 import EditIcon from "@material-ui/icons/Edit";
 import { withStyles } from "@material-ui/core/styles";
+import EmojiEventsIcon from '@material-ui/icons/EmojiEvents';
 
 const styles = (theme) => ({
-  table: {
-    backgroundColor: "white",
+  winner: {
+    backgroundColor: '#e5e4e2',
+    minHeight: 20 
   },
-  tableHead: {
-    backgroundColor: "#cca677ff",
-  },
+  loser: {
+  }, 
+  list: {
+    paddingTop: 1,
+    minHeight: '15vh'
+  }
 });
-
-const columnData = [
-  {
-    id: "pepeCoins",
-    label: "PepeCoins number",
-  },
-  {
-    id: "uid",
-    label: "User Id",
-  },
-  {
-    id: "displayName",
-    label: "Display Name",
-  },
-];
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -70,120 +48,72 @@ function stableSort(array, comparator) {
 }
 
 const Rankings = (props) => {
-  const { value, index, peopleParent, stopFlags, classes, ...other } = props;
+  const { peopleParent, stopFlags, classes, ...other } = props;
   const [people, setPeople] = React.useState(peopleParent);
-
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
-  const [order, setOrder] = React.useState("asc");
-  const [orderBy, setOrderBy] = React.useState("calories");
-
-  const handleRequestSort = (event, property) => {
-    const isAsc = orderBy === property && order === "asc";
-    setOrder(isAsc ? "desc" : "asc");
-    setOrderBy(property);
-  };
-
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
-
-  const createSortHandler = (property) => (event) => {
-    handleRequestSort(event, property);
-  };
+  const [order, setOrder] = React.useState("desc");
+  const [orderBy, setOrderBy] = React.useState("pepeCoins");
 
   const emptyRows =
     rowsPerPage - Math.min(rowsPerPage, people.length - page * rowsPerPage);
 
   useEffect(() => {
-    setPeople(
-      peopleParent.sort((a, b) => (a.pepeCoins < b.pepeCoins ? 1 : -1))
-    );
+    var people = peopleParent.sort((a, b) => (a.pepeCoins < b.pepeCoins ? 1 : -1))
+    for (var i = 1; i <= people.length; i++) {
+      people[i-1].rank =i
+    }
+    setPeople(people);
     console.log(
       "People parent have change -> We update people for printing",
-      peopleParent
+      people
     );
   }, [peopleParent]);
 
   return (
-    <Typography
-      component="div"
-      role="tabpanel"
-      hidden={value !== index}
-      id={`simple-tabpanel-${index}`}
-      aria-labelledby={`simple-tab-${index}`}
-      {...other}
-    >
-      {value === index && (
-        <div className={classes.tableWrapper}>
-          <Table className={classes.table}>
-            <TableHead className={classes.tableHead}>
-              <TableRow>
-                {columnData.map(
-                  (column) => (
-                    <TableCell
-                      key={column.id}
-                      padding={column.disablePadding ? "none" : "default"}
-                      sortDirection={orderBy === column.id ? order : false}
-                    >
-                      <Tooltip
-                        title="Sort"
-                        placement="bottom-end"
-                        enterDelay={300}
-                      >
-                        <TableSortLabel
-                          active={orderBy === column.id}
-                          direction={order}
-                          onClick={createSortHandler(column.id)}
-                        >
-                          {column.label}
-                        </TableSortLabel>
-                      </Tooltip>
-                    </TableCell>
-                  ),
-                  this
-                )}
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {stableSort(people, getComparator(order, orderBy))
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((n) => (
-                  <TableRow hover tabIndex={0} key={n.rk}>
-                    <TableCell>{n.pepeCoins}</TableCell>
-                    <TableCell>{n.uid}</TableCell>
-                    <TableCell>{n.displayName}</TableCell>
-                  </TableRow>
-                ))}
-              {emptyRows > 0 && (
-                <TableRow style={{ height: 49 * emptyRows }}>
-                  <TableCell colSpan={6} />
-                </TableRow>
+    <div className={classes.tableWrapper}>
+      <Paper square className={classes.paper}>
+        <AppBar position="relative">
+          <Toolbar>
+            <IconButton edge="start" color="inherit" aria-label="menu">
+              <EmojiEventsIcon />
+            </IconButton>
+            <Typography variant="h6" className={classes.title}>
+              Richest Pepe
+            </Typography>
+          </Toolbar>
+        </AppBar>
+        <List className={classes.list}>
+          {stableSort(people, getComparator(order, orderBy))
+            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+            .map((n) => (
+              <React.Fragment key={n.uid}>
+              { n.rank==1 &&(
+                <ListItem className={classes.winner}>
+                  <ListItemText primary={n.rank}/>
+                  <ListItemAvatar>
+                    <Avatar src={`https://ipfs.io/ipfs/${n.displayPictureHash}`} />
+                  </ListItemAvatar>
+                  <ListItemText primary={n.displayName} style={{ flex: '1 1 60%'}}/>
+                  <ListItemText primary={`${n.pepeCoins} Peperonis`} />
+                </ListItem>
               )}
-            </TableBody>
-          </Table>
-          <TablePagination
-            component="div"
-            count={people.length}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            backIconButtonProps={{
-              "aria-label": "Previous Page",
-            }}
-            nextIconButtonProps={{
-              "aria-label": "Next Page",
-            }}
-            onChangePage={handleChangePage}
-            onChangeRowsPerPage={handleChangeRowsPerPage}
-          />
-        </div>
-      )}
-    </Typography>
+              { n.rank!=1 &&(
+                <ListItem className={classes.loser}>
+                  <ListItemText primary={n.rank}/>
+                  <ListItemAvatar>
+                    <Avatar src={`https://ipfs.io/ipfs/${n.displayPictureHash}`} />
+                  </ListItemAvatar>
+                  <ListItemText primary={n.displayName} style={{ flex: '1 1 60%'}}/>
+                  <ListItemText primary={`${n.pepeCoins} Peperonis`} />
+                </ListItem>
+              )}
+              </React.Fragment>
+            ))
+          }
+        </List>
+      </Paper>
+    </div>
   );
 };
 

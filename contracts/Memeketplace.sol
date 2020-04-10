@@ -54,7 +54,6 @@ contract MemeketPlace {
             _memeTitle,
             _memeDescription
         );
-        pepeCoinContract.mintPepeCoins(_memeOwner, createMemeRewardValue);
     }
 
     function likeMeme(uint256 _memeId) public {
@@ -132,6 +131,13 @@ contract MemeketPlace {
             _memeId,
             memeContract.getMemeFlags(_memeId).add(1)
         );
+        //If number of meme flags > 50% of the user population, reject meme
+        if (
+            memeContract.getMemeFlags(_memeId) >
+            userContract.getNumberUsers() / 2
+        ) {
+            memeContract.rejectMeme(_memeId, memeContract.getMemeDate(_memeId));
+        }
     }
 
     function getLikes(uint256 _memeId, address user)
@@ -188,5 +194,13 @@ contract MemeketPlace {
 
     function deactivateUser(address _userWallet) public {
         userContract.setUserAsDeactivated(_userWallet);
+    }
+
+    function approveMeme(uint256 _memeId, uint256 _newDate) public {
+        memeContract.approveMeme(_memeId, _newDate);
+        pepeCoinContract.mintPepeCoins(
+            memeContract.getMemeOwner(_memeId),
+            createMemeRewardValue
+        );
     }
 }

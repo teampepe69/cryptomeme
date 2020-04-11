@@ -5,6 +5,7 @@ import {
   CardContent,
   CardMedia,
   CardHeader,
+  CardActionArea,
   Avatar,
 } from "@material-ui/core";
 import {
@@ -132,6 +133,8 @@ const MemeFeed = (props) => {
   const [open, setOpen] = React.useState(false);
   const [openFlag, setOpenFlag] = React.useState(false);
   const [openPin, setOpenPin] = React.useState(false);
+  const [openMeme, setOpenMeme] = React.useState(false);
+  const [currentMemePath, setCurrentMemePath] = React.useState("");
   const [memeTitle, setMemeTitle] = React.useState("");
   const [memeDescription, setMemeDescription] = React.useState("");
   const [memeValue, setMemeValue] = React.useState(0);
@@ -510,7 +513,6 @@ const MemeFeed = (props) => {
   }
 
   const handleOpen = (type) => {
-    console.log(type);
     if (type == "create") {
       setOpen(true);
     } else if (type == "pin") {
@@ -526,9 +528,17 @@ const MemeFeed = (props) => {
       setOpen(false);
     } else if (type == "pin") {
       setOpenPin(false);
+    } else if (type == "meme") {
+      setOpenMeme(false);
     } else {
       setOpenFlag(false);
     }
+  };
+
+  const enhanceMeme = (memePath) => {
+    console.log("memepath", memePath);
+    setOpenMeme(true);
+    setCurrentMemePath(memePath);
   };
 
   return (
@@ -719,9 +729,29 @@ const MemeFeed = (props) => {
                   <CardMedia
                     className={classes.media}
                     image={`https://ipfs.io/ipfs/${meme.memePath}`}
-                    // image={logo}
+                    onClick={() => enhanceMeme(meme.memePath)}
+                    style={{ cursor: "pointer" }}
                     title="Pepe"
                   />
+                  <Modal
+                    aria-labelledby="simple-modal-title"
+                    aria-describedby="simple-modal-description"
+                    open={openMeme}
+                    onClose={() => handleClose("meme")}
+                    className={classes.modal}
+                  >
+                    <Card className={classes.paper}>
+                      <CardContent>
+                        <div style={{ width: "100%" }}>
+                          <CardMedia
+                            component="img"
+                            image={`https://ipfs.io/ipfs/${currentMemePath}`}
+                            title="Join Pepe"
+                          />
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </Modal>
 
                   <CardContent className={classes.content}>
                     <Typography gutterBottom variant="h5" component="h2">

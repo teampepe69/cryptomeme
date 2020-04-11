@@ -5,6 +5,7 @@ import {
   Modal,
   Card,
   Input,
+  Typography,
   TextField,
   CardMedia,
   Container,
@@ -157,6 +158,7 @@ const Register = (props) => {
                 onInput={(e) => setDisplayName(e.target.value)}
                 required
               />
+              <Typography variant="h6">Display Picture</Typography>
               <img
                 id="displayPic"
                 src={defaultDp}

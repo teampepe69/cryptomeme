@@ -145,31 +145,53 @@ const ProfilePage = (props) => {
   return (
     <Container>
       <div className={classes.root}>
-        <Typography variant="h4" style={{ paddingBottom: "10px" }}>
-          Profile
-        </Typography>
-        <Card elevation={2} className={classes.card}>
-          <div style={{ width: "40%", float: "left", paddingLeft: "5%" }}>
-            <Avatar
-              src={`https://ipfs.io/ipfs/${displayPictureHash}`}
-              className={classes.avatar}
-            />
-            <br />
-            <Typography variant="h6">Current Tokens</Typography>
-            <div style={{ width: "20%", float: "left" }}>
-              <Avatar src={peperoni} />
+        <form className={classes.form} onSubmit={handleSubmit}>
+          <Typography variant="h4" style={{ paddingBottom: "10px" }}>
+            Profile
+          </Typography>
+          <Card elevation={2} className={classes.card}>
+            <div style={{ width: "40%", float: "left", paddingLeft: "5%" }}>
+              <Avatar
+                id="displayPic"
+                src={`https://ipfs.io/ipfs/${displayPictureHash}`}
+                alt="Image Uploaded"
+                className={classes.avatar}
+              />
+              <br></br>
+              <input
+                accept="image/*"
+                className={classes.input}
+                style={{ display: "none" }}
+                id="raised-button-file"
+                multiple
+                type="file"
+                onChange={(e) => updateDisplayPicture(e)}
+              />
+              <label htmlFor="raised-button-file">
+                <Button
+                  variant="contained"
+                  component="span"
+                  color="primary"
+                  className={classes.button}
+                >
+                  Change Display Picture
+                </Button>
+              </label>
+              <br />
+              <Typography variant="h6">Current Tokens</Typography>
+              <div style={{ width: "20%", float: "left" }}>
+                <Avatar src={peperoni} />
+              </div>
+              <div style={{ paddingTop: "7px" }}>{peperonis} Peperonis</div>
             </div>
-            <div style={{ paddingTop: "7px" }}>{peperonis} Peperonis</div>
-          </div>
-          <div
-            style={{
-              width: "60%",
-              float: "right",
-              paddingRight: "5%",
-              paddingBottom: "20px",
-            }}
-          >
-            <form className={classes.form} onSubmit={handleSubmit}>
+            <div
+              style={{
+                width: "60%",
+                float: "right",
+                paddingRight: "5%",
+                paddingBottom: "20px",
+              }}
+            >
               <Typography variant="h6">User ID</Typography>
               <TextField
                 variant="outlined"
@@ -195,12 +217,6 @@ const ProfilePage = (props) => {
                 required
               />
               <Typography variant="h6">Display Picture</Typography>
-              <TextField
-                variant="outlined"
-                type="file"
-                style={{ width: "100%", paddingBottom: "5px" }}
-                onChange={(e) => updateDisplayPicture(e)}
-              />
               <Typography variant="h6">About</Typography>
               <TextField
                 variant="outlined"
@@ -225,9 +241,9 @@ const ProfilePage = (props) => {
               >
                 update profile
               </Button>
-            </form>
-          </div>
-        </Card>
+            </div>
+          </Card>
+        </form>
       </div>
     </Container>
   );

@@ -265,7 +265,7 @@ contract("Meme.sol", function (accounts) {
     let setMeme1Path = await memeInstance.setMemePath(0, meme1NewPath, {
       from: memeOwner1,
     });
-    let getMeme1Path = await memeInstance.getMemePath(0);
+    let getMeme1Path = await memeInstance.getMemePath.call(0);
 
     assert.strictEqual(
       setMeme1Path.logs[0].event,
@@ -290,7 +290,7 @@ contract("Meme.sol", function (accounts) {
     let setMeme2Value = await memeInstance.setMemeValue(1, 50, {
       from: memeOwner2,
     });
-    let getMeme2Value = await memeInstance.getMemeValue(1);
+    let getMeme2Value = await memeInstance.getMemeValue.call(1);
 
     assert.strictEqual(
       setMeme2Value.logs[0].event,
@@ -313,7 +313,7 @@ contract("Meme.sol", function (accounts) {
 
   it("Should approve Meme 2", async () => {
     let approveMeme2 = await memeInstance.approveMeme(1, memeNewDate);
-    let getMeme2State = await memeInstance.getMemeState(1);
+    let getMeme2State = await memeInstance.getMemeState.call(1);
     assert.strictEqual(
       approveMeme2.logs[0].event,
       "MemeApproved",

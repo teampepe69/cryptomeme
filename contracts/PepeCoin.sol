@@ -12,7 +12,7 @@ contract PepeCoin is ERC20 {
         userContract = _userContract;
     }
 
-    function getContractOwner() public returns (address) {
+    function getContractOwner() public view returns (address) {
         return contractOwner;
     }
 

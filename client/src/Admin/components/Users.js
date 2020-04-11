@@ -209,11 +209,10 @@ const Users = (props) => {
   }
 
   useEffect(() => {
+    
+    // Update child when peopleParent changed
     setPeople(peopleParent);
-    console.log(
-      "People parent have change -> We update people for printing",
-      peopleParent
-    );
+    
   }, [peopleParent]);
 
   function createData(uid, displayName, userWallet, state) {

@@ -47,16 +47,6 @@ const sideDrawer = props => {
             variant="h5"
             className={classes.title}
             component={Link}
-            to="/feed"
-          >
-            Feed
-          </Typography>
-        )}
-        {loggedIn && (
-          <Typography
-            variant="h5"
-            className={classes.title}
-            component={Link}
             to="/profile"
           >
             Profile

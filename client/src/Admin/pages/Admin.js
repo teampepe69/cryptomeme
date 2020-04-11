@@ -5,6 +5,8 @@ import Users from "../components/Users";
 import MemesFlagged from "../components/MemesFlagged";
 import { withStyles } from "@material-ui/core/styles";
 
+// ----------------------- Table init ----------------------
+
 function a11yProps(index) {
   return {
     id: `simple-tab-${index}`,
@@ -17,6 +19,9 @@ const styles = (theme) => ({
     backgroundColor: "transparent",
   },
 });
+
+// ----------------------- Data structure user / meme ----------------------
+
 function createData(uid, displayName, userWallet, state) {
   return { uid, displayName, userWallet, state };
 }
@@ -33,7 +38,6 @@ function createDataMeme(
 }
 
 const rows = [];
-
 const disobidentrows = [];
 
 const AdminPage = (props) => {
@@ -48,15 +52,15 @@ const AdminPage = (props) => {
   const [memeNetwork] = useGlobal("memeNetwork");
   const [web3] = useGlobal("web3");
   const [disobidentrows, setDisobedientRows] = React.useState([]);
-  const [boolObedient, setBoolObedient] = React.useState(true);
-  const [boolDisobedient, setBoolDisobedient] = React.useState(false);
 
   async function handleChange(event, newValue) {
     setValue(newValue);
     await fetchData();
     await fetchMemes();
-    console.log(props);
+    //console.log(props);
   }
+
+// ----------------------- Map status functions : state int -> state str ----------------------
 
   function mapStatus(statusInt) {
     if (statusInt == 0) {
@@ -80,13 +84,15 @@ const AdminPage = (props) => {
     }
   }
 
+// ----------------------- Data update / fectching  ----------------------
+
   // Load data from web3 to populate [disobidentrows, setDisobedientRows]
   useEffect(() => {
     // Hooks when smthg is update
     // Global laucnh
     fetchData();
     fetchMemes();
-  }, []);
+  }, [userNetwork,memeNetwork]);
 
   // Function for populate data : it's called to modify rows / disobidentrows states
   async function fetchData() {
@@ -98,7 +104,6 @@ const AdminPage = (props) => {
 
       try {
         // Check networks are up to date
-        console.log("this is userNetwork: ", value);
         console.log("this is web3: ", web3);
         console.log("this is memeNetwok: ", memeNetwork);
 
@@ -109,10 +114,8 @@ const AdminPage = (props) => {
           .call({ from: result[0] });
 
         // Set Rows empty
-        //setRows([]);
-        //setDisobedientRows([]);
 
-        // Maybe there is a proper way however i do not find how to return dynamic array in solidity
+        // Return user array from solidity
         for (let i = 0; i < numOfElements; i++) {
           // Current user
           const elem = await userNetwork.methods
@@ -120,7 +123,7 @@ const AdminPage = (props) => {
             .call({ from: result[0] });
           // If user is disobedient : bad guy
           if (elem.state == 2) {
-            console.log("Tab change : user is not Obedient", elem);
+            //console.log("Tab change : user is not Obedient", elem);
             resDisobedients.push(
               createData(
                 elem.userId,
@@ -132,7 +135,7 @@ const AdminPage = (props) => {
           }
           // If user is clean : good guy
           else {
-            console.log("Tab change : user is Obedient", elem);
+            //console.log("Tab change : user is Obedient", elem);
             resObedients.push(
               createData(
                 elem.userId,
@@ -144,7 +147,7 @@ const AdminPage = (props) => {
           }
         }
       } catch (e) {
-        console.log("Error in the process");
+        console.log("Error in the process of fecthing data");
       }
     }
 
@@ -177,25 +180,22 @@ const AdminPage = (props) => {
         const numOfElements = await memeNetwork.methods
           .getNumberMemes()
           .call({ from: result[0] });
-        console.log("Number of memes:", numOfElements);
-        // Set Rows empty
-        //setRows([]);
-        //setDisobedientRows([]);
+        //console.log("Number of memes:", numOfElements);
 
-        // Maybe there is a proper way however i do not find how to return dynamic array in solidity
+        // Return dynamic meme array
         for (let i = 0; i < numOfElements; i++) {
-          // Current user
+          // Current meme
           const elem = await memeNetwork.methods
             .memes(i)
             .call({ from: result[0] });
-          console.log("This is a meme:", elem);
+          //console.log("This is a meme:", elem);
 
-          // If pending or if approved and memeFlags > 0
+          // If pending ('2' == 'Peding') or if (approved ('0' == Approved) and memeFlags > 0)
           if (
             (elem.memeState == 2) |
             ((elem.memeState == 0) & (elem.memeFlags > 0))
           ) {
-            console.log("meme should be rejected / approved", elem);
+            //console.log("meme should be rejected / approved", elem);
             resMemesFlagged.push(
               createDataMeme(
                 elem.memeId,
@@ -207,9 +207,9 @@ const AdminPage = (props) => {
               )
             );
           }
-          // If meme is rejected
+          // If meme is rejected ('1' == rejected)
           else if (elem.memeState == 1) {
-            console.log("meme is already rejected", elem);
+            //console.log("meme is already rejected", elem);
             resMemesDisobediend.push(
               createDataMeme(
                 elem.memeId,
@@ -223,7 +223,7 @@ const AdminPage = (props) => {
           }
           // Else means : meme approved and flags <= FlagStop
           else {
-            console.log("meme is clean", elem);
+            //console.log("meme is clean", elem);
             resMemesApproved.push(
               createDataMeme(
                 elem.memeId,
@@ -247,22 +247,13 @@ const AdminPage = (props) => {
       resMemesDisobediend,
       resMemesApproved
     );
+    // Update all parents rows for MemeFlagged.js child
     setMemesRows(resMemesFlagged);
     setMemesRejectedRows(resMemesDisobediend);
     setMemesApprovedRows(resMemesApproved);
   }
 
-  function mapStatus(statusInt) {
-    if (statusInt == 0) {
-      return "Pending";
-    } else if (statusInt == 1) {
-      return "Active";
-    } else if (statusInt == 2) {
-      return "Deactivated";
-    } else if (statusInt == 3) {
-      return "Admin";
-    }
-  }
+  // ----------------------- Printing  ----------------------
 
   return (
     <div style={{ paddingRight: "20px" }}>

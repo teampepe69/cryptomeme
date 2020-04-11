@@ -2,8 +2,6 @@ import * as React from "react";
 import { useGlobal, useEffect } from "reactn";
 import {
   Typography,
-  Grid,
-  Paper,
   Table,
   TableCell,
   IconButton,
@@ -12,9 +10,7 @@ import {
   TableHead,
   TableSortLabel,
   TableBody,
-  Button,
   TablePagination,
-  TextField,
 } from "@material-ui/core";
 import EditIcon from "@material-ui/icons/Edit";
 import { withStyles } from "@material-ui/core/styles";
@@ -28,7 +24,7 @@ const styles = (theme) => ({
     backgroundColor: "#cca677ff",
   },
 });
-
+// Structurate data for meme table
 const columnData = [
   {
     id: "MemeId",
@@ -55,7 +51,8 @@ const columnData = [
     label: "Meme Status",
   },
 ];
-
+// ----------------------- Sorting function ----------------------
+// Compartor function for sorting table 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
     return -1;
@@ -84,19 +81,17 @@ function stableSort(array, comparator) {
 
 const MemesFlagged = (props) => {
   const { value, index, peopleParent, stopFlags, classes, ...other } = props;
-  const [rows, setRows] = React.useState([]);
   const [people, setPeople] = React.useState(peopleParent);
-  const [disobedientRows, setDisobedientRows] = React.useState([]);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("calories");
   const [open, setOpen] = React.useState(false);
   const [selectedMeme, setMeme] = React.useState([]);
-  const [userNetwork] = useGlobal("userNetwork");
   const [memeNetwork] = useGlobal("memeNetwork");
-  const [pepeCoinNetwork] = useGlobal("pepeCoinNetwork");
   const [web3] = useGlobal("web3");
+
+  // ----------------------- Handle interactions ----------------------
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
@@ -118,6 +113,7 @@ const MemesFlagged = (props) => {
   };
 
   const openModal = (meme) => {
+    // Open edit pop-up with current meme 
     const targetMeme = {
       memeId: meme.memeId,
       memeTitle: meme.memeTitle,
@@ -131,11 +127,12 @@ const MemesFlagged = (props) => {
   };
 
   async function closeModal() {
-    console.log("Meme Should be close");
+    // When we close a modal -> Check for fetching data in case of change
     await fetchMemes();
     setOpen(false);
-    // When we close a modal -> Check for fetching data in case of change
   }
+
+  // ----------------------- Populate Data ----------------------
 
   // Function for populate data : it's called to modify rows / disobidentrows states
   async function fetchMemes() {
@@ -160,25 +157,21 @@ const MemesFlagged = (props) => {
         const numOfElements = await memeNetwork.methods
           .getNumberMemes()
           .call({ from: result[0] });
-        console.log("Number of memes:", numOfElements);
-        // Set Rows empty
-        //setRows([]);
-        //setDisobedientRows([]);
+        //console.log("Number of memes:", numOfElements);
 
-        // Maybe there is a proper way however i do not find how to return dynamic array in solidity
+        // Return each user through dynamic array
         for (let i = 0; i < numOfElements; i++) {
           // Current user
           const elem = await memeNetwork.methods
             .memes(i)
             .call({ from: result[0] });
-          console.log("This is a meme:", elem);
 
-          // If pending or if approved and memeFlags > 0
+          // If pending ('2' == Pending) or if approved ('0' == Pending) and memeFlags > 0 
           if (
             (elem.memeState == 2) |
             ((elem.memeState == 0) & (elem.memeFlags > 0))
           ) {
-            console.log("meme should be rejected / approved", elem);
+            //console.log("meme should be rejected / approved", elem);
             resMemesFlagged.push(
               createDataMeme(
                 elem.memeId,
@@ -190,9 +183,9 @@ const MemesFlagged = (props) => {
               )
             );
           }
-          // If meme is rejected
+          // If reject ('1' == Pending) 
           else if (elem.memeState == 1) {
-            console.log("meme is already rejected", elem);
+            //console.log("meme is already rejected", elem);
             resMemesDisobediend.push(
               createDataMeme(
                 elem.memeId,
@@ -203,8 +196,9 @@ const MemesFlagged = (props) => {
                 mapStatusMeme(elem.memeState)
               )
             );
+            // Else meme is approved
           } else {
-            console.log("meme is approved", elem);
+            //console.log("meme is approved", elem);
             resMemesApproved.push(
               createDataMeme(
                 elem.memeId,
@@ -218,7 +212,7 @@ const MemesFlagged = (props) => {
           }
         }
       } catch (e) {
-        console.log("Error in the process");
+        console.log("Error in the process of fecthing meme data");
       }
     }
 
@@ -228,6 +222,7 @@ const MemesFlagged = (props) => {
       resMemesDisobediend,
       resMemesApproved
     );
+    // Depending of the tab -> update data to populate table
     if (index == 2) {
       setPeople(resMemesFlagged);
     } else if (index == 3) {
@@ -237,6 +232,7 @@ const MemesFlagged = (props) => {
     }
   }
 
+  // map Status int -> Str
   function mapStatusMeme(statusInt) {
     if (statusInt == 0) {
       return "Approved";
@@ -247,14 +243,13 @@ const MemesFlagged = (props) => {
     }
   }
 
+  // Hook when peopleParent changed in Admin -> update current data
   useEffect(() => {
     setPeople(peopleParent);
-    console.log(
-      "People parent have change -> We update people for printing",
-      peopleParent
-    );
+  
   }, [peopleParent]);
 
+  // Create structure meme Data
   function createDataMeme(
     memeId,
     memeTitle,
@@ -265,6 +260,8 @@ const MemesFlagged = (props) => {
   ) {
     return { memeId, memeTitle, memeOwner, memeValue, memeFlags, memeStatus };
   }
+
+  // ----------------------- Printing ----------------------
 
   const emptyRows =
     rowsPerPage - Math.min(rowsPerPage, people.length - page * rowsPerPage);

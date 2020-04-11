@@ -154,7 +154,8 @@ const MemeFeed = (props) => {
     console.log(memeNetwork);
 
     populateMeme();
-  }, [memeNetwork, memeketPlaceNetwork, userNetwork]);
+  //}, [memeNetwork, memeketPlaceNetwork, userNetwork]);
+  }, [memeketPlaceNetwork]);
 
   useEffect(() => {
     setMemes(memes);
@@ -180,10 +181,10 @@ const MemeFeed = (props) => {
         const result = await memeNetwork.methods.numberOfMemes().call();
         for (var i = 0; i < result; i++) {
           const meme = await memeNetwork.methods.memes(i).call();
-          console.log(memeIsApproved(meme));
+          
           if (memeIsApproved(meme)) {
             memeArray = memeArray.concat(meme);
-
+            //console.log(memeArray)
             //for every meme, retrieve the getStatus to see if user has liked this before
             await getStatus(meme.memeId);
 
@@ -202,10 +203,17 @@ const MemeFeed = (props) => {
             let _memeDate = new Date(meme.memeDate * 1000).toLocaleString();
             console.log("memedate", _memeDate);
             _memeDates = _memeDates.concat(_memeDate);
+            
+            // Sort memeOwner, memeDates, memeArray
 
-            setMemes(memeArray);
-            setMemeDates(_memeDates);
-            setMemeOwners(_memeOwners);
+            var arraySorted = await combineArr(memeArray,_memeOwners,_memeDates)
+        
+            // Sorted meme by meme Value 
+            //await memeArray.sort((a, b) => (Number(a.memeValue) > Number(b.memeValue) ? -1 : 1));
+
+            setMemes(arraySorted[0]);
+            setMemeDates(arraySorted[2]);
+            setMemeOwners(arraySorted[1]);
           }
         }
       } else {
@@ -232,6 +240,40 @@ const MemeFeed = (props) => {
       return "Pending";
     }
   }
+
+  async function combineArr(arr1,arr2,arr3) {    
+    try{
+    //1) combine the arrays:
+    var list = [];
+    var res_arr1 = [];
+    var res_arr2 = [];
+    var res_arr3 = [];
+  
+    for (var j = 0; j < arr1.length; j++) 
+        list.push({'prop1': arr1[j], 'prop2': arr2[j], 'prop3': arr3[j]});
+      
+    //2) sort:
+    list.sort(function(a, b) {
+        return (Number(a.prop1.memeValue) > Number(b.prop1.memeValue) ? -1 : 1);
+        //Sort could be modified to, for example, sort on the age 
+        // if the name is the same.
+    });
+    
+
+    //3) separate them back out:
+    for (var k = 0; k < list.length; k++) {
+      res_arr1.push(list[k].prop1)
+      res_arr2.push(list[k].prop2)
+      res_arr3.push(list[k].prop3)
+      
+  }
+  return([res_arr1,res_arr2,res_arr3])
+}
+  catch{
+    return([res_arr1,res_arr2,res_arr3])
+  }
+  }
+  
 
   /**
    *

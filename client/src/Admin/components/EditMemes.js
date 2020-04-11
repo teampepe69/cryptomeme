@@ -41,11 +41,14 @@ const styles = (theme) => ({
 });
 
 const EditMemes = (props) => {
+  
   const { classes, modalState, handleClose, memeInfo, rows, stopFlags } = props;
   const [userNetwork] = useGlobal("userNetwork");
   const [memeNetwork] = useGlobal("memeNetwork");
   const [memeketPlaceNetwork] = useGlobal("memeketPlaceNetwork");
   const [web3] = useGlobal("web3");
+
+  // ----------------------- Handle interactions ----------------------
 
   async function handleActivate(meme) {
     // Set sender
@@ -72,6 +75,8 @@ const EditMemes = (props) => {
     // Close Modal
     handleClose();
   }
+
+  // ----------------------- Printing ----------------------
 
   return (
     <div>

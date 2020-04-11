@@ -1,10 +1,9 @@
 import * as React from "react";
-import { useGlobal, useEffect } from "reactn";
+import { useGlobal } from "reactn";
 import {
   Button,
   Modal,
   Card,
-  TextField,
   CardMedia,
   Typography,
 } from "@material-ui/core";
@@ -60,18 +59,7 @@ const EditUser = (props) => {
     }
   }
 
-  async function checkMetaMaskAccount() {
-    let accounts = await web3.eth.getAccounts();
-    let currentAccount = sessionStorage.getItem("account");
-    if (accounts[0] != currentAccount) {
-      Swal.fire({
-        title:
-          "Something went terribly wrong. Did you switch your MetaMask account?",
-        imageUrl: require("../../img/policeApu.png"),
-        confirmButtonText: "Sadkek",
-      });
-    }
-  }
+  // ----------------------- Handle interaction ----------------------
 
   async function handleActivate(user) {
     // Set sender
@@ -82,28 +70,21 @@ const EditUser = (props) => {
       .call({ from: currentAdmin });
     try {
       // Activate user
-      let isActive = await userNetwork.methods
-        .checkUserIsActive(userAddress)
-        .call({ from: currentAdmin });
-      console.log("before activation isActive:", isActive);
+
       await memeketPlaceNetwork.methods
         .activateUser(userAddress)
         .send({ from: currentAdmin });
-      let isActive2 = await userNetwork.methods
-        .checkUserIsActive(userAddress)
-        .call({ from: currentAdmin });
-      console.log("after activation isActive:", isActive2);
 
       // Close Modal
       handleClose();
     } catch (error) {
+      // if error check metamask account 
       handleClose();
       checkMetaMaskAccount();
     }
   }
 
   async function handlePromote(user) {
-    console.log(user);
     // Set sender
     let currentAdmin = sessionStorage.getItem("account");
     // Find user address
@@ -113,21 +94,15 @@ const EditUser = (props) => {
 
     // Activate user
     try {
-      let isAdmin = await userNetwork.methods
-        .checkUserIsAdmin(userAddress)
-        .call({ from: currentAdmin });
-      console.log("before promotion isActive:", isAdmin);
+
       await userNetwork.methods
         .setUserAsAdmin(userAddress)
         .send({ from: currentAdmin });
-      let isAdmin2 = await userNetwork.methods
-        .checkUserIsAdmin(userAddress)
-        .call({ from: currentAdmin });
-      console.log("after promotion isActive:", isAdmin2);
 
       // Close Modal
       handleClose();
     } catch (error) {
+      // if error check metamask account 
       handleClose();
       checkMetaMaskAccount();
     }
@@ -143,25 +118,21 @@ const EditUser = (props) => {
 
     try {
       // Activate user
-      let isActive = await userNetwork.methods
-        .checkUserIsActive(userAddress)
-        .call({ from: currentAdmin });
-      console.log("before desactivation isActive:", isActive);
+
       await userNetwork.methods
         .setUserAsDeactivated(userAddress)
         .send({ from: currentAdmin });
-      let isActive2 = await userNetwork.methods
-        .checkUserIsActive(userAddress)
-        .call({ from: currentAdmin });
-      console.log("before desactivation isActive:", isActive2);
 
       // Close Modal
       handleClose();
     } catch (error) {
+      // if error check MetaMask account
       handleClose();
       checkMetaMaskAccount();
     }
   }
+
+  // ----------------------- Printing ----------------------
 
   return (
     <div>

@@ -1,13 +1,8 @@
+const path = require("path");
 const secrets = require("./secrets.js");
 const HDWalletProvider = require("truffle-hdwallet-provider");
-
-let ropstenPrivateKey = new Buffer(secrets.ropstenPK, "hex");
-let ropstenWallet = Wallet.fromPrivateKey(ropstenPrivateKey);
-let ropstenProvider = new WalletProvider(
-  ropstenWallet,
-  "https://ropsten.infura.io/"
-);
-
+const mnemonic = secrets.mnemonic;
+const projectId = secrets.projectId;
 module.exports = {
   // See <http://truffleframework.com/docs/advanced/configuration>
   // to customize your Truffle configuration!
@@ -19,7 +14,11 @@ module.exports = {
       network_id: "*",
     },
     ropsten: {
-      provider: ropstenProvider,
+      provider: () =>
+        new HDWalletProvider(
+          mnemonic,
+          `https://ropsten.infura.io/v3/${projectId}`
+        ),
       network_id: "3",
     },
   },

@@ -6,6 +6,6 @@ var ropstenPK =
 
 module.exports = {
   projectId: projectId,
-  ropstenPk: ropstenPk,
+  ropstenPK: ropstenPK,
   mnemonic: mnemonic,
 };

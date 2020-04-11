@@ -20,6 +20,7 @@ contract("MemeketPlace.sol", function (accounts) {
   let meme1Title = "PEPE IS KING";
   let meme1Desc = "ALL HAIL PEPE THE GREAT";
   let meme1Id = 0; // meme contract, id starts from 0
+  let meme1Value = 1;
 
   let liker1 = accounts[2];
   let hater1 = accounts[3];
@@ -86,7 +87,9 @@ contract("MemeketPlace.sol", function (accounts) {
         memeDate,
         meme1Path,
         meme1Title,
-        meme1Desc
+        meme1Desc,
+        meme1Value,
+        { from: memeOwner1 }
       );
     } catch (error) {
       assert.fail("Error encounterd in uploading meme");

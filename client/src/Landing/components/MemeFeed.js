@@ -29,6 +29,7 @@ import ipfs from "../../ipfs";
 import FlagIcon from "@material-ui/icons/Flag";
 import Swal from "sweetalert2";
 import StarsIcon from "@material-ui/icons/Stars";
+import detectivePikachu from "../../img/detectivePikachu.jpg";
 
 const styles = (theme) => ({
   root: {
@@ -456,6 +457,9 @@ const MemeFeed = (props) => {
 
   //------------UPLOAD FILE--------------
   function captureFile(event) {
+    document.getElementById("memePic").src = window.URL.createObjectURL(
+      event.target.files[0]
+    );
     event.preventDefault();
     const file = event.target.files[0];
     const reader = new window.FileReader();
@@ -564,14 +568,32 @@ const MemeFeed = (props) => {
                       onSubmit={(e) => handleSubmit(e)}
                       style={{ paddingTop: "50px" }}
                     >
-                      <TextField
-                        id="memePath"
-                        type="file"
-                        variant="outlined"
-                        style={{ width: "100%", paddingBottom: "10px" }}
-                        onChange={captureFile}
-                        required
+                      <img
+                        id="memePic"
+                        src={detectivePikachu}
+                        alt="Image Uploaded"
+                        width="100"
+                        height="100"
                       />
+                      <br></br>
+                      <input
+                        accept="image/*"
+                        className={classes.input}
+                        style={{ display: "none" }}
+                        id="raised-button-file"
+                        multiple
+                        type="file"
+                        onChange={captureFile}
+                      />
+                      <label htmlFor="raised-button-file">
+                        <Button
+                          variant="raised"
+                          component="span"
+                          className={classes.button}
+                        >
+                          Upload Meme Image
+                        </Button>
+                      </label>
 
                       <TextField
                         label="Insert a superb title for your Meme"

@@ -4,14 +4,14 @@ import { Link } from "react-router-dom";
 import Typography from "@material-ui/core/Typography";
 import { withStyles } from "@material-ui/core/styles";
 
-const styles = theme => ({
+const styles = (theme) => ({
   title: {
     color: "#434343",
-    paddingTop: 10
-  }
+    paddingTop: 10,
+  },
 });
 
-const sideDrawer = props => {
+const sideDrawer = (props) => {
   //const [global] = useGlobal();
   //console.log(global.web3);
   const { classes } = props;
@@ -50,16 +50,6 @@ const sideDrawer = props => {
             to="/profile"
           >
             Profile
-          </Typography>
-        )}
-        {loggedIn && (
-          <Typography
-            variant="h5"
-            className={classes.title}
-            component={Link}
-            to="/following"
-          >
-            Following
           </Typography>
         )}
         {isAdmin && (

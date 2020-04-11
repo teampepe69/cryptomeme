@@ -613,6 +613,7 @@ const MemeFeed = (props) => {
                         variant="outlined"
                         style={{ width: "100%", paddingBottom: "10px" }}
                         value={memeTitle}
+                        inputProps={{ maxLength: 50 }}
                         onChange={(e) => {
                           setMemeTitle(e.target.value);
                         }}
@@ -623,6 +624,7 @@ const MemeFeed = (props) => {
                         variant="outlined"
                         style={{ width: "100%", paddingBottom: "10px" }}
                         multiline
+                        inputProps={{ maxLength: 255 }}
                         value={memeDescription}
                         onChange={(e) => {
                           setMemeDescription(e.target.value);

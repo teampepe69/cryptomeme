@@ -154,6 +154,7 @@ const Register = (props) => {
               <TextField
                 label="Display Name"
                 variant="outlined"
+                inputProps={{ maxLength: 25 }}
                 style={{ width: "100%", paddingBottom: "10px" }}
                 onInput={(e) => setDisplayName(e.target.value)}
                 required
@@ -198,12 +199,14 @@ const Register = (props) => {
               <TextField
                 label="Tell us a bit about yourself"
                 variant="outlined"
+                inputProps={{ maxLength: 255 }}
                 style={{ width: "100%", paddingBottom: "10px" }}
                 onInput={(e) => setAbout(e.target.value)}
               />
               <TextField
                 label="Give us your website"
                 variant="outlined"
+                inputProps={{ maxLength: 50 }}
                 style={{ width: "100%", paddingBottom: "10px" }}
                 onInput={(e) => setWebsite(e.target.value)}
               />

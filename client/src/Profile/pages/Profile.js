@@ -212,15 +212,16 @@ const ProfilePage = (props) => {
               <TextField
                 variant="outlined"
                 value={displayName}
+                inputProps={{ maxLength: 25 }}
                 style={{ width: "100%", paddingBottom: "5px" }}
                 onInput={(e) => setDisplayName(e.target.value)}
                 required
               />
-              <Typography variant="h6">Display Picture</Typography>
               <Typography variant="h6">About</Typography>
               <TextField
                 variant="outlined"
                 value={about}
+                inputProps={{ maxLength: 255 }}
                 style={{ width: "100%", paddingBottom: "5px" }}
                 onInput={(e) => setAbout(e.target.value)}
                 required
@@ -229,6 +230,7 @@ const ProfilePage = (props) => {
               <TextField
                 variant="outlined"
                 value={website}
+                inputProps={{ maxLength: 50 }}
                 style={{ width: "100%", paddingBottom: "5px" }}
                 onInput={(e) => setWebsite(e.target.value)}
                 required
@@ -239,7 +241,7 @@ const ProfilePage = (props) => {
                 variant="contained"
                 fullWidth
               >
-                update profile
+                Update Profile
               </Button>
             </div>
           </Card>

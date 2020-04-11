@@ -172,7 +172,7 @@ contract("MemeketPlace.sol", function (accounts) {
     try {
       await memeketPlaceInstance.dislikeMeme(meme1Id, { from: hater1 });
     } catch (error) {
-      assert.fail("Error encounterd in disliking meme");
+      assert.fail("Error encountered in disliking meme");
     }
     let likeStatus = await memeketPlaceInstance.getLikes.call(meme1Id, hater1);
     assert.strictEqual(

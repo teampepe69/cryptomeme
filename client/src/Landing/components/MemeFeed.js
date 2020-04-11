@@ -154,7 +154,7 @@ const MemeFeed = (props) => {
     console.log(memeNetwork);
 
     populateMeme();
-  //}, [memeNetwork, memeketPlaceNetwork, userNetwork]);
+    //}, [memeNetwork, memeketPlaceNetwork, userNetwork]);
   }, [memeketPlaceNetwork]);
 
   useEffect(() => {
@@ -181,7 +181,7 @@ const MemeFeed = (props) => {
         const result = await memeNetwork.methods.numberOfMemes().call();
         for (var i = 0; i < result; i++) {
           const meme = await memeNetwork.methods.memes(i).call();
-          
+
           if (memeIsApproved(meme)) {
             memeArray = memeArray.concat(meme);
             //console.log(memeArray)
@@ -203,12 +203,16 @@ const MemeFeed = (props) => {
             let _memeDate = new Date(meme.memeDate * 1000).toLocaleString();
             console.log("memedate", _memeDate);
             _memeDates = _memeDates.concat(_memeDate);
-            
+
             // Sort memeOwner, memeDates, memeArray
 
-            var arraySorted = await combineArr(memeArray,_memeOwners,_memeDates)
-        
-            // Sorted meme by meme Value 
+            var arraySorted = await combineArr(
+              memeArray,
+              _memeOwners,
+              _memeDates
+            );
+
+            // Sorted meme by meme Value
             //await memeArray.sort((a, b) => (Number(a.memeValue) > Number(b.memeValue) ? -1 : 1));
 
             setMemes(arraySorted[0]);
@@ -241,39 +245,35 @@ const MemeFeed = (props) => {
     }
   }
 
-  async function combineArr(arr1,arr2,arr3) {    
-    try{
-    //1) combine the arrays:
-    var list = [];
-    var res_arr1 = [];
-    var res_arr2 = [];
-    var res_arr3 = [];
-  
-    for (var j = 0; j < arr1.length; j++) 
-        list.push({'prop1': arr1[j], 'prop2': arr2[j], 'prop3': arr3[j]});
-      
-    //2) sort:
-    list.sort(function(a, b) {
-        return (Number(a.prop1.memeValue) > Number(b.prop1.memeValue) ? -1 : 1);
-        //Sort could be modified to, for example, sort on the age 
-        // if the name is the same.
-    });
-    
+  async function combineArr(arr1, arr2, arr3) {
+    try {
+      //1) combine the arrays:
+      var list = [];
+      var res_arr1 = [];
+      var res_arr2 = [];
+      var res_arr3 = [];
 
-    //3) separate them back out:
-    for (var k = 0; k < list.length; k++) {
-      res_arr1.push(list[k].prop1)
-      res_arr2.push(list[k].prop2)
-      res_arr3.push(list[k].prop3)
-      
+      for (var j = 0; j < arr1.length; j++)
+        list.push({ prop1: arr1[j], prop2: arr2[j], prop3: arr3[j] });
+
+      //2) sort:
+      list.sort(function (a, b) {
+        return Number(a.prop1.memeValue) > Number(b.prop1.memeValue) ? -1 : 1;
+        //Sort could be modified to, for example, sort on the age
+        // if the name is the same.
+      });
+
+      //3) separate them back out:
+      for (var k = 0; k < list.length; k++) {
+        res_arr1.push(list[k].prop1);
+        res_arr2.push(list[k].prop2);
+        res_arr3.push(list[k].prop3);
+      }
+      return [res_arr1, res_arr2, res_arr3];
+    } catch {
+      return [res_arr1, res_arr2, res_arr3];
+    }
   }
-  return([res_arr1,res_arr2,res_arr3])
-}
-  catch{
-    return([res_arr1,res_arr2,res_arr3])
-  }
-  }
-  
 
   /**
    *
@@ -317,7 +317,7 @@ const MemeFeed = (props) => {
         .send({
           from: acc,
         });
-      //updateMeme();
+      //updateMemeFeed();
       handleClose("create");
       Swal.fire({
         title: "Creation successful! Please wait for your meme to be approved.",
@@ -331,9 +331,9 @@ const MemeFeed = (props) => {
     }
   }
 
-  //----------Update the meme feed when meme is created-------
-  //This is called by createMeme() function
-  // async function updateMeme() {
+  // ----------Update the meme feed when meme is created-------
+  // This is called by createMeme() function
+  // async function updateMemeFeed() {
   //   const acc = sessionStorage.getItem("account");
   //   var arr = memes;
   //   var arr_owner = memeOwners;
@@ -420,13 +420,26 @@ const MemeFeed = (props) => {
       .call();
     if (!isFlagged) {
       try {
-        await memeketPlaceNetwork.methods.flagMeme(memeId).send({ from: acc });
-        handleClose("flag");
-        Swal.fire({
-          title: "Flag successful!",
-          icon: "success",
-          confirmButtonText: "Cool beans",
-        });
+        let flagMemeResult = await memeketPlaceNetwork.methods
+          .flagMeme(memeId)
+          .send({ from: acc });
+        if (flagMemeResult) {
+          handleClose("flag");
+          Swal.fire({
+            title:
+              "Flag successful! Meme has been rejected because majority thinks this meme is bad",
+            icon: "success",
+            confirmButtonText: "OhMaiGawd",
+          });
+          window.location.reload(false);
+        } else {
+          handleClose("flag");
+          Swal.fire({
+            title: "Flag successful!",
+            icon: "success",
+            confirmButtonText: "Cool beans",
+          });
+        }
       } catch (error) {
         handleClose("flag");
         checkMetaMaskAccount();

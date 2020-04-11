@@ -4,9 +4,7 @@ import { withStyles } from "@material-ui/core/styles";
 import { AppBar, Tabs, Tab } from "@material-ui/core";
 import Rankings from "../components/Rankings";
 
-const styles = (theme) => ({
-
-});
+const styles = (theme) => ({});
 const LeaderBoardPage = (props) => {
   const { classes } = props;
   const [userNetwork] = useGlobal("userNetwork");
@@ -53,12 +51,15 @@ const LeaderBoardPage = (props) => {
           const pepeCoinsNb = await pepeCoinNetwork.methods
             .balanceOf(elem.userWallet)
             .call();
-          // If user is disobedient : bad guy
           usersArray.push(
-            createDataPepe(pepeCoinsNb, elem.userId, elem.displayName, elem.displayPictureHash)
+            createDataPepe(
+              pepeCoinsNb,
+              elem.userId,
+              elem.displayName,
+              elem.displayPictureHash
+            )
           );
         }
-        // If user is clean : good guy
       } catch (e) {
         console.log("Error in the process");
       }
@@ -70,7 +71,7 @@ const LeaderBoardPage = (props) => {
   }
 
   function createDataPepe(pepeCoins, uid, displayName, displayPictureHash) {
-    return { pepeCoins, uid, displayName, displayPictureHash};
+    return { pepeCoins, uid, displayName, displayPictureHash };
   }
 
   async function handleChange(event, newValue) {

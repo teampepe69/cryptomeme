@@ -20,6 +20,7 @@ contract MemeketPlace {
     uint256 private defaultVal = 0;
     uint256 private likeVal = 1;
     uint256 private dislikeVal = 2;
+    uint256 private likeOrDislikeVal = 3;
 
     mapping(uint256 => mapping(address => uint256)) public likes; // 0 means no like or dislike, 1 means like, 2 means dislike
     mapping(uint256 => mapping(address => bool)) public flags;
@@ -74,7 +75,7 @@ contract MemeketPlace {
                 _memeId,
                 memeContract.getMemeLikes(_memeId).sub(1)
             );
-            likes[_memeId][msg.sender] = 0;
+            likes[_memeId][msg.sender] = likeOrDislikeVal;
         } else if (likes[_memeId][msg.sender] == dislikeVal) {
             //This meme was intially dislike, so when they like, dislike should subtract
             memeContract.setMemeDislikes(
@@ -85,14 +86,21 @@ contract MemeketPlace {
                 _memeId,
                 memeContract.getMemeLikes(_memeId).add(1)
             );
-            likes[_memeId][msg.sender] = 1;
-        } else {
-            //uint by default is 0
+            likes[_memeId][msg.sender] = likeVal;
+        } else if (likes[_memeId][msg.sender] == likeOrDislikeVal) {
+            //This meme was already liked or disliked before
             memeContract.setMemeLikes(
                 _memeId,
                 memeContract.getMemeLikes(_memeId).add(1)
             );
-            likes[_memeId][msg.sender] = 1;
+            likes[_memeId][msg.sender] = likeVal;
+        } else {
+            //uint by default is 0, will mint pepecoins for first like
+            memeContract.setMemeLikes(
+                _memeId,
+                memeContract.getMemeLikes(_memeId).add(1)
+            );
+            likes[_memeId][msg.sender] = likeVal;
             pepeCoinContract.transferPepeCoins(
                 msg.sender,
                 memeContract.getMemeOwner(_memeId),
@@ -112,7 +120,7 @@ contract MemeketPlace {
                 _memeId,
                 memeContract.getMemeDislikes(_memeId).sub(1)
             );
-            likes[_memeId][msg.sender] = 0;
+            likes[_memeId][msg.sender] = likeOrDislikeVal;
         } else if (likes[_memeId][msg.sender] == likeVal) {
             //This meme was intially liked, so when they dislike, like should subtract
             memeContract.setMemeLikes(
@@ -123,14 +131,14 @@ contract MemeketPlace {
                 _memeId,
                 memeContract.getMemeDislikes(_memeId).add(1)
             );
-            likes[_memeId][msg.sender] = 2;
+            likes[_memeId][msg.sender] = dislikeVal;
         } else {
             //uint by default is 0
             memeContract.setMemeDislikes(
                 _memeId,
                 memeContract.getMemeDislikes(_memeId).add(1)
             );
-            likes[_memeId][msg.sender] = 2;
+            likes[_memeId][msg.sender] = dislikeVal;
         }
     }
 

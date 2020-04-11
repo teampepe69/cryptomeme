@@ -10,6 +10,7 @@ contract PepeCoin is ERC20 {
 
     constructor(User _userContract) public {
         userContract = _userContract;
+        mintPepeCoins(userContract.getContractOwner(), 50);
     }
 
     function getContractOwner() public returns (address) {

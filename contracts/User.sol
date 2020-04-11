@@ -3,9 +3,8 @@ import "../node_modules/@openzeppelin/contracts/math/SafeMath.sol";
 
 
 contract User {
-
     using SafeMath for uint256;
-    address admin = msg.sender;
+    address contractOwner = msg.sender;
 
     enum userStates {pending, active, deactivated, admin}
 
@@ -87,6 +86,10 @@ contract User {
             "www.4chan.org"
         );
         users[userIds[msg.sender]].state = userStates.admin;
+    }
+
+    function getContractOwner() public returns (address) {
+        return contractOwner;
     }
 
     /**

@@ -587,7 +587,7 @@ const MemeFeed = (props) => {
                       />
                       <label htmlFor="raised-button-file">
                         <Button
-                          variant="raised"
+                          variant="contained"
                           component="span"
                           className={classes.button}
                         >
@@ -653,6 +653,11 @@ const MemeFeed = (props) => {
                           value={memeValue}
                           variant="outlined"
                           style={{ width: "10%" }}
+                          InputProps={{
+                            inputProps: {
+                              min: 0,
+                            },
+                          }}
                           inputProps={{
                             style: { textAlign: "right" },
                           }}
@@ -865,6 +870,11 @@ const MemeFeed = (props) => {
                                 >
                                   <TextField
                                     type="number"
+                                    InputProps={{
+                                      inputProps: {
+                                        min: 0,
+                                      },
+                                    }}
                                     value={memeValue}
                                     variant="outlined"
                                     style={{ width: "10%" }}

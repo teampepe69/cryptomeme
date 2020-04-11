@@ -20,6 +20,7 @@ contract("MemeketPlace.sol", function (accounts) {
   let defaultLike = 0;
   let likeVal = 1;
   let dislikeVal = 2;
+  let likeOrDislikeVal = 3;
 
   //Bool representations of flag/not flag
   let flagged = true;
@@ -81,7 +82,9 @@ contract("MemeketPlace.sol", function (accounts) {
   });
 
   it("User 1 should have default created user pepecoins", async () => {
-    let numberOfPepeCoinsUser1 = await pepeCoinInstance.balanceOf.call(memeOwner1);
+    let numberOfPepeCoinsUser1 = await pepeCoinInstance.balanceOf.call(
+      memeOwner1
+    );
     assert.strictEqual(
       numberOfPepeCoinsUser1.toNumber(),
       createUserReward,
@@ -107,12 +110,14 @@ contract("MemeketPlace.sol", function (accounts) {
     assert.strictEqual(
       likeStatus.toNumber(),
       defaultLike,
-      "Should return " + defaultLike+" but got " + likeStatus
+      "Should return " + defaultLike + " but got " + likeStatus
     );
   });
 
   it("Should like meme and reward Meme owner", async () => {
-    let numberOfPepeCoinsUser1 = await pepeCoinInstance.balanceOf.call(memeOwner1);
+    let numberOfPepeCoinsUser1 = await pepeCoinInstance.balanceOf.call(
+      memeOwner1
+    );
     try {
       await memeketPlaceInstance.likeMeme(meme1Id, { from: liker1 });
     } catch (error) {
@@ -122,7 +127,7 @@ contract("MemeketPlace.sol", function (accounts) {
     assert.strictEqual(
       likeStatus.toNumber(),
       likeVal,
-      "Should return " + likeVal+" but got " + likeStatus
+      "Should return " + likeVal + " but got " + likeStatus
     );
     let numberOfPepeCoinsUser1After = await pepeCoinInstance.balanceOf.call(
       memeOwner1
@@ -144,8 +149,8 @@ contract("MemeketPlace.sol", function (accounts) {
     let likeStatus = await memeketPlaceInstance.getLikes.call(meme1Id, liker1);
     assert.strictEqual(
       likeStatus.toNumber(),
-      defaultLike,
-      "Should return " + defaultLike+" but got " + likeStatus
+      likeOrDislikeVal,
+      "Should return " + likeOrDislikeVal + " but got " + likeStatus
     );
   });
 
@@ -159,7 +164,7 @@ contract("MemeketPlace.sol", function (accounts) {
     assert.strictEqual(
       likeStatus.toNumber(),
       dislikeVal,
-      "Should return " + dislikeVal+" but got " + likeStatus
+      "Should return " + dislikeVal + " but got " + likeStatus
     );
   });
 
@@ -172,8 +177,8 @@ contract("MemeketPlace.sol", function (accounts) {
     let likeStatus = await memeketPlaceInstance.getLikes.call(meme1Id, hater1);
     assert.strictEqual(
       likeStatus.toNumber(),
-      defaultLike,
-      "Should return " + defaultLike+" but got " + likeStatus
+      likeOrDislikeVal,
+      "Should return " + likeOrDislikeVal + " but got " + likeStatus
     );
   });
 
@@ -183,7 +188,7 @@ contract("MemeketPlace.sol", function (accounts) {
     assert.strictEqual(
       likeStatus.toNumber(),
       dislikeVal,
-      "Should return " + dislikeVal+" but got " + likeStatus
+      "Should return " + dislikeVal + " but got " + likeStatus
     );
 
     await memeketPlaceInstance.likeMeme(meme1Id, { from: hater1 });
@@ -191,7 +196,7 @@ contract("MemeketPlace.sol", function (accounts) {
     assert.strictEqual(
       likeStatus.toNumber(),
       likeVal,
-      "Should return " + likeVal+" but got " + likeStatus
+      "Should return " + likeVal + " but got " + likeStatus
     );
   });
 
@@ -201,12 +206,12 @@ contract("MemeketPlace.sol", function (accounts) {
     } catch (error) {
       assert.fail("Error encounterd in flagging meme");
     }
-    let res = await memeketPlaceInstance.getFlags.call(meme1Id,hater1);
+    let res = await memeketPlaceInstance.getFlags.call(meme1Id, hater1);
     assert.strictEqual(
       res,
       flagged,
-      "Shoud return " + flagged +"but got " + res
-    )
+      "Shoud return " + flagged + "but got " + res
+    );
   });
 
   it("Should not flag Meme twice", async () => {

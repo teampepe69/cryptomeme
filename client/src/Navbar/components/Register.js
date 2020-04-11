@@ -11,6 +11,7 @@ import {
 } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
 import Swal from "sweetalert2";
+import ipfs from "../../ipfs";
 
 const styles = (theme) => ({
   modal: {
@@ -41,12 +42,13 @@ const Register = (props) => {
   const [memeketPlaceNetwork] = useGlobal("memeketPlaceNetwork");
   const [open, setOpen] = React.useState(false);
   const [about, setAbout] = React.useState("");
-  const [displayPictureHash, setDisplayPictureHash] = React.useState(
-    "QmP1KdPrFV9wKbDy5WvCDKd3YcyTBbFvqfvBCzjGrDiVLZ"
-  );
+
   const [displayName, setDisplayName] = React.useState("");
   const [website, setWebsite] = React.useState("");
   const [eWallet, setEwallet] = React.useState("");
+  const [buffer, setBuffer] = React.useState(
+    "QmP1KdPrFV9wKbDy5WvCDKd3YcyTBbFvqfvBCzjGrDiVLZ"
+  );
 
   const handleOpen = () => {
     try {
@@ -72,6 +74,27 @@ const Register = (props) => {
     setOpen(false);
   };
 
+  function captureFile(event) {
+    event.preventDefault();
+    const file = event.target.files[0];
+    const reader = new window.FileReader();
+    try {
+      reader.readAsArrayBuffer(file);
+      reader.onloadend = () => {
+        ipfs.files.add(Buffer(reader.result), (error, result) => {
+          if (error) {
+            return;
+          }
+          const hash = result[0].hash;
+          setBuffer(hash);
+          return hash;
+        });
+      };
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   async function handleRegister(event) {
     event.preventDefault();
     // once below code is okay, just copy these two line
@@ -87,7 +110,7 @@ const Register = (props) => {
       });
     } else {
       memeketPlaceNetwork.methods
-        .createUser(eWallet, about, displayPictureHash, displayName, website)
+        .createUser(eWallet, about, buffer, displayName, website)
         .send({
           from: eWallet,
         })
@@ -130,6 +153,25 @@ const Register = (props) => {
                 onInput={(e) => setDisplayName(e.target.value)}
                 required
               />
+              <input
+                accept="image/*"
+                className={classes.input}
+                style={{ display: "none" }}
+                id="raised-button-file"
+                multiple
+                type="file"
+                onChange={captureFile}
+              />
+              <label htmlFor="raised-button-file">
+                <Button
+                  variant="raised"
+                  component="span"
+                  className={classes.button}
+                >
+                  Upload Display Picture
+                </Button>
+              </label>
+
               <TextField
                 label="Wallet"
                 variant="outlined"

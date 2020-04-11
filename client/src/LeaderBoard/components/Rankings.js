@@ -22,7 +22,15 @@ import AngryPepe from "../../img/angryPepe.png";
 
 const styles = (theme) => ({
   winner: {
-    backgroundColor: "#e5e4e2",
+    backgroundColor: "#FFDF00",
+    minHeight: 20,
+  },
+  secondWinner: {
+    backgroundColor: "#C0C0C0",
+    minHeight: 20,
+  },
+  thirdWinner: {
+    backgroundColor: "#c5ab84",
     minHeight: 20,
   },
   loser: {},
@@ -120,7 +128,7 @@ const Rankings = (props) => {
                   </ListItem>
                 )}
                 {n.rank == 2 && (
-                  <ListItem className={classes.winner}>
+                  <ListItem className={classes.secondWinner}>
                     <ListItemText primary={n.rank} />
                     <ListItemAvatar>
                       <Avatar
@@ -138,7 +146,7 @@ const Rankings = (props) => {
                   </ListItem>
                 )}
                 {n.rank == 3 && (
-                  <ListItem className={classes.winner}>
+                  <ListItem className={classes.thirdWinner}>
                     <ListItemText primary={n.rank} />
                     <ListItemAvatar>
                       <Avatar

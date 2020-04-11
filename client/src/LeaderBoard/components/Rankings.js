@@ -1,24 +1,31 @@
 import * as React from "react";
 import { useGlobal, useEffect } from "reactn";
 import {
-  List, ListItem, ListItemAvatar, Avatar, ListItemText, Paper, AppBar,
-  Toolbar, IconButton, Typography
+  List,
+  ListItem,
+  ListItemAvatar,
+  Avatar,
+  ListItemText,
+  Paper,
+  AppBar,
+  Toolbar,
+  IconButton,
+  Typography,
 } from "@material-ui/core";
 import EditIcon from "@material-ui/icons/Edit";
 import { withStyles } from "@material-ui/core/styles";
-import EmojiEventsIcon from '@material-ui/icons/EmojiEvents';
+import EmojiEventsIcon from "@material-ui/icons/EmojiEvents";
 
 const styles = (theme) => ({
   winner: {
-    backgroundColor: '#e5e4e2',
-    minHeight: 20 
+    backgroundColor: "#e5e4e2",
+    minHeight: 20,
   },
-  loser: {
-  }, 
+  loser: {},
   list: {
     paddingTop: 1,
-    minHeight: '15vh'
-  }
+    minHeight: "15vh",
+  },
 });
 
 function descendingComparator(a, b, orderBy) {
@@ -52,16 +59,18 @@ const Rankings = (props) => {
   const [people, setPeople] = React.useState(peopleParent);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
-  const [order, setOrder] = React.useState("desc");
-  const [orderBy, setOrderBy] = React.useState("pepeCoins");
+  const [order, setOrder] = React.useState("asc");
+  const [orderBy, setOrderBy] = React.useState("rank");
 
   const emptyRows =
     rowsPerPage - Math.min(rowsPerPage, people.length - page * rowsPerPage);
 
   useEffect(() => {
-    var people = peopleParent.sort((a, b) => (a.pepeCoins < b.pepeCoins ? 1 : -1))
+    var people = peopleParent.sort((a, b) =>
+      parseInt(a.pepeCoins) < parseInt(b.pepeCoins) ? 1 : -1
+    );
     for (var i = 1; i <= people.length; i++) {
-      people[i-1].rank =i
+      people[i - 1].rank = i;
     }
     setPeople(people);
     console.log(
@@ -88,29 +97,38 @@ const Rankings = (props) => {
             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
             .map((n) => (
               <React.Fragment key={n.uid}>
-              { n.rank==1 &&(
-                <ListItem className={classes.winner}>
-                  <ListItemText primary={n.rank}/>
-                  <ListItemAvatar>
-                    <Avatar src={`https://ipfs.io/ipfs/${n.displayPictureHash}`} />
-                  </ListItemAvatar>
-                  <ListItemText primary={n.displayName} style={{ flex: '1 1 60%'}}/>
-                  <ListItemText primary={`${n.pepeCoins} Peperonis`} />
-                </ListItem>
-              )}
-              { n.rank!=1 &&(
-                <ListItem className={classes.loser}>
-                  <ListItemText primary={n.rank}/>
-                  <ListItemAvatar>
-                    <Avatar src={`https://ipfs.io/ipfs/${n.displayPictureHash}`} />
-                  </ListItemAvatar>
-                  <ListItemText primary={n.displayName} style={{ flex: '1 1 60%'}}/>
-                  <ListItemText primary={`${n.pepeCoins} Peperonis`} />
-                </ListItem>
-              )}
+                {n.rank == 1 && (
+                  <ListItem className={classes.winner}>
+                    <ListItemText primary={n.rank} />
+                    <ListItemAvatar>
+                      <Avatar
+                        src={`https://ipfs.io/ipfs/${n.displayPictureHash}`}
+                      />
+                    </ListItemAvatar>
+                    <ListItemText
+                      primary={n.displayName}
+                      style={{ flex: "1 1 60%" }}
+                    />
+                    <ListItemText primary={`${n.pepeCoins} Peperonis`} />
+                  </ListItem>
+                )}
+                {n.rank != 1 && (
+                  <ListItem className={classes.loser}>
+                    <ListItemText primary={n.rank} />
+                    <ListItemAvatar>
+                      <Avatar
+                        src={`https://ipfs.io/ipfs/${n.displayPictureHash}`}
+                      />
+                    </ListItemAvatar>
+                    <ListItemText
+                      primary={n.displayName}
+                      style={{ flex: "1 1 60%" }}
+                    />
+                    <ListItemText primary={`${n.pepeCoins} Peperonis`} />
+                  </ListItem>
+                )}
               </React.Fragment>
-            ))
-          }
+            ))}
         </List>
       </Paper>
     </div>

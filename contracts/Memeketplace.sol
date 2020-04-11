@@ -142,7 +142,7 @@ contract MemeketPlace {
         }
     }
 
-    function flagMeme(uint256 _memeId) public {
+    function flagMeme(uint256 _memeId) public returns (bool) {
         require(
             memeContract.getMemeOwner(_memeId) != msg.sender,
             "You cannot flag your own meme"
@@ -162,7 +162,9 @@ contract MemeketPlace {
             userContract.getNumberUsers() / 2
         ) {
             memeContract.rejectMeme(_memeId, memeContract.getMemeDate(_memeId));
+            return true;
         }
+        return false;
     }
 
     function getLikes(uint256 _memeId, address user)

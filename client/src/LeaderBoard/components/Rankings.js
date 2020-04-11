@@ -15,6 +15,10 @@ import {
 import EditIcon from "@material-ui/icons/Edit";
 import { withStyles } from "@material-ui/core/styles";
 import EmojiEventsIcon from "@material-ui/icons/EmojiEvents";
+import YayPepe from "../../img/yayPepe.png";
+import FatPepe from "../../img/fatPepe.png";
+import LovePepe from "../../img/lovePepe.png";
+import AngryPepe from "../../img/angryPepe.png";
 
 const styles = (theme) => ({
   winner: {
@@ -110,9 +114,48 @@ const Rankings = (props) => {
                       style={{ flex: "1 1 60%" }}
                     />
                     <ListItemText primary={`${n.pepeCoins} Peperonis`} />
+                    <ListItemAvatar>
+                      <Avatar src={YayPepe} />
+                    </ListItemAvatar>
                   </ListItem>
                 )}
-                {n.rank != 1 && (
+                {n.rank == 2 && (
+                  <ListItem className={classes.winner}>
+                    <ListItemText primary={n.rank} />
+                    <ListItemAvatar>
+                      <Avatar
+                        src={`https://ipfs.io/ipfs/${n.displayPictureHash}`}
+                      />
+                    </ListItemAvatar>
+                    <ListItemText
+                      primary={n.displayName}
+                      style={{ flex: "1 1 60%" }}
+                    />
+                    <ListItemText primary={`${n.pepeCoins} Peperonis`} />
+                    <ListItemAvatar>
+                      <Avatar src={LovePepe} />
+                    </ListItemAvatar>
+                  </ListItem>
+                )}
+                {n.rank == 3 && (
+                  <ListItem className={classes.winner}>
+                    <ListItemText primary={n.rank} />
+                    <ListItemAvatar>
+                      <Avatar
+                        src={`https://ipfs.io/ipfs/${n.displayPictureHash}`}
+                      />
+                    </ListItemAvatar>
+                    <ListItemText
+                      primary={n.displayName}
+                      style={{ flex: "1 1 60%" }}
+                    />
+                    <ListItemText primary={`${n.pepeCoins} Peperonis`} />
+                    <ListItemAvatar>
+                      <Avatar src={FatPepe} />
+                    </ListItemAvatar>
+                  </ListItem>
+                )}
+                {n.rank != 1 && n.rank != 2 && n.rank != 3 && (
                   <ListItem className={classes.loser}>
                     <ListItemText primary={n.rank} />
                     <ListItemAvatar>
@@ -125,6 +168,9 @@ const Rankings = (props) => {
                       style={{ flex: "1 1 60%" }}
                     />
                     <ListItemText primary={`${n.pepeCoins} Peperonis`} />
+                    <ListItemAvatar>
+                      <Avatar src={AngryPepe} />
+                    </ListItemAvatar>
                   </ListItem>
                 )}
               </React.Fragment>

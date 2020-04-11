@@ -1,19 +1,25 @@
 var Meme = artifacts.require("Meme.sol");
 
-contract("Meme.sol", function(accounts) {
+contract("Meme.sol", function (accounts) {
   let memeInstance;
+  let userInstance;
   let memeOwner1 = accounts[1];
   let memeOwner2 = accounts[2];
   let memeOwner3 = accounts[3];
   let meme1Path = "/path/meme/1";
   let meme2Path = "/path/meme/2";
   let meme3Path = "/path/meme/3";
+  let memeDate = Math.floor(new Date().getTime() / 1000);
+  let memeNewDate = Math.floor(new Date().getTime() / 1000);
   let meme1Title = "Meme 1";
   let meme2Title = "Meme 2";
   let meme3Title = "Meme 3";
   let meme1Description = "This is Meme 1";
   let meme2Description = "This is Meme 2";
   let meme3Description = "This is Meme 3";
+  let meme1Value = 1;
+  let meme2Value = 2;
+  let meme3Value = 3;
   let approved = 0;
   let rejected = 1;
   let pending = 2;
@@ -33,21 +39,30 @@ contract("Meme.sol", function(accounts) {
   it("Should create 3 memes properly", async () => {
     let meme1Result = await memeInstance.createMeme(
       memeOwner1,
+      memeDate,
       meme1Path,
       meme1Title,
-      meme1Description
+      meme1Description,
+      meme1Value,
+      { from: memeOwner1 }
     );
     let meme2Result = await memeInstance.createMeme(
       memeOwner2,
+      memeDate,
       meme2Path,
       meme2Title,
-      meme2Description
+      meme2Description,
+      meme2Value,
+      { from: memeOwner1 }
     );
     let meme3Result = await memeInstance.createMeme(
       memeOwner3,
+      memeDate,
       meme3Path,
       meme3Title,
-      meme3Description
+      meme3Description,
+      meme3Value,
+      { from: memeOwner1 }
     );
 
     //Meme 1
@@ -64,19 +79,19 @@ contract("Meme.sol", function(accounts) {
     );
 
     assert.strictEqual(
-      meme1Result.logs[1].args[1],
+      meme1Result.logs[1].args[2],
       meme1Path,
       "Should return meme path 1"
     );
 
     assert.strictEqual(
-      meme1Result.logs[1].args[2],
+      meme1Result.logs[1].args[3],
       meme1Title,
       "Should return meme title 1"
     );
 
     assert.strictEqual(
-      meme1Result.logs[1].args[3],
+      meme1Result.logs[1].args[4],
       meme1Description,
       "Should return meme description 1"
     );
@@ -95,19 +110,19 @@ contract("Meme.sol", function(accounts) {
     );
 
     assert.strictEqual(
-      meme2Result.logs[1].args[1],
+      meme2Result.logs[1].args[2],
       meme2Path,
       "Should return meme path 2"
     );
 
     assert.strictEqual(
-      meme2Result.logs[1].args[2],
+      meme2Result.logs[1].args[3],
       meme2Title,
       "Should return meme title 2"
     );
 
     assert.strictEqual(
-      meme2Result.logs[1].args[3],
+      meme2Result.logs[1].args[4],
       meme2Description,
       "Should return meme description 2"
     );
@@ -126,19 +141,19 @@ contract("Meme.sol", function(accounts) {
     );
 
     assert.strictEqual(
-      meme3Result.logs[1].args[1],
+      meme3Result.logs[1].args[2],
       meme3Path,
       "Should return meme path 3"
     );
 
     assert.strictEqual(
-      meme3Result.logs[1].args[2],
+      meme3Result.logs[1].args[3],
       meme3Title,
       "Should return meme title 3"
     );
 
     assert.strictEqual(
-      meme3Result.logs[1].args[3],
+      meme3Result.logs[1].args[4],
       meme3Description,
       "Should return meme description 3"
     );
@@ -199,7 +214,7 @@ contract("Meme.sol", function(accounts) {
     );
   });
 
-  it("Should like meme 1 three times", async () => {
+  it("Should like meme 1 3 time", async () => {
     let setMeme1Likes = await memeInstance.setMemeLikes(0, 3);
     let getMeme1Likes = await memeInstance.getMemeLikes.call(0);
 
@@ -247,8 +262,10 @@ contract("Meme.sol", function(accounts) {
 
   it("Should change meme path of meme 1", async () => {
     let meme1NewPath = "/newpath/meme/1";
-    let setMeme1Path = await memeInstance.setMemePath(0, meme1NewPath);
-    let getMeme1Path = await memeInstance.getMemePath(0);
+    let setMeme1Path = await memeInstance.setMemePath(0, meme1NewPath, {
+      from: memeOwner1,
+    });
+    let getMeme1Path = await memeInstance.getMemePath.call(0);
 
     assert.strictEqual(
       setMeme1Path.logs[0].event,
@@ -270,8 +287,10 @@ contract("Meme.sol", function(accounts) {
   });
 
   it("Should change value of meme 2 to 50", async () => {
-    let setMeme2Value = await memeInstance.setMemeValue(1, 50);
-    let getMeme2Value = await memeInstance.getMemeValue(1);
+    let setMeme2Value = await memeInstance.setMemeValue(1, 50, {
+      from: memeOwner2,
+    });
+    let getMeme2Value = await memeInstance.getMemeValue.call(1);
 
     assert.strictEqual(
       setMeme2Value.logs[0].event,
@@ -293,8 +312,8 @@ contract("Meme.sol", function(accounts) {
   });
 
   it("Should approve Meme 2", async () => {
-    let approveMeme2 = await memeInstance.approveMeme(1);
-    let getMeme2State = await memeInstance.getMemeState(1);
+    let approveMeme2 = await memeInstance.approveMeme(1, memeNewDate);
+    let getMeme2State = await memeInstance.getMemeState.call(1);
     assert.strictEqual(
       approveMeme2.logs[0].event,
       "MemeApproved",
@@ -338,7 +357,7 @@ contract("Meme.sol", function(accounts) {
   });
 
   it("Should reject Meme 3", async () => {
-    let rejectMeme3 = await memeInstance.rejectMeme(2);
+    let rejectMeme3 = await memeInstance.rejectMeme(2, memeNewDate);
     let getMeme3State = await memeInstance.getMemeState.call(2);
 
     assert.strictEqual(

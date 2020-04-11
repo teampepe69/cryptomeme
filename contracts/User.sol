@@ -1,201 +1,260 @@
 pragma solidity ^0.5.0;
 import "../node_modules/@openzeppelin/contracts/math/SafeMath.sol";
 
+
 contract User {
-    /*
-    modifier adminOnly() {
-        require(msg.sender == admin, "Restricted to admin only");
-        _;
-    }
-    
-    // modifier contentCreatorOnly () {
-    //     require(registered_Users[traceUser[msg.owner]].role == userRole.contentCreator, "Restricted to Content Creators only");
-    //     _;
-    // }
-
-    // modifier moderatorOnly () {
-    //     require(registered_Users[traceUser[msg.owner]].role == userRole.moderator, "Restricted to moderator only");
-    //     _;
-    // }
-
-    
-    modifier registeredUsersOnly() {
-        require(
-            registered_Users[msg.sender].state == userStates.registered,
-            "Restricted to registered users only"
-        );
-        _;
-    }
-
-    modifier specificUserOnly(address userAd) {
-        require(msg.sender == userAd, "Restricted to user only");
-        _;
-    }
-
-    modifier alreadyFollowed(address userAd) {
-        require(
-            alreadyFollowing[msg.sender][userAd] == true,
-            "User already followed"
-        );
-        _;
-    }
-    */
     using SafeMath for uint256;
-    address admin = msg.sender;
+    address contractOwner = msg.sender;
 
-    enum userStates {pending, active, deactivated, moderator, admin}
+    enum userStates {pending, active, deactivated, admin}
 
     uint256 public numberOfUsers = 0;
 
-    struct User {
+    struct user {
         uint256 userId;
-        string username;
-        string passwordHash;
         address userWallet;
-        string displayPicturePath;
+        string about;
+        string displayPictureHash;
+        string displayName;
+        string website;
         userStates state;
     }
 
-    User[] public users;
+    user[] public users;
+    mapping(address => bool) public userExists;
+    mapping(address => uint256) public userIds;
 
     event UserCreated(
         uint256 userId,
-        string username,
         address userWallet,
-        string displayPicturePath
+        string about,
+        string displayPictureHash,
+        string displayName,
+        string website
     );
+    event UserAboutChanged(address userWallet, string about);
+    event UserDisplayPictureChanged(
+        address userWallet,
+        string displayPictureHash
+    );
+    event UserDisplayNameChanged(address userWallet, string displayName);
+    event UserWebsiteChanged(address userWallet, string website);
+    event UserActivated(address userWallet);
+    event UserDeactivated(address userWallet);
+    event UserNewAdmin(address userWallet);
 
-    event UsernameChanged(uint256 userId, string username);
-    event UserPasswordChanged(uint256 userId, string passwordHash);
-    event UserWalletChanged(uint256 userId, address userWallet);
-    event UserDisplayPictureChanged(uint256 userId, string displayPicturePath);
-    event UserActivated(uint256 userId);
-    event UserDeactivated(uint256 userId);
-    event UserModeratored(uint256 userId);
-    event UserBecameAdmin(uint256 userId);
+    /**
+     * Ensures a unique user address is supplied
+     */
+    modifier uniqueUser(address _userWallet) {
+        require(!userExists[_userWallet], "User already exists!");
+        _;
+    }
 
+    /**
+     * Ensures that meme owner is the one modifying meme contents
+     */
+    modifier isUser(address _userWallet) {
+        require(
+            tx.origin == _userWallet,
+            "You must be the User of your own profile"
+        );
+        _;
+    }
+
+    /**
+     * Ensures that function caller is an admin
+     */
+    modifier isAdmin() {
+        require(
+            checkUserIsAdmin(tx.origin),
+            "You must be an admin to call this function"
+        );
+        _;
+    }
+
+    /**
+     * Creates a default admin account
+     */
+    constructor() public {
+        //Create admin user
+        createUser(
+            msg.sender,
+            "I am the boss",
+            "QmP1KdPrFV9wKbDy5WvCDKd3YcyTBbFvqfvBCzjGrDiVLZ",
+            "BigPepeBoss",
+            "www.4chan.org"
+        );
+        users[userIds[msg.sender]].state = userStates.admin;
+    }
+
+    function getContractOwner() public returns (address) {
+        return contractOwner;
+    }
+
+    /**
+     * Creates a new user with supplied variables
+     * Requirements:
+     * - `_userwallet` supplied must be user's own address
+     */
     function createUser(
-        string memory _username,
-        string memory _passwordHash,
         address _userWallet,
-        string memory _displayPicturePath
-    ) public {
-        User memory newUser = User(
+        string memory _about,
+        string memory _displayPictureHash,
+        string memory _displayName,
+        string memory _website
+    ) public isUser(_userWallet) uniqueUser(_userWallet) {
+        user memory newUser = user(
             numberOfUsers,
-            _username,
-            _passwordHash,
             _userWallet,
-            _displayPicturePath,
+            _about,
+            _displayPictureHash,
+            _displayName,
+            _website,
             userStates.pending
         );
         users.push(newUser);
         emit UserCreated(
             numberOfUsers,
-            _username,
             _userWallet,
-            _displayPicturePath
+            _about,
+            _displayPictureHash,
+            _displayName,
+            _website
         );
+        userExists[_userWallet] = true;
+        userIds[_userWallet] = numberOfUsers;
         numberOfUsers = numberOfUsers.add(1);
     }
 
-    function setUsername(uint256 _userId, string memory _username) public {
-        users[_userId].username = _username;
-        emit UsernameChanged(_userId, _username);
-    }
-
-    function setUserPassword(uint256 _userId, string memory _passwordHash)
+    /**
+     * Update User's about description
+     * Requirements:
+     * - User calling this function has to be owner of user profile
+     */
+    function setUserAbout(address _userWallet, string memory _about)
         public
+        isUser(_userWallet)
     {
-        users[_userId].passwordHash = _passwordHash;
-        emit UserPasswordChanged(_userId, _passwordHash);
+        users[userIds[_userWallet]].about = _about;
+        emit UserAboutChanged(_userWallet, _about);
     }
 
-    function setUserWallet(uint256 _userId, address _userWallet) public {
-        users[_userId].userWallet = _userWallet;
-        emit UserWalletChanged(_userId, _userWallet);
+    /**
+     * Update User's Display Picture
+     * Requirements:
+     * - User calling this function has to be owner of user profile
+     */
+    function setUserDisplayPicture(
+        address _userWallet,
+        string memory _displayPictureHash
+    ) public isUser(_userWallet) {
+        users[userIds[_userWallet]].displayPictureHash = _displayPictureHash;
+        emit UserDisplayPictureChanged(_userWallet, _displayPictureHash);
     }
 
-    function setDisplayPicturePath(
-        uint256 _userId,
-        string memory _displayPicturePath
-    ) public {
-        users[_userId].displayPicturePath = _displayPicturePath;
-        emit UserDisplayPictureChanged(_userId, _displayPicturePath);
-    }
-
-    function setUserAsDeactivated(uint256 _userId) public {
-        users[_userId].state = userStates.deactivated;
-        emit UserDeactivated(_userId);
-    }
-
-    function setUserAsActive(uint256 _userId) public {
-        users[_userId].state = userStates.active;
-        emit UserActivated(_userId);
-    }
-
-    function setUserAsModerator(uint256 _userId) public {
-        users[_userId].state = userStates.moderator;
-        emit UserModeratored(_userId);
-    }
-
-    function setUserAsAdmin(uint256 _userId) public {
-        users[_userId].state = userStates.admin;
-        emit UserBecameAdmin(_userId);
-    }
-
-    /*
-    function getUserRole(address userAd) public view returns (string memory) {
-        return getRoleKeyByValue(registered_Users[userAd].role);
-    }
-
-    function getRoleKeyByValue(userRoles r)
-        internal
-        pure
-        returns (string memory)
-    {
-        // Error handling for input
-        require(uint8(r) <= 3);
-
-        // Loop through possible options
-        if (userRoles.viewer == r) return "viewer";
-        if (userRoles.contentCreator == r) return "contentCreator";
-        if (userRoles.moderator == r) return "moderator";
-    }
-    
-
-    function getUserStatus(address userAd) public view returns (string memory) {
-        return getStatusKeyByValue(registered_Users[userAd].state);
-    }
-
-    function getStatusKeyByValue(userStates s)
-        internal
-        pure
-        returns (string memory)
-    {
-        // Error handling for input
-        require(uint8(s) <= 2);
-
-        // Loop through possible options
-        if (userStates.unregistered == s) return "unregistered";
-        if (userStates.registered == s) return "registered";
-    }
-
-    function followUser(address userAd)
+    /**
+     * Update User's display name
+     * Requirements:
+     * - User calling this function has to be owner of user profile
+     */
+    function setUserDisplayName(address _userWallet, string memory _displayName)
         public
-        registeredUsersOnly
-        alreadyFollowed(userAd)
+        isUser(_userWallet)
     {
-        alreadyFollowing[msg.sender][userAd] = true;
-        following[msg.sender].push(userAd);
+        users[userIds[_userWallet]].displayName = _displayName;
+        emit UserDisplayNameChanged(_userWallet, _displayName);
     }
 
-    function getUserFollowing(address userAd)
+    /**
+     * Update User's website
+     * Requirements:
+     * - User calling this function has to be owner of user profile
+     */
+    function setUserWebsite(address _userWallet, string memory _website)
+        public
+        isUser(_userWallet)
+    {
+        users[userIds[_userWallet]].website = _website;
+        emit UserWebsiteChanged(_userWallet, _website);
+    }
+
+    /**
+     * Deactivate User
+     * Requirements:
+     * - User calling this function has to be an admin
+     */
+    function setUserAsDeactivated(address _userWallet) public isAdmin() {
+        users[userIds[_userWallet]].state = userStates.deactivated;
+        emit UserDeactivated(_userWallet);
+    }
+
+    /**
+     * Activate User
+     * Requirements:
+     * - User calling this function has to be an admin
+     */
+    function setUserAsActive(address _userWallet) public isAdmin() {
+        users[userIds[_userWallet]].state = userStates.active;
+        emit UserActivated(_userWallet);
+    }
+
+    /**
+     * Set user as admin
+     * Requirements:
+     * - User calling this function has to be an admin
+     */
+    function setUserAsAdmin(address _userWallet) public isAdmin() {
+        users[userIds[_userWallet]].state = userStates.admin;
+        emit UserNewAdmin(_userWallet);
+    }
+
+    /**
+     * developers: Checks if a supplied `_userWallet` exists
+     */
+    function checkUserExists(address _userWallet) public view returns (bool) {
+        return userExists[_userWallet];
+    }
+
+    /**
+     * developers: Checks if a supplied `_userWallet` is an admin
+     */
+    function checkUserIsAdmin(address _userWallet) public view returns (bool) {
+        return users[userIds[_userWallet]].state == userStates.admin;
+    }
+
+    /**
+     * Checks if a supplied `_userWallet` is active
+     */
+    function checkUserIsActive(address _userWallet) public view returns (bool) {
+        return users[userIds[_userWallet]].state == userStates.active;
+    }
+
+    /**
+     * Checks if a supplied `_userWallet` is pending
+     */
+    function checkUserIsPending(address _userWallet)
         public
         view
-        returns (address[] memory)
+        returns (bool)
     {
-        return following[userAd];
+        return users[userIds[_userWallet]].state == userStates.pending;
     }
-    */
 
+    /**
+     * Returns total number of registered users
+     */
+    function getNumberUsers() public view returns (uint256) {
+        return numberOfUsers;
+    }
+
+    /**
+     * Returns a User Address given a supplied index `i`
+     * Requirements:
+     * - Supplied index `i` must be a valid index
+     */
+    function getUserAddress(uint256 i) public view returns (address) {
+        require(i < numberOfUsers, "Not a valid User ID");
+        return users[i].userWallet;
+    }
 }

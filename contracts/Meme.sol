@@ -1,31 +1,37 @@
 pragma solidity ^0.5.0;
 import "../node_modules/@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "./User.sol";
+
 
 contract Meme is ERC721 {
     using SafeMath for uint256;
 
     address contractOwner = msg.sender;
+    User userContract;
 
     uint256 public numberOfMemes = 0;
 
     enum memeStates {approved, rejected, pending}
 
-    struct Meme {
+    struct meme {
+        address memeOwner;
         uint256 memeId;
         uint256 memeLikes;
         uint256 memeDislikes;
         uint256 memeFlags;
         uint256 memeValue;
+        uint256 memeDate;
         string memePath;
         string memeTitle;
         string memeDescription;
         memeStates memeState;
     }
 
-    Meme[] public memes;
+    meme[] public memes;
 
     event MemeCreated(
         uint256 memeId,
+        uint256 memeDate,
         string memePath,
         string memeTitle,
         string memeDescription
@@ -33,25 +39,59 @@ contract Meme is ERC721 {
     event MemeLiked(uint256 memeId, uint256 memeLikes);
     event MemeDisliked(uint256 memeId, uint256 memeDislikes);
     event MemeFlagged(uint256 memeId, uint256 memeFlags);
-    event MemeApproved(uint256 memeId);
-    event MemeRejected(uint256 memeId);
+    event MemeApproved(uint256 memeId, uint256 memeDate);
+    event MemeRejected(uint256 memeId, uint256 memeDate);
     event MemeValueChanged(uint256 memeId, uint256 memeValue);
+    event MemeDateChanged(uint256 memeId, uint256 memeDate);
     event MemePathChanged(uint256 memeId, string memePath);
     event MemeTitleChanged(uint256 memeId, string memeTitle);
     event MemeDescriptionChanged(uint256 memeId, string memeDescription);
 
+    modifier isMemeOwner(uint256 _memeId) {
+        require(
+            getMemeOwner(_memeId) == tx.origin,
+            "Ensure that you're the Meme Owner"
+        );
+        _;
+    }
+
+    modifier isActiveUser() {
+        require(
+            userContract.checkUserIsActive(tx.origin) ||
+                userContract.checkUserIsAdmin(tx.origin),
+            "You must be an active user"
+        );
+        _;
+    }
+
+    modifier isAdminUser() {
+        require(
+            userContract.checkUserIsAdmin(tx.origin),
+            "You must be an admin user"
+        );
+        _;
+    }
+
+    constructor(User _userContract) public {
+        userContract = _userContract;
+    }
+
     function createMeme(
         address _memeOwner,
+        uint256 _memeDate,
         string memory _memePath,
         string memory _memeTitle,
-        string memory _memeDescription
+        string memory _memeDescription,
+        uint256 _memeValue
     ) public returns (uint256) {
-        Meme memory _meme = Meme(
+        meme memory _meme = meme(
+            _memeOwner,
             numberOfMemes,
             0,
             0,
             0,
-            0,
+            _memeValue,
+            _memeDate,
             _memePath,
             _memeTitle,
             _memeDescription,
@@ -60,8 +100,22 @@ contract Meme is ERC721 {
         uint256 _memeId = memes.push(_meme).sub(1);
         _mint(_memeOwner, _memeId);
         numberOfMemes = numberOfMemes.add(1);
-        emit MemeCreated(_memeId, _memePath, _memeTitle, _memeDescription);
+        emit MemeCreated(
+            _memeId,
+            _memeDate,
+            _memePath,
+            _memeTitle,
+            _memeDescription
+        );
         return _memeId;
+    }
+
+    function getNumberMemes() public view returns (uint256) {
+        return numberOfMemes;
+    }
+
+    function getMemeOwner(uint256 _memeId) public view returns (address) {
+        return memes[_memeId].memeOwner;
     }
 
     function getMemeLikes(uint256 _memeId) public view returns (uint256) {
@@ -84,6 +138,10 @@ contract Meme is ERC721 {
         return memes[_memeId].memeState;
     }
 
+    function getMemeDate(uint256 _memeId) public view returns (uint256) {
+        return memes[_memeId].memeDate;
+    }
+
     function getMemePath(uint256 _memeId) public view returns (string memory) {
         return memes[_memeId].memePath;
     }
@@ -100,50 +158,87 @@ contract Meme is ERC721 {
         return memes[_memeId].memeDescription;
     }
 
-    function setMemeLikes(uint256 _memeId, uint256 _memeLikes) public {
+    function setMemeLikes(uint256 _memeId, uint256 _memeLikes)
+        public
+        isActiveUser()
+    {
         memes[_memeId].memeLikes = _memeLikes;
         emit MemeLiked(_memeId, _memeLikes);
     }
 
-    function setMemeDislikes(uint256 _memeId, uint256 _memeDislikes) public {
+    function setMemeDislikes(uint256 _memeId, uint256 _memeDislikes)
+        public
+        isActiveUser()
+    {
         memes[_memeId].memeDislikes = _memeDislikes;
         emit MemeDisliked(_memeId, _memeDislikes);
     }
 
-    function setMemeFlags(uint256 _memeId, uint256 _memeFlags) public {
+    function setMemeFlags(uint256 _memeId, uint256 _memeFlags)
+        public
+        isActiveUser()
+    {
         memes[_memeId].memeFlags = _memeFlags;
         emit MemeFlagged(_memeId, _memeFlags);
     }
 
-    function setMemeValue(uint256 _memeId, uint256 _memeValue) public {
+    function setMemeValue(uint256 _memeId, uint256 _memeValue)
+        public
+        isMemeOwner(_memeId)
+    {
         memes[_memeId].memeValue = _memeValue;
         emit MemeValueChanged(_memeId, _memeValue);
     }
 
-    function approveMeme(uint256 _memeId) public {
+    function approveMeme(uint256 _memeId, uint256 _newDate)
+        public
+        isAdminUser()
+    {
         memes[_memeId].memeState = memeStates.approved;
-        emit MemeApproved(_memeId);
+        memes[_memeId].memeDate = _newDate;
+        emit MemeApproved(_memeId, _newDate);
     }
 
-    function rejectMeme(uint256 _memeId) public {
+    function rejectMeme(uint256 _memeId, uint256 _newDate)
+        public
+        isActiveUser()
+    {
         memes[_memeId].memeState = memeStates.rejected;
-        emit MemeRejected(_memeId);
+        memes[_memeId].memeDate = _newDate;
+        emit MemeRejected(_memeId, _newDate);
     }
 
-    function setMemePath(uint256 _memeId, string memory _memePath) public {
+    function setMemeDate(uint256 _memeId, uint256 _memeDate) public {
+        require(
+            getMemeOwner(_memeId) == tx.origin ||
+                userContract.checkUserIsAdmin(tx.origin),
+            "You must be the Meme owner or an admin"
+        );
+        memes[_memeId].memeDate = _memeDate;
+        emit MemeDateChanged(_memeId, _memeDate);
+    }
+
+    function setMemePath(uint256 _memeId, string memory _memePath)
+        public
+        isMemeOwner(_memeId)
+    {
         memes[_memeId].memePath = _memePath;
         emit MemePathChanged(_memeId, _memePath);
     }
 
-    function setMemeTitle(uint256 _memeId, string memory _memeTitle) public {
+    function setMemeTitle(uint256 _memeId, string memory _memeTitle)
+        public
+        isMemeOwner(_memeId)
+    {
         memes[_memeId].memeTitle = _memeTitle;
         emit MemeTitleChanged(_memeId, _memeTitle);
     }
+
     function setMemeDescription(uint256 _memeId, string memory _memeDescription)
         public
+        isMemeOwner(_memeId)
     {
         memes[_memeId].memeDescription = _memeDescription;
         emit MemeDescriptionChanged(_memeId, _memeDescription);
     }
-
 }

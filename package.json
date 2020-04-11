@@ -25,7 +25,8 @@
     "@openzeppelin/contracts": "^2.5.0",
     "ganache-cli": "^6.9.1",
     "solidity-coverage": "^0.7.2",
-    "truffle": "^5.1.16"
+    "truffle": "^5.1.16",
+    "truffle-hdwallet-provider": "^1.0.17"
   },
   "author": "IS4302 - Teampepe69",
   "license": "ISC",

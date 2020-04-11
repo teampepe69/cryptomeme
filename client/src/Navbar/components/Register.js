@@ -12,6 +12,7 @@ import {
 import { withStyles } from "@material-ui/core/styles";
 import Swal from "sweetalert2";
 import ipfs from "../../ipfs";
+import defaultDp from "../../img/ClownPepe.png";
 
 const styles = (theme) => ({
   modal: {
@@ -75,6 +76,9 @@ const Register = (props) => {
   };
 
   function captureFile(event) {
+    document.getElementById("displayPic").src = window.URL.createObjectURL(
+      event.target.files[0]
+    );
     event.preventDefault();
     const file = event.target.files[0];
     const reader = new window.FileReader();
@@ -153,6 +157,14 @@ const Register = (props) => {
                 onInput={(e) => setDisplayName(e.target.value)}
                 required
               />
+              <img
+                id="displayPic"
+                src={defaultDp}
+                alt="Image Uploaded"
+                width="100"
+                height="100"
+              />
+              <br></br>
               <input
                 accept="image/*"
                 className={classes.input}

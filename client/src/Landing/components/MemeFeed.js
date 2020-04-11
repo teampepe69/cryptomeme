@@ -16,11 +16,9 @@ import {
   Divider,
   IconButton,
 } from "@material-ui/core";
-// import logo from "../../img/goodjob_pepe.png";
 import hurt from "../../img/sadpepe.png";
 import peperoni from "../../img/peperoni.png";
 import CloudUploadIcon from "@material-ui/icons/CloudUpload";
-// import ThumbUpAltIcon from "@material-ui/icons/ThumbUpAlt";
 import ThumbDownAltOutlinedIcon from "@material-ui/icons/ThumbDownAltOutlined";
 import ThumbUpAltOutlinedIcon from "@material-ui/icons/ThumbUpAltOutlined";
 import ThumbUpAltRoundedIcon from "@material-ui/icons/ThumbUpAltRounded";
@@ -34,11 +32,8 @@ import detectivePikachu from "../../img/detectivePikachu.jpg";
 const styles = (theme) => ({
   root: {
     width: "100%",
-    // maxWidth: '80%',
     marginTop: "10px",
-    // marginBottom:'1%',
     position: "relative",
-    // display: 'flex',
     padding: theme.spacing(2),
     borderRadius: 16,
   },
@@ -259,9 +254,16 @@ const MemeFeed = (props) => {
 
       //2) sort:
       list.sort(function (a, b) {
-        return Number(a.prop1.memeValue) > Number(b.prop1.memeValue) ? -1 : 1;
+        //return Number(a.prop1.memeValue) > Number(b.prop1.memeValue) ? -1 : 1;
         //Sort could be modified to, for example, sort on the age
         // if the name is the same.
+        if (Number(a.prop1.memeValue) > Number(b.prop1.memeValue)) {
+          return -1;
+        } else if (Number(a.prop1.memeValue) < Number(b.prop1.memeValue)) {
+          return 1;
+        } else {
+          return Number(a.prop1.memeDate) > Number(b.prop1.memeDate) ? -1 : 1;
+        }
       });
 
       //3) separate them back out:
@@ -495,6 +497,7 @@ const MemeFeed = (props) => {
         icon: "success",
         confirmButtonText: "Cool beans",
       });
+      populateMeme();
     } catch (error) {
       checkMetaMaskAccount();
     }

@@ -1,5 +1,6 @@
 import Web3 from "web3";
 import Swal from "sweetalert2";
+import SadPepe from "img/sadpepe.png";
 
 const getWeb3 = () =>
   new Promise((resolve, reject) => {
@@ -32,8 +33,8 @@ const getWeb3 = () =>
         const web3 = new Web3(provider);
         Swal.fire({
           title:
-            "No MetaMask detected. You can still enjoy the memes but you can't upload/like memes.",
-          icon: "warning",
+            "No MetaMask detected. Sadly you will need MetaMask to enjoy these memes :(",
+          imageUrl: SadPepe,
           confirmButtonText: "What's this MetaMask you speak of?",
           showCancelButton: true,
         }).then((result) => {

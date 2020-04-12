@@ -426,18 +426,21 @@ const MemeFeed = (props) => {
       .call();
     if (!isFlagged) {
       try {
-        let flagMemeResult = await memeketPlaceNetwork.methods
-          .flagMeme(memeId)
-          .send({ from: acc });
-        if (flagMemeResult) {
+        await memeketPlaceNetwork.methods.flagMeme(memeId).send({ from: acc });
+        let memeFlagged = await memeNetwork.methods
+          .memes(memeId)
+          .call({ from: acc });
+        let flagMemeResult = memeFlagged[10];
+        if ("Rejected" == mapMemeStatus(flagMemeResult)) {
           handleClose("flag");
           Swal.fire({
             title:
               "Flag successful! Meme has been rejected because majority thinks this meme is bad",
             icon: "success",
             confirmButtonText: "OhMaiGawd",
+          }).then(function () {
+            window.location.reload(false);
           });
-          window.location.reload(false);
         } else {
           handleClose("flag");
           Swal.fire({

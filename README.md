@@ -5,43 +5,45 @@
 
 **CryptoMeme** aims to encourge meme creators to create memes and upload them onto a social media-like blockchain platform so as to spread the love and joy of memes all over the world. Currently, Meme creators are mostly paid by companies to come up with Memes as a form of advertisement for these companies.
 
-**CryptoMeme** aims to resolve this issue by rewarding meme creators for uploading memes with our very own cryptocurrency **Peperonis**. We hope that through CryptoMeme, more meme creators would be encouraged in creating memes for people all over the world to enjoy the joy of memes and have their fill of laughter in today's depressing society. Furthermore, with Blockchain technology, meme owners can now prove *non-repudiation* of their memes due to the very nature of blockchain itself! :)
+**CryptoMeme** aims to resolve this issue by rewarding meme creators for uploading memes with our very own cryptocurrency **Peperonis**. We hope that through CryptoMeme, more meme creators would be encouraged in creating memes for people all over the world to enjoy the joy of memes and have their fill of laughter in today's depressing society. Furthermore, with Blockchain technology, meme owners can now prove _non-repudiation_ of their memes due to the very nature of blockchain itself! :)
 
 ![alt text](https://raw.githubusercontent.com/teampepe69/cryptomeme/master/docs/Sample1.png "CryptoMeme platform")
 
 # Installation & Setup
+
 ## 0. Pre-requisites
-* We assume you already have `nodejs` and `npm` installed for this.
+
+- We assume you already have `nodejs` and `npm` installed for this.
 
 ## 1. Blockchain Environment
 
-* Install the trufflesuite by running `npm install -g truffle`
+- Install the trufflesuite by running `npm install -g truffle`
 
-* Install ganache by running `npm install -g ganache-cli`
+- Install ganache by running `npm install -g ganache-cli`
 
 ## 2. Project Environment
 
-* Download the project via `git clone https://github.com/teampepe69/cryptomeme.git`
+- Download the project via `git clone https://github.com/teampepe69/cryptomeme.git`
 
-* Go into the project root directory from your current directory by running `cd cryptomeme`
+- Go into the project root directory from your current directory by running `cd cryptomeme`
 
-* From the project root directory, install the blockchain dependencies by running `npm install`
+- From the project root directory, install the blockchain dependencies by running `npm install`
 
-* Go into the `client` directory by running `cd client` from the project root directory
+- Go into the `client` directory by running `cd client` from the project root directory
 
-* Install the web application dependencies by running `npm install`
+- Install the web application dependencies by running `npm install`
 
 ## 3. Browser Environment
 
-* **CryptoMeme** requires its users to have [MetaMask](https://metamask.io/download.html) installed on their browser.
+- **CryptoMeme** requires its users to have [MetaMask](https://metamask.io/download.html) installed on their browser.
 
-* Download [MetaMask](https://metamask.io/download.html) and set it up for your browser that you wish to run **CryptoMeme** from.
+- Download [MetaMask](https://metamask.io/download.html) and set it up for your browser that you wish to run **CryptoMeme** from.
 
 # Deploying the web application
 
 ## Local Deployment
 
-* From the project root directory run `ganache-cli -p 8545 -d`. You'll get a list of accounts with 100 ether (for your ganache network) and their respective private keys as shown below:
+- From the project root directory run `ganache-cli -p 8545 -d`. You'll get a list of accounts with 100 ether (for your ganache network) and their respective private keys as shown below:
 
 ```
     Available Accounts
@@ -71,20 +73,22 @@
     (9) 0xb0057716d5917badaf911b193b12b910811c1497b5bada8d7711f758981c3773
 ```
 
-* Import these accounts into your MetaMask through the Private Key option.
+- Import these accounts into your MetaMask through the Private Key option.
 
-* Ensure that your MetaMask is running on `Localhost 8545` and not any other network (i.e Mainnet, Ropsten)
+- Ensure that your MetaMask is running on `Localhost 8545` and not any other network (i.e Mainnet, Ropsten)
 
-* Opening a separate terminal on the same directory, run `truffle migrate`
+- Opening a separate terminal on the same directory, run `truffle migrate`
 
-* Go into the `client` directory by running `cd client` and run `npm start`
+- Go into the `client` directory by running `cd client` and run `npm start`
 
-* Your browser would open up a tab on `localhost:3000`, and you can now start creating some memes!
+- Your browser would open up a tab on `localhost:3000`, and you can now start creating some memes!
 
-* Note that the first account `0x90F8bf6A479f320ead074411a4B0e7944Ea8c9C1` is a default admin account. You can login with this account directly :)
+- Note that the first account `0x90F8bf6A479f320ead074411a4B0e7944Ea8c9C1` is a default admin account. You can login with this account directly :)
 
 ## Ropsten Deployment
+
 This application has been deployed onto the Ropsten Test Network at the following addresses:
+
 ```
 Network: ropsten (id: 3)
   Meme: 0x7991D82800aEcfb4124183B08e10051289FFC820
@@ -101,23 +105,26 @@ Alternatively, you can have a go with the web application over [here](http://13.
 # Features
 
 ## User Related Features
+
 1. Creating an Account
 2. Logging into Account
-   * Requires account to be approved by an admin first.
+   - Requires account to be approved by an admin first.
 3. Updating Profile
 4. View Leaderboard
-   * Leaderboard is based on how much PepeCoins you have :)
+   - Leaderboard is based on how much PepeCoins you have :)
 
 ## Meme Related Features
+
 1. Uploading a Meme
-   * Requires meme to be approved by an admin first.
+   - Requires meme to be approved by an admin first.
 2. Liking a Meme
 3. Disliking a Meme
 4. Flagging a Meme
-   * Note that memes are automatically rejected if majority (i.e > 50%) of the users has flagged a meme
+   - Note that memes are automatically rejected if majority (i.e > 50%) of the users has flagged a meme
 5. Increasing Value for your Meme
 
 ## Admin Related Features
+
 1. Approve Account
 2. Reject Account
 3. Promote Account to Admin
@@ -126,40 +133,50 @@ Alternatively, you can have a go with the web application over [here](http://13.
 
 # FAQ
 
-* I seem to be getting network is null error. Why is that so?
-    * I presume you're doing local development modifications. Most likely this is due to your modifications of the smart contract(s). Simply restart your browser and all is well :)
-  
-* Why is there no backend?
-  * We wanted to explore the idea of having a serverless application since this is a blockchain project.
+- I seem to be getting network is null error. Why is that so?
 
-* Where are the images hosted?
-  * Images are actually hosted on [Infura's IPFS](https://infura.io/). The image hashes are stored on the blockchain and loaded via `https://infura.io/ipfs/{hashOfImage}`
+  - I presume you're doing local development modifications. Most likely this is due to your modifications of the smart contract(s). Simply restart your browser and all is well :)
 
-* Why is `secrets.js` pushed?
-  * Yes we know it's insecure to do this but because this is for a school project so we would like to think our instructors would need to see every single file that was involved :) This would definitely be taken down once the semester is over.
-  
-* What's a meme?
-    * A meme is an image, video, piece of text, etc., typically humorous in nature, that is copied and spread rapidly by Internet users, often with slight variations (taken from google).
-  
-* Why Pepe the Frog?
-    * Pepe the Frog is actually more than a meme, it's a symbol of freedom, peace and love. 
-    * [Reference](https://www.wired.com/story/pepe-the-frog-meme-hong-kong/)
-  
-* I love this platform! How can I help?
-    * Currently this is actually a school project but I guess pull requests and issues are always welcomed :)
+- Why is there no backend?
 
-* Who are you guys?
-    * We're a bunch of students from the National University of Singapore taking a Blockchain module. We're doing this project as part of our module.
+  - We wanted to explore the idea of having a serverless application since this is a blockchain project.
+
+- Where are the images hosted?
+
+  - Images are actually hosted on [Infura's IPFS](https://infura.io/). The image hashes are stored on the blockchain and loaded via `https://infura.io/ipfs/{hashOfImage}`
+
+- Why is `secrets.js` pushed?
+
+  - Yes we know it's insecure to do this but because this is for a school project so we would like to think our instructors would need to see every single file that was involved :) This would definitely be taken down once the semester is over.
+
+- What's a meme?
+
+  - A meme is an image, video, piece of text, etc., typically humorous in nature, that is copied and spread rapidly by Internet users, often with slight variations (taken from google).
+
+- Why Pepe the Frog?
+
+  - Pepe the Frog is actually more than a meme, it's a symbol of freedom, peace and love.
+  - [Reference](https://www.wired.com/story/pepe-the-frog-meme-hong-kong/)
+
+- I love this platform! How can I help?
+
+  - Currently this is actually a school project but I guess pull requests and issues are always welcomed :)
+
+- Who are you guys?
+  - We're a bunch of students from the National University of Singapore taking a Blockchain module. We're doing this project as part of our module.
 
 # Team Members
-* [Quentin Khoo](https://github.com/quentinkhoo)
-* [Sylvia Swee](https://github.com/sylvieaaa/)
-* [Phoebe Neo](https://github.com/arxebe)
-* [Nicolas Schuhl](https://github.com/nicolashackingproject)
-* [Ng Tze Meng](https://github.com/TzeMeng)
+
+- [Quentin Khoo](https://github.com/quentinkhoo)
+- [Sylvia Swee](https://github.com/sylvieaaa/)
+- [Phoebe Neo](https://github.com/arxebe)
+- [Nicolas Schuhl](https://github.com/nicolashackingproject)
+- [Ng Tze Meng](https://github.com/TzeMeng)
 
 # Feature Requests/ Bug Reporting
+
 Kindly request for any features or report any bugs by opening an issue [here](https://github.com/teampepe69/cryptomeme/issues) :)
 
 # License
+
 [MIT](https://choosealicense.com/licenses/mit/)

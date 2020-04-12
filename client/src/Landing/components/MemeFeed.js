@@ -150,6 +150,7 @@ const MemeFeed = (props) => {
     sessionStorage.getItem("account")
   );
   const [peperonis, setPeperonis] = React.useState(0);
+  const [memeSelected, setMemeSelected] = React.useState(0);
 
   useEffect(() => {
     populateMeme();
@@ -373,6 +374,7 @@ const MemeFeed = (props) => {
 
   //------------LIKE MEMES--------------
   async function likeMeme(memeId) {
+    console.log(memeId);
     const acc = sessionStorage.getItem("account");
     var arr = memes;
     setLoading(true);
@@ -399,6 +401,7 @@ const MemeFeed = (props) => {
 
   //------------DISLIKE MEMES--------------
   async function dislikeMeme(memeId) {
+    console.log(memeId);
     const acc = sessionStorage.getItem("account");
     var arr = memes;
     setLoading(true);
@@ -439,6 +442,7 @@ const MemeFeed = (props) => {
 
   //-------------FLAG MEME--------------------
   async function flagMeme(memeId) {
+    console.log(memeId);
     setLoading(true);
     const acc = sessionStorage.getItem("account");
     var arr = memes;
@@ -517,6 +521,7 @@ const MemeFeed = (props) => {
 
   //------------Update Meme Value-------------------
   async function handleUpdateMemeValue(memeId) {
+    console.log(memeId);
     setLoading(true);
     const account = sessionStorage.getItem("account");
     try {
@@ -923,7 +928,10 @@ const MemeFeed = (props) => {
                               aria-labelledby="simple-modal-title"
                               aria-describedby="simple-modal-description"
                               open={openPin}
-                              onClose={() => handleClose("pin")}
+                              onClose={() => {
+                                setMemeSelected(meme.memeId);
+                                handleClose("pin");
+                              }}
                               className={classes.modal}
                             >
                               <Card className={classes.paper}>
@@ -993,7 +1001,7 @@ const MemeFeed = (props) => {
                                   type="submit"
                                   className={classes.button}
                                   onClick={(e) =>
-                                    handleUpdateMemeValue(meme.memeId)
+                                    handleUpdateMemeValue(memeSelected)
                                   }
                                   fullWidth
                                 >
@@ -1022,14 +1030,10 @@ const MemeFeed = (props) => {
                             <IconButton
                               style={{ minWidth: "12px" }}
                               size="small"
-                              // disabled={
-                              //   loggedIn &&
-                              //     memeOwners[key] &&
-                              //     memeOwners[key].userWallet !== userAddress
-                              //     ? false
-                              //     : true
-                              // }
-                              onClick={() => handleOpen("flag")}
+                              onClick={(e) => {
+                                setMemeSelected(meme.memeId);
+                                handleOpen("flag");
+                              }}
                             >
                               <FlagIcon color="secondary" />
                             </IconButton>
@@ -1084,7 +1088,7 @@ const MemeFeed = (props) => {
                                       color="secondary"
                                       className={classes.flagButton}
                                       onClick={(e) => {
-                                        flagMeme(meme.memeId);
+                                        flagMeme(memeSelected);
                                       }}
                                       fullWidth
                                     >

@@ -21,6 +21,7 @@ import Navbar from "./Navbar/pages/Navbar.js";
 import AdminPage from "./Admin/pages/Admin.js";
 import LeaderBoardPage from "./LeaderBoard/pages/LeaderBoard.js";
 import SideDrawer from "./Subbar/components/SideDrawer";
+import SadPepe from "./img/sadpepe.png";
 
 setGlobal({
   web3: null,

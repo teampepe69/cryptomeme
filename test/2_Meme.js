@@ -12,9 +12,11 @@ contract("Meme.sol", function (accounts) {
   let memeDate = Math.floor(new Date().getTime() / 1000);
   let memeNewDate = Math.floor(new Date().getTime() / 1000);
   let meme1Title = "Meme 1";
+  let meme1NewTitle = "New Meme Title";
   let meme2Title = "Meme 2";
   let meme3Title = "Meme 3";
   let meme1Description = "This is Meme 1";
+  let meme1NewDescription = "New Meme Description";
   let meme2Description = "This is Meme 2";
   let meme3Description = "This is Meme 3";
   let meme1Value = 1;
@@ -166,6 +168,15 @@ contract("Meme.sol", function (accounts) {
     );
   });
 
+  it("Should have 3 memes from getNumberMemes()", async () => {
+    let numMemes = await memeInstance.getNumberMemes();
+    assert.strictEqual(
+      numMemes.toNumber(),
+      3,
+      "There should be 3 memes at this point"
+    );
+  });
+
   it("Should show meme states to be pending", async () => {
     let meme1State = await memeInstance.getMemeState.call(0);
     let meme2State = await memeInstance.getMemeState.call(1);
@@ -211,6 +222,65 @@ contract("Meme.sol", function (accounts) {
       meme3Owner,
       memeOwner3,
       "Meme 3 owner should be correct"
+    );
+  });
+
+  it("Should set and return correct Meme date", async () => {
+    let setMeme1Date = await memeInstance.setMemeDate(0, memeNewDate);
+    let meme1Date = await memeInstance.getMemeDate(0);
+
+    assert.strictEqual(
+      meme1Date.toNumber(),
+      memeNewDate,
+      `Meme Date should have been ${memeNewDate}`
+    );
+
+    assert.strictEqual(
+      setMeme1Date.logs[0].event,
+      "MemeDateChanged",
+      "Meme Date Changed event should have been emitted"
+    );
+  });
+
+  it("Should set and return correct Meme title", async () => {
+    let setMeme1Title = await memeInstance.setMemeTitle(0, meme1NewTitle, {
+      from: memeOwner1,
+    });
+    let meme1Title = await memeInstance.getMemeTitle(0);
+
+    assert.strictEqual(
+      meme1Title,
+      meme1NewTitle,
+      `Meme 1 Title should have been ${meme1NewTitle}`
+    );
+
+    assert.strictEqual(
+      setMeme1Title.logs[0].event,
+      "MemeTitleChanged",
+      "Meme Title Changed event should have been emitted"
+    );
+  });
+
+  it("Should set and return correct Meme Description", async () => {
+    let setMeme1Description = await memeInstance.setMemeDescription(
+      0,
+      meme1NewDescription,
+      {
+        from: memeOwner1,
+      }
+    );
+    let meme1Description = await memeInstance.getMemeDescription(0);
+
+    assert.strictEqual(
+      meme1Description,
+      meme1NewDescription,
+      `Meme 1 Description should have been ${meme1NewDescription}`
+    );
+
+    assert.strictEqual(
+      setMeme1Description.logs[0].event,
+      "MemeDescriptionChanged",
+      "Meme Description Changed event should have been emitted"
     );
   });
 

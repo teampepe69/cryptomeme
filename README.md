@@ -5,11 +5,14 @@
 
 **CryptoMeme** aims to encourge meme creators to create memes and upload them onto a social media-like blockchain platform so as to spread the love and joy of memes all over the world. Currently, Meme creators are mostly paid by companies to come up with Memes as a form of advertisement for these companies.
 
-**CryptoMeme** aims to resolve this issue by rewarding meme creators for uploading memes with our very own cryptocurrency **Peperonis**. We hope that through CryptoMeme, more meme creators would be encouraged in creating memes for people all over the world to enjoy the joy of memes and have their fill of laughter in today's depressing society.
+**CryptoMeme** aims to resolve this issue by rewarding meme creators for uploading memes with our very own cryptocurrency **Peperonis**. We hope that through CryptoMeme, more meme creators would be encouraged in creating memes for people all over the world to enjoy the joy of memes and have their fill of laughter in today's depressing society. Furthermore, with Blockchain technology, meme owners can now prove *non-repudiation* of their memes due to the very nature of blockchain itself! :)
 
 ![alt text](https://raw.githubusercontent.com/teampepe69/cryptomeme/master/docs/Sample1.png "CryptoMeme platform")
 
 # Installation & Setup
+## 0. Pre-requisites
+* We assume you already have `nodejs` and `npm` installed for this.
+
 ## 1. Blockchain Environment
 
 * Install the trufflesuite by running `npm install -g truffle`

@@ -42,7 +42,7 @@ const getWeb3 = () =>
             window.open("https://metamask.io/download.html", "_blank");
           }
         });
-        // resolve(web3);
+        resolve(web3);
       }
     });
   });

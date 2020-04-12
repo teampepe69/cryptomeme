@@ -7,6 +7,8 @@
 
 **CryptoMeme** aims to resolve this issue by rewarding meme creators for uploading memes with our very own cryptocurrency **Peperonis**. We hope that through CryptoMeme, more meme creators would be encouraged in creating memes for people all over the world to enjoy the joy of memes and have their fill of laughter in today's depressing society.
 
+![alt text](https://raw.githubusercontent.com/teampepe69/cryptomeme/master/docs/Sample1.png "CryptoMeme platform")
+
 # Installation & Setup
 ## 1. Blockchain Environment
 

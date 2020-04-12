@@ -1,7 +1,7 @@
 import React, { useGlobal, useEffect } from "reactn";
 import { Link } from "react-router-dom";
 import { withStyles } from "@material-ui/core/styles";
-import { AppBar, Tabs, Tab } from "@material-ui/core";
+import { AppBar, Tabs, Tab, CircularProgress } from "@material-ui/core";
 import Rankings from "../components/Rankings";
 
 const styles = (theme) => ({});
@@ -17,6 +17,7 @@ const LeaderBoardPage = (props) => {
     sessionStorage.getItem("account")
   );
   const [value, setValue] = React.useState(0);
+  const [loading, setLoading] = React.useState(false);
 
   useEffect(() => {
     fetchData();
@@ -25,16 +26,13 @@ const LeaderBoardPage = (props) => {
 
   // Function for populate data : it's called to modify rows / disobidentrows states
   async function fetchData() {
+    setLoading(true);
     // fetch the data from contracts to have current users status
     const usersArray = [];
     async function fetchDataInside(usersArray) {
       // Use try / catch to prevent error when network is not loaded (when you go directly to admin page in dev mode) -> Thus global constatns are not set
 
       try {
-        // Check networks are up to date
-        console.log("this is userNetwork: ", value);
-        console.log("this is web3: ", web3);
-
         // Get number of accounts to iter on it (could be improve but impossible to return array from solidity)
         const result = await web3.eth.getAccounts();
         const numOfElements = await userNetwork.methods
@@ -63,6 +61,7 @@ const LeaderBoardPage = (props) => {
       } catch (e) {
         console.log("Error in the process");
       }
+      setLoading(false);
     }
 
     // Do something with the results : await for fetch and update state
@@ -80,7 +79,10 @@ const LeaderBoardPage = (props) => {
 
   return (
     <div style={{ paddingRight: "20px" }}>
-      <Rankings value={0} peopleParent={peopleParent} />
+      <React.Fragment>
+        {loading && <CircularProgress color="inherit" size={18} />}
+        {!loading && <Rankings value={0} peopleParent={peopleParent} />}
+      </React.Fragment>
     </div>
   );
 };

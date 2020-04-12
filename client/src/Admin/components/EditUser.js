@@ -5,6 +5,7 @@ import {
   Modal,
   Card,
   CardMedia,
+  CircularProgress,
   Typography,
 } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
@@ -45,6 +46,8 @@ const EditUser = (props) => {
   const [userNetwork] = useGlobal("userNetwork");
   const [memeketPlaceNetwork] = useGlobal("memeketPlaceNetwork");
   const [web3] = useGlobal("web3");
+  const [loading, setLoading] = React.useState(false);
+  const [loadingAdmin, setLoadingAdmin] = React.useState(false);
 
   async function checkMetaMaskAccount() {
     let accounts = await web3.eth.getAccounts();
@@ -62,6 +65,7 @@ const EditUser = (props) => {
   // ----------------------- Handle interaction ----------------------
 
   async function handleActivate(user) {
+    setLoading(true);
     // Set sender
     let currentAdmin = sessionStorage.getItem("account");
     // Find user address
@@ -73,18 +77,23 @@ const EditUser = (props) => {
 
       await memeketPlaceNetwork.methods
         .activateUser(userAddress)
-        .send({ from: currentAdmin });
+        .send({ from: currentAdmin })
+        .once("receipt", (receipt) => {
+          setLoading(false);
+        });
 
       // Close Modal
       handleClose();
     } catch (error) {
-      // if error check metamask account 
+      // if error check metamask account
       handleClose();
       checkMetaMaskAccount();
     }
+    setLoading(false);
   }
 
   async function handlePromote(user) {
+    setLoadingAdmin(true);
     // Set sender
     let currentAdmin = sessionStorage.getItem("account");
     // Find user address
@@ -94,21 +103,25 @@ const EditUser = (props) => {
 
     // Activate user
     try {
-
       await userNetwork.methods
         .setUserAsAdmin(userAddress)
-        .send({ from: currentAdmin });
+        .send({ from: currentAdmin })
+        .once("receipt", (receipt) => {
+          setLoadingAdmin(false);
+        });
 
       // Close Modal
       handleClose();
     } catch (error) {
-      // if error check metamask account 
+      // if error check metamask account
       handleClose();
       checkMetaMaskAccount();
     }
+    setLoadingAdmin(false);
   }
 
   async function handleDeactivate(user) {
+    setLoading(true);
     // Set sender
     let currentAdmin = sessionStorage.getItem("account");
     // Find user address
@@ -118,10 +131,12 @@ const EditUser = (props) => {
 
     try {
       // Activate user
-
       await userNetwork.methods
         .setUserAsDeactivated(userAddress)
-        .send({ from: currentAdmin });
+        .send({ from: currentAdmin })
+        .once("receipt", (receipt) => {
+          setLoading(false);
+        });
 
       // Close Modal
       handleClose();
@@ -130,6 +145,7 @@ const EditUser = (props) => {
       handleClose();
       checkMetaMaskAccount();
     }
+    setLoading(false);
   }
 
   // ----------------------- Printing ----------------------
@@ -217,7 +233,12 @@ const EditUser = (props) => {
                   style={{ backgroundColor: "#5d4037ff", color: "white" }}
                   onClick={() => handlePromote(userInfo)}
                 >
-                  Make Admin
+                  {loadingAdmin && (
+                    <CircularProgress color="inherit" size={14} />
+                  )}
+                  {!loadingAdmin && (
+                    <Typography variant="h7">Make Admin</Typography>
+                  )}
                 </Button>
               </div>
               <div
@@ -233,7 +254,12 @@ const EditUser = (props) => {
                   style={{ backgroundColor: "#cc0000ff", color: "white" }}
                   onClick={() => handleDeactivate(userInfo)}
                 >
-                  Deactivate
+                  <React.Fragment>
+                    {loading && <CircularProgress color="inherit" size={14} />}
+                    {!loading && (
+                      <Typography variant="h7">Bad Bad User</Typography>
+                    )}
+                  </React.Fragment>
                 </Button>
               </div>
             </div>
@@ -258,7 +284,12 @@ const EditUser = (props) => {
                 style={{ backgroundColor: "#ffd966ff" }}
                 onClick={() => handleActivate(userInfo)}
               >
-                Wake Me Up Inside
+                <React.Fragment>
+                  {loading && <CircularProgress color="inherit" size={14} />}
+                  {!loading && (
+                    <Typography variant="h7">Wake Me Up Inside</Typography>
+                  )}
+                </React.Fragment>
               </Button>
             </div>
           )}
@@ -281,7 +312,10 @@ const EditUser = (props) => {
                 disabled
                 style={{ backgroundColor: "#9acdbaff", color: "black" }}
               >
-                u r kewt
+                <React.Fragment>
+                  {loading && <CircularProgress color="inherit" size={14} />}
+                  {!loading && <Typography variant="h7">u r kewt</Typography>}
+                </React.Fragment>
               </Button>
             </div>
           )}

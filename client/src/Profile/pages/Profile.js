@@ -9,6 +9,7 @@ import {
   ListItemAvatar,
   Typography,
   Button,
+  CircularProgress,
   ListItem,
   Toolbar,
   Badge,
@@ -57,6 +58,7 @@ const ProfilePage = (props) => {
   );
   const [website, setWebsite] = React.useState("website");
   const [peperonis, setPeperonis] = React.useState(0);
+  const [loading, setLoading] = React.useState(false);
 
   useEffect(() => {
     populateUserData();
@@ -94,6 +96,7 @@ const ProfilePage = (props) => {
   async function handleSubmit(event) {
     event.preventDefault();
     try {
+      setLoading(true);
       await memeketPlaceNetwork.methods
         .updateUserProfile(
           userWallet,
@@ -104,6 +107,7 @@ const ProfilePage = (props) => {
         )
         .send({ from: userWallet })
         .once("receipt", (receipt) => {
+          setLoading(false);
           Swal.fire({
             title: "Update profile successful!",
             icon: "success",
@@ -141,7 +145,6 @@ const ProfilePage = (props) => {
         return hash;
       });
     };
-    console.log(displayPictureHash);
   }
 
   return (
@@ -241,7 +244,12 @@ const ProfilePage = (props) => {
                 variant="contained"
                 fullWidth
               >
-                Update Profile
+                <React.Fragment>
+                  {loading && <CircularProgress color="inherit" size={14} />}
+                  {!loading && (
+                    <Typography variant="h7">Update Profile</Typography>
+                  )}
+                </React.Fragment>
               </Button>
             </div>
           </Card>

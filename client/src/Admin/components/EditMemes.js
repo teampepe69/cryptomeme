@@ -4,6 +4,7 @@ import {
   Button,
   Modal,
   Card,
+  CircularProgress,
   TextField,
   CardMedia,
   Typography,
@@ -41,39 +42,49 @@ const styles = (theme) => ({
 });
 
 const EditMemes = (props) => {
-  
   const { classes, modalState, handleClose, memeInfo, rows, stopFlags } = props;
   const [userNetwork] = useGlobal("userNetwork");
   const [memeNetwork] = useGlobal("memeNetwork");
   const [memeketPlaceNetwork] = useGlobal("memeketPlaceNetwork");
   const [web3] = useGlobal("web3");
+  const [loading, setLoading] = React.useState(false);
 
   // ----------------------- Handle interactions ----------------------
 
   async function handleActivate(meme) {
+    setLoading(true);
     // Set sender
     let result = await web3.eth.getAccounts();
     // Approve meme of memeId
     const newDate = Math.floor(new Date().getTime() / 1000);
     await memeketPlaceNetwork.methods
       .approveMeme(meme.memeId, newDate)
-      .send({ from: result[0] });
+      .send({ from: result[0] })
+      .once("receipt", (receipt) => {
+        setLoading(false);
+      });
 
     // Close Modal
     handleClose();
+    setLoading(false);
   }
 
   async function handleDeactivate(meme) {
+    setLoading(true);
     // Reject Meme
     let result = await web3.eth.getAccounts();
     // Reject meme of memeId
     const newDate = Math.floor(new Date().getTime() / 1000);
     await memeNetwork.methods
       .rejectMeme(meme.memeId, newDate)
-      .send({ from: result[0] });
+      .send({ from: result[0] })
+      .once("receipt", (receipt) => {
+        setLoading(false);
+      });
 
     // Close Modal
     handleClose();
+    setLoading(false);
   }
 
   // ----------------------- Printing ----------------------
@@ -147,7 +158,12 @@ const EditMemes = (props) => {
                   style={{ backgroundColor: "#5d4037ff", color: "white" }}
                   onClick={() => handleActivate(memeInfo)}
                 >
-                  Approve Meme
+                  <React.Fragment>
+                    {loading && <CircularProgress color="inherit" size={14} />}
+                    {!loading && (
+                      <Typography variant="h7">Approve Meme</Typography>
+                    )}
+                  </React.Fragment>
                 </Button>
               </div>
             </div>
@@ -172,7 +188,12 @@ const EditMemes = (props) => {
                 style={{ backgroundColor: "#ffd966ff" }}
                 onClick={() => handleDeactivate(memeInfo)}
               >
-                Deactivate Meme
+                <React.Fragment>
+                  {loading && <CircularProgress color="inherit" size={14} />}
+                  {!loading && (
+                    <Typography variant="h7">Reject Meme</Typography>
+                  )}
+                </React.Fragment>
               </Button>
             </div>
           )}

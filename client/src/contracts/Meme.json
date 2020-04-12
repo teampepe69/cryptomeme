@@ -47891,10 +47891,319 @@
       "links": {},
       "address": "0xA57B8a5584442B467b4689F1144D269d096A3daF",
       "transactionHash": "0x3827856a0933ff40492c66c6a61845186f833aec23536e9544657da627c365b8"
+    },
+    "1586680427992": {
+      "events": {
+        "0x8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0f7b2291e5b200ac8c7c3b925": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "owner",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "approved",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "internalType": "uint256",
+              "name": "tokenId",
+              "type": "uint256"
+            }
+          ],
+          "name": "Approval",
+          "type": "event"
+        },
+        "0x17307eab39ab6107e8899845ad3d59bd9653f200f220920489ca2b5937696c31": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "owner",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "operator",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "bool",
+              "name": "approved",
+              "type": "bool"
+            }
+          ],
+          "name": "ApprovalForAll",
+          "type": "event"
+        },
+        "0x9fbdac5ef81b90c2a72fb11cfd843ec4420a1e4e2f4dfcd3fa74642000c65746": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "memeId",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "memeDate",
+              "type": "uint256"
+            }
+          ],
+          "name": "MemeApproved",
+          "type": "event"
+        },
+        "0xd25b8d330a460011c7bec6959e8e357913180d3903b2e306e58f02a9d626ffa1": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "memeId",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "memeDate",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "string",
+              "name": "memePath",
+              "type": "string"
+            },
+            {
+              "indexed": false,
+              "internalType": "string",
+              "name": "memeTitle",
+              "type": "string"
+            },
+            {
+              "indexed": false,
+              "internalType": "string",
+              "name": "memeDescription",
+              "type": "string"
+            }
+          ],
+          "name": "MemeCreated",
+          "type": "event"
+        },
+        "0xf05d06dbe2b68077a33f5c478afcfaffbc3f33c20c7214df3e9d1ff049dba8ce": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "memeId",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "memeDate",
+              "type": "uint256"
+            }
+          ],
+          "name": "MemeDateChanged",
+          "type": "event"
+        },
+        "0x39fe17132d93deb6c1a222fa0e62250be8db081415bf7b22d0c96eca64aba243": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "memeId",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "string",
+              "name": "memeDescription",
+              "type": "string"
+            }
+          ],
+          "name": "MemeDescriptionChanged",
+          "type": "event"
+        },
+        "0xc6e754c2c99d7cfe2cbf8d103a20e0b16fe9a66d3762a8f880f1e129c9cd62bc": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "memeId",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "memeDislikes",
+              "type": "uint256"
+            }
+          ],
+          "name": "MemeDisliked",
+          "type": "event"
+        },
+        "0xfda24b2cb361fa205553f9682a1c0620202938b8931d995b33f4e51c136cbdac": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "memeId",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "memeFlags",
+              "type": "uint256"
+            }
+          ],
+          "name": "MemeFlagged",
+          "type": "event"
+        },
+        "0xdd0f81ca2d716958a9698cf1c9eb782619d3d43d599706f7e3de7f357f695d69": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "memeId",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "memeLikes",
+              "type": "uint256"
+            }
+          ],
+          "name": "MemeLiked",
+          "type": "event"
+        },
+        "0x04454811e7fa0b2ef21eda132059d90e580b7a64ba3d811b054a6855ec5c6c37": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "memeId",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "string",
+              "name": "memePath",
+              "type": "string"
+            }
+          ],
+          "name": "MemePathChanged",
+          "type": "event"
+        },
+        "0x869eec6f1785bdf3fea295e0f0866b782fb0d3d8b98000b3baab78596bfe2290": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "memeId",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "memeDate",
+              "type": "uint256"
+            }
+          ],
+          "name": "MemeRejected",
+          "type": "event"
+        },
+        "0xdce525e529bbc6317cd60d3777deeb79b3cb2bf408f12b5d9717a03d843837fe": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "memeId",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "string",
+              "name": "memeTitle",
+              "type": "string"
+            }
+          ],
+          "name": "MemeTitleChanged",
+          "type": "event"
+        },
+        "0x12d8cc2034cab909bf835f2e124343a155b463f996050d6f9eeb545b7fb4ea31": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "memeId",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "memeValue",
+              "type": "uint256"
+            }
+          ],
+          "name": "MemeValueChanged",
+          "type": "event"
+        },
+        "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "from",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "to",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "internalType": "uint256",
+              "name": "tokenId",
+              "type": "uint256"
+            }
+          ],
+          "name": "Transfer",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0x254dffcd3277C0b1660F6d42EFbB754edaBAbC2B",
+      "transactionHash": "0xce83090a7419a1f0100ad79b80de5dd1eafe94b871cef2472c67c80bcc9c9592"
     }
   },
   "schemaVersion": "3.0.23",
-  "updatedAt": "2020-04-11T21:24:27.650Z",
+  "updatedAt": "2020-04-12T08:34:50.878Z",
   "networkType": "ethereum",
   "devdoc": {
     "methods": {

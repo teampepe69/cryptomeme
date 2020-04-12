@@ -10,6 +10,7 @@ import {
 } from "@material-ui/core";
 import {
   Button,
+  CircularProgress,
   Grid,
   Typography,
   TextField,
@@ -23,7 +24,7 @@ import CloudUploadIcon from "@material-ui/icons/CloudUpload";
 import ThumbDownAltOutlinedIcon from "@material-ui/icons/ThumbDownAltOutlined";
 import ThumbUpAltOutlinedIcon from "@material-ui/icons/ThumbUpAltOutlined";
 import ThumbUpAltRoundedIcon from "@material-ui/icons/ThumbUpAltRounded";
-import ThumbDownRoundedIcon from "@material-ui/icons/ThumbDownRounded";
+import ThumbDownAltRoundedIcon from "@material-ui/icons/ThumbDownRounded";
 import ipfs from "../../ipfs";
 import FlagIcon from "@material-ui/icons/Flag";
 import Swal from "sweetalert2";
@@ -124,6 +125,7 @@ const styles = (theme) => ({
 
 const MemeFeed = (props) => {
   const { classes } = props;
+  const [loading, setLoading] = React.useState(false);
   const [userNetwork] = useGlobal("userNetwork");
   const [memeketPlaceNetwork] = useGlobal("memeketPlaceNetwork");
   const [memeNetwork] = useGlobal("memeNetwork");
@@ -150,10 +152,7 @@ const MemeFeed = (props) => {
   const [peperonis, setPeperonis] = React.useState(0);
 
   useEffect(() => {
-    console.log(memeNetwork);
-
     populateMeme();
-    //}, [memeNetwork, memeketPlaceNetwork, userNetwork]);
   }, [memeketPlaceNetwork]);
 
   useEffect(() => {
@@ -167,6 +166,7 @@ const MemeFeed = (props) => {
   }, []);
 
   async function populateMeme() {
+    setLoading(true);
     const acc = sessionStorage.getItem("account");
     setUserAddress(acc);
     let memeArray = [];
@@ -217,6 +217,7 @@ const MemeFeed = (props) => {
             setMemes(arraySorted[0]);
             setMemeDates(arraySorted[2]);
             setMemeOwners(arraySorted[1]);
+            setLoading(false);
           }
         }
       } else {
@@ -307,7 +308,7 @@ const MemeFeed = (props) => {
 
   //----------------CREATE MEME-------------
   async function createMeme(memePath, memeTitle, memeDescription, memeValue) {
-    console.log(memePath, memeTitle, memeDescription, memeValue);
+    setLoading(true);
     const acc = sessionStorage.getItem("account");
     const memeDate = Math.floor(new Date().getTime() / 1000);
     try {
@@ -322,14 +323,17 @@ const MemeFeed = (props) => {
         )
         .send({
           from: acc,
+        })
+        .once("receipt", (receipt) => {
+          setLoading(false);
+          handleClose("create");
+          Swal.fire({
+            title:
+              "Creation successful! Please wait for your meme to be approved.",
+            icon: "success",
+            confirmButtonText: "Cool beans",
+          });
         });
-      //updateMemeFeed();
-      handleClose("create");
-      Swal.fire({
-        title: "Creation successful! Please wait for your meme to be approved.",
-        icon: "success",
-        confirmButtonText: "Cool beans",
-      });
     } catch (error) {
       handleClose("create");
       alert(error);
@@ -371,35 +375,52 @@ const MemeFeed = (props) => {
   async function likeMeme(memeId) {
     const acc = sessionStorage.getItem("account");
     var arr = memes;
-    // console.log(memeId);
+    setLoading(true);
+    var currentMemeLikeStatus = likeStatus[memeId];
+    likeStatus[memeId] = -1;
     try {
-      await memeketPlaceNetwork.methods.likeMeme(memeId).send({ from: acc });
-
-      const updateMeme = await memeNetwork.methods.memes(memeId).call();
-
-      const state = arr.map((meme) => (meme[1] === memeId ? updateMeme : meme));
-      await getStatus(memeId);
-      setMemes(state);
+      await memeketPlaceNetwork.methods
+        .likeMeme(memeId)
+        .send({ from: acc })
+        .once("receipt", async (receipt) => {
+          const updateMeme = await memeNetwork.methods.memes(memeId).call();
+          const state = arr.map((meme) =>
+            meme[1] === memeId ? updateMeme : meme
+          );
+          await getStatus(memeId);
+          setMemes(state);
+        });
     } catch (error) {
       checkMetaMaskAccount();
     }
+    setLoading(false);
+    likeStatus[memeId] = currentMemeLikeStatus;
   }
 
   //------------DISLIKE MEMES--------------
   async function dislikeMeme(memeId) {
     const acc = sessionStorage.getItem("account");
     var arr = memes;
+    setLoading(true);
+    var currentMemeLikeStatus = likeStatus[memeId];
+    likeStatus[memeId] = -2;
     try {
-      await memeketPlaceNetwork.methods.dislikeMeme(memeId).send({ from: acc });
-
-      const updateMeme = await memeNetwork.methods.memes(memeId).call();
-
-      const state = arr.map((meme) => (meme[1] === memeId ? updateMeme : meme));
-      await getStatus(memeId);
-      setMemes(state);
+      await memeketPlaceNetwork.methods
+        .dislikeMeme(memeId)
+        .send({ from: acc })
+        .once("receipt", async (receipt) => {
+          const updateMeme = await memeNetwork.methods.memes(memeId).call();
+          const state = arr.map((meme) =>
+            meme[1] === memeId ? updateMeme : meme
+          );
+          await getStatus(memeId);
+          setMemes(state);
+        });
     } catch (error) {
       checkMetaMaskAccount();
     }
+    setLoading(false);
+    likeStatus[memeId] = currentMemeLikeStatus;
   }
 
   //-------------USER LIKE STATUS--------------------
@@ -418,6 +439,7 @@ const MemeFeed = (props) => {
 
   //-------------FLAG MEME--------------------
   async function flagMeme(memeId) {
+    setLoading(true);
     const acc = sessionStorage.getItem("account");
     var arr = memes;
     // console.log(memeId);
@@ -426,29 +448,33 @@ const MemeFeed = (props) => {
       .call();
     if (!isFlagged) {
       try {
-        await memeketPlaceNetwork.methods.flagMeme(memeId).send({ from: acc });
-        let memeFlagged = await memeNetwork.methods
-          .memes(memeId)
-          .call({ from: acc });
-        let flagMemeResult = memeFlagged[10];
-        if ("Rejected" == mapMemeStatus(flagMemeResult)) {
-          handleClose("flag");
-          Swal.fire({
-            title:
-              "Flag successful! Meme has been rejected because majority thinks this meme is bad",
-            icon: "success",
-            confirmButtonText: "OhMaiGawd",
-          }).then(function () {
-            window.location.reload(false);
+        await memeketPlaceNetwork.methods
+          .flagMeme(memeId)
+          .send({ from: acc })
+          .once("receipt", async (receipt) => {
+            let memeFlagged = await memeNetwork.methods
+              .memes(memeId)
+              .call({ from: acc });
+            let flagMemeResult = memeFlagged[10];
+            if ("Rejected" == mapMemeStatus(flagMemeResult)) {
+              handleClose("flag");
+              Swal.fire({
+                title:
+                  "Flag successful! Meme has been rejected because majority thinks this meme is bad",
+                icon: "success",
+                confirmButtonText: "OhMaiGawd",
+              }).then(function () {
+                window.location.reload(false);
+              });
+            } else {
+              handleClose("flag");
+              Swal.fire({
+                title: "Flag successful!",
+                icon: "success",
+                confirmButtonText: "Cool beans",
+              });
+            }
           });
-        } else {
-          handleClose("flag");
-          Swal.fire({
-            title: "Flag successful!",
-            icon: "success",
-            confirmButtonText: "Cool beans",
-          });
-        }
       } catch (error) {
         handleClose("flag");
         checkMetaMaskAccount();
@@ -461,6 +487,7 @@ const MemeFeed = (props) => {
         confirmButtonText: "Cool beans",
       });
     }
+    setLoading(false);
   }
 
   //------------UPLOAD FILE--------------
@@ -490,24 +517,27 @@ const MemeFeed = (props) => {
 
   //------------Update Meme Value-------------------
   async function handleUpdateMemeValue(memeId) {
+    setLoading(true);
     const account = sessionStorage.getItem("account");
     try {
       await memeketPlaceNetwork.methods
         .updateMemeValue(memeId, memeValue)
         .send({
           from: account,
+        })
+        .once("receipt", (receipt) => {
+          handleClose("pin");
+          Swal.fire({
+            title: "Your Meme has more value now!",
+            icon: "success",
+            confirmButtonText: "Cool beans",
+          });
+          populateMeme();
         });
-      handleClose("pin");
-      Swal.fire({
-        title: "Your Meme has more value now!",
-        icon: "success",
-        confirmButtonText: "Cool beans",
-      });
-      populateMeme();
     } catch (error) {
       checkMetaMaskAccount();
     }
-    //await memeketPlaceNetwork.updateMemeValue();
+    setLoading(false);
   }
   //------------SUBMIT FORM-------------------
   function handleSubmit(event) {
@@ -692,7 +722,16 @@ const MemeFeed = (props) => {
                         className={classes.button}
                         fullWidth
                       >
-                        What is life anyway?
+                        <React.Fragment>
+                          {loading && (
+                            <CircularProgress color="inherit" size={14} />
+                          )}
+                          {!loading && (
+                            <Typography variant="h7">
+                              What is Life Anyway
+                            </Typography>
+                          )}
+                        </React.Fragment>
                       </Button>
                     </form>
                   </div>
@@ -782,7 +821,6 @@ const MemeFeed = (props) => {
                         <Grid container item xs={2}>
                           <IconButton
                             style={{ minWidth: "10px" }}
-                            // startIcon={<ThumbUpAltOutlinedIcon />}
                             disabled={
                               loggedIn &&
                               memeOwners[key] &&
@@ -796,12 +834,22 @@ const MemeFeed = (props) => {
                               likeMeme(meme.memeId);
                             }}
                           >
-                            {}
-                            {likeStatus[meme.memeId] == 1 ? (
-                              <ThumbUpAltRoundedIcon />
-                            ) : (
-                              <ThumbUpAltOutlinedIcon />
-                            )}
+                            <React.Fragment>
+                              {loading &&
+                                (likeStatus[meme.memeId] == -1 ? (
+                                  <CircularProgress color="inherit" size={14} />
+                                ) : likeStatus[meme.memeId] == 1 ? (
+                                  <ThumbUpAltRoundedIcon />
+                                ) : (
+                                  <ThumbUpAltOutlinedIcon />
+                                ))}
+                              {!loading &&
+                                (likeStatus[meme.memeId] == 1 ? (
+                                  <ThumbUpAltRoundedIcon />
+                                ) : (
+                                  <ThumbUpAltOutlinedIcon />
+                                ))}
+                            </React.Fragment>
                           </IconButton>
                           <Typography
                             variant="button"
@@ -828,11 +876,22 @@ const MemeFeed = (props) => {
                               dislikeMeme(meme.memeId);
                             }}
                           >
-                            {likeStatus[meme.memeId] == 2 ? (
-                              <ThumbDownRoundedIcon />
-                            ) : (
-                              <ThumbDownAltOutlinedIcon />
-                            )}
+                            <React.Fragment>
+                              {loading &&
+                                (likeStatus[meme.memeId] == -2 ? (
+                                  <CircularProgress color="inherit" size={14} />
+                                ) : likeStatus[meme.memeId] == 2 ? (
+                                  <ThumbDownAltRoundedIcon />
+                                ) : (
+                                  <ThumbDownAltOutlinedIcon />
+                                ))}
+                              {!loading &&
+                                (likeStatus[meme.memeId] == 2 ? (
+                                  <ThumbDownAltRoundedIcon />
+                                ) : (
+                                  <ThumbDownAltOutlinedIcon />
+                                ))}
+                            </React.Fragment>
                           </IconButton>
 
                           <Typography
@@ -938,7 +997,19 @@ const MemeFeed = (props) => {
                                   }
                                   fullWidth
                                 >
-                                  What is life anyway?
+                                  <React.Fragment>
+                                    {loading && (
+                                      <CircularProgress
+                                        color="inherit"
+                                        size={14}
+                                      />
+                                    )}
+                                    {!loading && (
+                                      <Typography variant="h7">
+                                        Give My Meme Powahhhh
+                                      </Typography>
+                                    )}
+                                  </React.Fragment>
                                 </Button>
                               </Card>
                             </Modal>
@@ -1017,7 +1088,19 @@ const MemeFeed = (props) => {
                                       }}
                                       fullWidth
                                     >
-                                      SAY NO TO TROLLS!
+                                      <React.Fragment>
+                                        {loading && (
+                                          <CircularProgress
+                                            color="inherit"
+                                            size={14}
+                                          />
+                                        )}
+                                        {!loading && (
+                                          <Typography variant="h7">
+                                            Say No To Trolls!
+                                          </Typography>
+                                        )}
+                                      </React.Fragment>
                                     </Button>
                                   </div>
                                   <div style={{ width: "40%", float: "right" }}>
@@ -1041,7 +1124,12 @@ const MemeFeed = (props) => {
           })
         ) : (
           <div>
-            <p>Nothing</p>
+            {loading && <CircularProgress color="inherit" size={16} />}
+            {!loading && (
+              <Typography variant="h7">
+                No Memes! Strt creating some :)
+              </Typography>
+            )}
           </div>
         )}
       </div>

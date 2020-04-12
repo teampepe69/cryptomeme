@@ -26,10 +26,10 @@ const getWeb3 = () =>
       }
       // Fallback to localhost; use dev console port by default...
       else {
-        // const provider = new Web3.providers.HttpProvider(
-        //   "http://127.0.0.1:8545"
-        // );
-        // const web3 = new Web3(provider);
+        const provider = new Web3.providers.HttpProvider(
+          "http://127.0.0.1:8545"
+        );
+        const web3 = new Web3(provider);
         Swal.fire({
           title:
             "No MetaMask detected. You can still enjoy the memes but you can't upload/like memes.",

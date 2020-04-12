@@ -122,9 +122,16 @@ class App extends Component {
       //this.setState({ web3, accounts, contract: instance }, this.runExample);
     } catch (error) {
       // Catch any errors for any of the above operations.
-      alert(
-        `Failed to load web3, accounts, or contract. Check console for details.`
-      );
+      Swal.fire({
+        title: "No Web3 detected. Go get yourself a MetaMask",
+        imageUrl: SadPepe,
+        confirmButtonText: "What's this MetaMask you speak of?",
+        showCancelButton: true,
+      }).then((result) => {
+        if (result.value) {
+          window.open("https://metamask.io/download.html", "_blank");
+        }
+      });
       console.error(error);
     }
   }

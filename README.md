@@ -100,13 +100,18 @@ Alternatively, you can have a go with the web application over [here](http://13.
 ## User Related Features
 1. Creating an Account
 2. Logging into Account
+   * Requires account to be approved by an admin first.
 3. Updating Profile
+4. View Leaderboard
+   * Leaderboard is based on how much PepeCoins you have :)
 
 ## Meme Related Features
-1. Creating a Meme
+1. Uploading a Meme
+   * Requires meme to be approved by an admin first.
 2. Liking a Meme
 3. Disliking a Meme
 4. Flagging a Meme
+   * Note that memes are automatically rejected if majority (i.e > 50%) of the users has flagged a meme
 5. Increasing Value for your Meme
 
 ## Admin Related Features
@@ -117,6 +122,16 @@ Alternatively, you can have a go with the web application over [here](http://13.
 5. Approve Meme
 
 # FAQ
+
+* I seem to be getting network is null error. Why is that so?
+    * I presume you're doing local development modifications. Most likely this is due to your modifications of the smart contract(s). Simply restart your browser and all is well :)
+  
+* Why is there no backend?
+  * We wanted to explore the idea of having a serverless application since this is a blockchain project.
+
+* Where are the images hosted?
+  * Images are actually hosted on [Infura's IPFS](https://infura.io/). The image hashes are stored on the blockchain and loaded via `https://infura.io/ipfs/{hashOfImage}`
+
 * Why is `secrets.js` pushed?
   * Yes we know it's insecure to do this but because this is for a school project so we would like to think our instructors would need to see every single file that was involved :) This would definitely be taken down once the semester is over.
   
@@ -133,6 +148,12 @@ Alternatively, you can have a go with the web application over [here](http://13.
 * Who are you guys?
     * We're a bunch of students from the National University of Singapore taking a Blockchain module. We're doing this project as part of our module.
 
+# Team Members
+* [Quentin Khoo](https://github.com/quentinkhoo)
+* [Sylvia Swee](https://github.com/sylvieaaa/)
+* [Phoebe Neo](https://github.com/arxebe)
+* [Nicolas Schuhl](https://github.com/nicolashackingproject)
+* [Ng Tze Meng](https://github.com/TzeMeng)
 
 # Feature Requests/ Bug Reporting
 Kindly request for any features or report any bugs by opening an issue [here](https://github.com/teampepe69/cryptomeme/issues) :)

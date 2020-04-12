@@ -1,6 +1,6 @@
 import Web3 from "web3";
 import Swal from "sweetalert2";
-import SadPepe from "img/sadpepe.png";
+import SadPepe from "./img/sadpepe.png";
 
 const getWeb3 = () =>
   new Promise((resolve, reject) => {

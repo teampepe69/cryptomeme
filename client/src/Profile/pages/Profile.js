@@ -102,14 +102,16 @@ const ProfilePage = (props) => {
           displayName,
           website
         )
-        .send({ from: userWallet });
-      Swal.fire({
-        title: "Update profile successful!",
-        icon: "success",
-        confirmButtonText: "Cool beans",
-      }).then(function () {
-        window.location.reload();
-      });
+        .send({ from: userWallet })
+        .once("receipt", (receipt) => {
+          Swal.fire({
+            title: "Update profile successful!",
+            icon: "success",
+            confirmButtonText: "Cool beans",
+          }).then(function () {
+            window.location.reload();
+          });
+        });
     } catch (error) {
       let accounts = await web3.eth.getAccounts();
       if (accounts[0] != userWallet) {
@@ -224,7 +226,6 @@ const ProfilePage = (props) => {
                 inputProps={{ maxLength: 255 }}
                 style={{ width: "100%", paddingBottom: "5px" }}
                 onInput={(e) => setAbout(e.target.value)}
-                required
               />
               <Typography variant="h6">Website</Typography>
               <TextField
@@ -233,7 +234,6 @@ const ProfilePage = (props) => {
                 inputProps={{ maxLength: 50 }}
                 style={{ width: "100%", paddingBottom: "5px" }}
                 onInput={(e) => setWebsite(e.target.value)}
-                required
               />
               <Button
                 type="submit"

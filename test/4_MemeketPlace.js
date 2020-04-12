@@ -37,6 +37,7 @@ contract("MemeketPlace.sol", function (accounts) {
 
   before(async () => {
     pepeCoinInstance = await PepeCoin.deployed();
+    memeInstance = await Meme.deployed();
     memeketPlaceInstance = await MemeketPlace.deployed();
   });
 
@@ -75,10 +76,23 @@ contract("MemeketPlace.sol", function (accounts) {
     );
   });
 
-  it("Should activate user 1, user 2, user 3", async () => {
+  it("Should deactivate then activate user 1, user 2, user 3", async () => {
     let activateUser1 = await memeketPlaceInstance.activateUser(memeOwner1);
     let activateUser2 = await memeketPlaceInstance.activateUser(memeOwner2);
     let activateUser3 = await memeketPlaceInstance.activateUser(memeOwner3);
+    let deactivateUser3 = await memeketPlaceInstance.deactivateUser(memeOwner3);
+    await memeketPlaceInstance.activateUser(memeOwner3);
+  });
+
+  it("Should update profile information of user 1", async () => {
+    let updateUser1 = await memeketPlaceInstance.updateUserProfile(
+      memeOwner1,
+      "New About",
+      "New DP Hash",
+      "New Display Name",
+      "New Website",
+      { from: memeOwner1 }
+    );
   });
 
   it("User 1 should have default created user pepecoins", async () => {
@@ -104,13 +118,21 @@ contract("MemeketPlace.sol", function (accounts) {
         { from: memeOwner1 }
       );
     } catch (error) {
-      assert.fail("Error encounterd in uploading meme");
+      assert.fail("Error encountered in uploading meme");
     }
     let likeStatus = await memeketPlaceInstance.getLikes.call(meme1Id, liker1);
     assert.strictEqual(
       likeStatus.toNumber(),
       defaultLike,
       "Should return " + defaultLike + " but got " + likeStatus
+    );
+  });
+
+  it("Should reject and approve meme", async () => {
+    let rejectMeme1 = await memeketPlaceInstance.rejectMeme(meme1Id, memeDate);
+    let approveMeme1 = await memeketPlaceInstance.approveMeme(
+      meme1Id,
+      memeDate
     );
   });
 
@@ -223,5 +245,30 @@ contract("MemeketPlace.sol", function (accounts) {
       result = true;
     }
     assert.strictEqual(result, true, "User can flag meme twice");
+  });
+
+  it("Should update meme value", async () => {
+    let updateMeme1Value = await memeketPlaceInstance.updateMemeValue(
+      meme1Id,
+      5,
+      { from: memeOwner1 }
+    );
+  });
+
+  it("Should reject meme when majority users flag meme", async () => {
+    let currentMemeState = await memeInstance.getMemeState(meme1Id);
+    assert.strictEqual(
+      currentMemeState.toNumber(),
+      0,
+      "Meme state should be 0 (approved)"
+    );
+    await memeketPlaceInstance.flagMeme(meme1Id);
+    await memeketPlaceInstance.flagMeme(meme1Id, { from: memeOwner2 });
+    let newMemeState = await memeInstance.getMemeState(meme1Id);
+    assert.strictEqual(
+      newMemeState.toNumber(),
+      1,
+      "Flagged meme should have been 1 (rejected)"
+    );
   });
 });

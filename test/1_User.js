@@ -76,9 +76,13 @@ contract("User.sol", function (accounts) {
   });
 
   it("Should activate user 1 2 and 3", async () => {
-    let beforeActivateUser1 = await userInstance.checkUserIsActive.call(memeOwner1);
+    let beforeActivateUser1 = await userInstance.checkUserIsActive.call(
+      memeOwner1
+    );
     await userInstance.setUserAsActive(memeOwner1);
-    let afterActivateUser1 = await userInstance.checkUserIsActive.call(memeOwner1);
+    let afterActivateUser1 = await userInstance.checkUserIsActive.call(
+      memeOwner1
+    );
     assert.strictEqual(
       beforeActivateUser1.toString(),
       "false",
@@ -86,9 +90,13 @@ contract("User.sol", function (accounts) {
     );
     assert.strictEqual(afterActivateUser1.toString(), "true", "Should be true");
 
-    let beforeActivateUser2 = await userInstance.checkUserIsActive.call(memeOwner2);
+    let beforeActivateUser2 = await userInstance.checkUserIsActive.call(
+      memeOwner2
+    );
     await userInstance.setUserAsActive(memeOwner2);
-    let afterActivateUser2 = await userInstance.checkUserIsActive.call(memeOwner2);
+    let afterActivateUser2 = await userInstance.checkUserIsActive.call(
+      memeOwner2
+    );
     assert.strictEqual(
       beforeActivateUser2.toString(),
       "false",
@@ -96,9 +104,13 @@ contract("User.sol", function (accounts) {
     );
     assert.strictEqual(afterActivateUser2.toString(), "true", "Should be true");
 
-    let beforeActivateUser3 = await userInstance.checkUserIsActive.call(memeOwner3);
+    let beforeActivateUser3 = await userInstance.checkUserIsActive.call(
+      memeOwner3
+    );
     await userInstance.setUserAsActive(memeOwner3);
-    let afterActivateUser3 = await userInstance.checkUserIsActive.call(memeOwner3);
+    let afterActivateUser3 = await userInstance.checkUserIsActive.call(
+      memeOwner3
+    );
     assert.strictEqual(
       beforeActivateUser3.toString(),
       "false",
@@ -107,21 +119,42 @@ contract("User.sol", function (accounts) {
     assert.strictEqual(afterActivateUser3.toString(), "true", "Should be true");
   });
 
+  it("Should return true to check user 1 exists", async () => {
+    let checkUser1Exists = await userInstance.checkUserExists(memeOwner1);
+
+    assert.strictEqual(
+      checkUser1Exists,
+      true,
+      "Should return true for checking user 1 exists"
+    );
+  });
+
   it("Should give user Admin Rights", async () => {
-    
     try {
-      await userInstance.setUserAsDeactivated.call(memeOwner2, {from: memeOwner1});
-      await userInstance.setUserAsActive.call(memeOwner2,{from: memeOwner1});
-      await userInstance.setUserAsAdmin.call(memeOwner2,{from: memeOwner1});
-      assert.fail("Functions which access is expected to be admin only are accessible by user with no admin rights");
+      await userInstance.setUserAsDeactivated.call(memeOwner2, {
+        from: memeOwner1,
+      });
+      await userInstance.setUserAsActive.call(memeOwner2, { from: memeOwner1 });
+      await userInstance.setUserAsAdmin.call(memeOwner2, { from: memeOwner1 });
+      assert.fail(
+        "Functions which access is expected to be admin only are accessible by user with no admin rights"
+      );
     } catch (error) {
-      await userInstance.setUserAsAdmin(memeOwner1,{from: contractOwner});
+      await userInstance.setUserAsAdmin(memeOwner1, { from: contractOwner });
       try {
-        await userInstance.setUserAsDeactivated.call(memeOwner2, {from: memeOwner1});
-        await userInstance.setUserAsActive.call(memeOwner2,{from: memeOwner1});
-        await userInstance.setUserAsAdmin.call(memeOwner2,{from: memeOwner1});
+        await userInstance.setUserAsDeactivated.call(memeOwner2, {
+          from: memeOwner1,
+        });
+        await userInstance.setUserAsActive.call(memeOwner2, {
+          from: memeOwner1,
+        });
+        await userInstance.setUserAsAdmin.call(memeOwner2, {
+          from: memeOwner1,
+        });
       } catch (error) {
-        asser.fail("After giving user admin rights, user cannot access admin-only functions");
+        asser.fail(
+          "After giving user admin rights, user cannot access admin-only functions"
+        );
       }
     }
   });

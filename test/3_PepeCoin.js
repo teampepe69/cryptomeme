@@ -21,11 +21,6 @@ contract("PepeCoin.sol", function (accounts) {
 
   it("Should successfully mint PepeCoins", async () => {
     let mintPepeCoins = await pepeCoinInstance.mintPepeCoins(user1, mintAmount);
-    try {
-      await pepeCoinInstance.mintPepeCoins(user1, mintAmount, { from: user1 });
-    } catch (error) {
-      assert.fail("Error encountered in minting pepe coins from user1");
-    }
   });
 
   it("Should successfully return correct amount of PepeCoins", async () => {

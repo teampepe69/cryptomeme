@@ -117,6 +117,7 @@ Alternatively, you can have a go with the web application over [here](http://13.
 1. Uploading a Meme
    - Requires meme to be approved by an admin first.
 2. Liking a Meme
+   - Donates a PepeCoin to the meme creator :)
 3. Disliking a Meme
 4. Flagging a Meme
    - Note that memes are automatically rejected if majority (i.e > 50%) of the users has flagged a meme
